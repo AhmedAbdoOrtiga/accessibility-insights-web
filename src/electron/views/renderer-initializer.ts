@@ -23,7 +23,7 @@ import { UnifiedScanResultStore } from 'background/stores/unified-scan-result-st
 import { ConsoleTelemetryClient } from 'background/telemetry/console-telemetry-client';
 import { UserConfigurationController } from 'background/user-configuration-controller';
 import { provideBlob } from 'common/blob-provider';
-import { onlyHighlightingSupported } from 'common/components/cards/card-interaction-support';
+import { allCardInteractionsSupported } from 'common/components/cards/card-interaction-support';
 import { ExpandCollapseVisualHelperModifierButtons } from 'common/components/cards/cards-visualization-modifier-buttons';
 import { CardsCollapsibleControl } from 'common/components/cards/collapsible-component-cards';
 import { FixInstructionProcessor } from 'common/components/fix-instruction-processor';
@@ -110,6 +110,15 @@ import {
     RootContainerRendererDeps,
 } from './root-container/root-container-renderer';
 import { screenshotViewModelProvider } from './screenshot/screenshot-view-model-provider';
+import { IssueFilingActionMessageCreator } from 'common/message-creators/issue-filing-action-message-creator';
+import { IssueFilingServiceProviderImpl } from 'issue-filing/issue-filing-service-provider-impl';
+import { UnifiedResultToIssueFilingDataConverter } from 'issue-filing/unified-result-to-issue-filing-data';
+import { IssueFilingUrlStringUtils } from 'issue-filing/common/issue-filing-url-string-utils';
+import { createIssueDetailsBuilder } from 'issue-filing/common/create-issue-details-builder';
+import { PlainTextFormatter } from 'issue-filing/common/markup/plain-text-formatter';
+import { IssueDetailsTextGenerator } from 'background/issue-details-text-generator';
+import { EnvironmentInfoProvider } from 'common/environment-info-provider';
+import { AxeInfo } from 'common/axe-info';
 
 declare var window: Window & {
     insightsUserConfiguration: UserConfigurationController;
@@ -334,10 +343,28 @@ getPersistedData(indexedDBInstance, indexedDBDataKeysToFetch).then(
 
         const fixInstructionProcessor = new FixInstructionProcessor();
 
+        const issueFilingActionMessageCreator = new IssueFilingActionMessageCreator(
+            dispatcher,
+            telemetryDataFactory,
+            TelemetryEventSource.ElectronAutomatedChecksView,
+        );
+
+        const environmentInfoProvider = new EnvironmentInfoProvider(
+            appDataAdapter.getVersion(),
+            androidAppTitle,
+            AxeInfo.Default.version,
+        );
+
+        const issueDetailsTextGenerator = new IssueDetailsTextGenerator(
+            IssueFilingUrlStringUtils,
+            environmentInfoProvider,
+            createIssueDetailsBuilder(PlainTextFormatter),
+        );
+
         const cardsViewDeps: CardsViewDeps = {
             LinkComponent: ElectronLink,
 
-            cardInteractionSupport: onlyHighlightingSupported, // once we have a working settings experience, switch to allCardInteractionsSupported
+            cardInteractionSupport: allCardInteractionsSupported, // once we have a working settings experience, switch to allCardInteractionsSupported
             getCardSelectionViewData: getCardSelectionViewData,
             collapsibleControl: CardsCollapsibleControl,
             cardsVisualizationModifierButtons: ExpandCollapseVisualHelperModifierButtons,
@@ -348,15 +375,15 @@ getPersistedData(indexedDBInstance, indexedDBDataKeysToFetch).then(
             cardSelectionMessageCreator,
 
             detailsViewActionMessageCreator,
-            issueFilingActionMessageCreator: null, // we don't support issue filing right now
+            issueFilingActionMessageCreator: issueFilingActionMessageCreator, // we don't support issue filing right now
 
-            environmentInfoProvider: null,
+            environmentInfoProvider: environmentInfoProvider,
             getPropertyConfigById: getPropertyConfiguration, // this seems to be axe-core specific
 
-            issueDetailsTextGenerator: null,
-            issueFilingServiceProvider: null, // we don't support issue filing right now
+            issueDetailsTextGenerator: issueDetailsTextGenerator,
+            issueFilingServiceProvider: IssueFilingServiceProviderImpl, // we don't support issue filing right now
             navigatorUtils: null,
-            unifiedResultToIssueFilingDataConverter: null, // we don't support issue filing right now
+            unifiedResultToIssueFilingDataConverter: new UnifiedResultToIssueFilingDataConverter(), // we don't support issue filing right now
             windowUtils: null,
             setFocusVisibility,
             customCongratsMessage:

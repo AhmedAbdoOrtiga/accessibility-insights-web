@@ -90,7 +90,10 @@ function createUnifiedResult(
         ruleId: ruleInformation.ruleId,
         status: getStatus(ruleResult.status),
         descriptors: getDescriptors(viewElementLookup[ruleResult.axeViewId]),
-        identifiers: null,
+        identifiers: {
+            conciseName: ".conciseName",
+            identifier: ".identifier",
+        },
         resolution: ruleInformation.getUnifiedFormattableResolution(ruleResult),
     };
 }
