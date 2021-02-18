@@ -1,18 +1,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { IMock, It, Mock, Times } from 'typemoq';
 
-import { HTMLElementUtils } from '../../../../common/html-element-utils';
-import { WindowUtils } from '../../../../common/window-utils';
-import { VisualizationWindowMessage } from '../../../../injected/drawing-controller';
-import { ErrorMessageContent } from '../../../../injected/frameCommunicators/error-message-content';
-import {
-    FrameCommunicator,
-    MessageRequest,
-} from '../../../../injected/frameCommunicators/frame-communicator';
-import { FrameMessageResponseCallback } from '../../../../injected/frameCommunicators/window-message-handler';
-import { ScannerUtils } from '../../../../injected/scanner-utils';
-import { TabStopEvent, TabStopsListener } from '../../../../injected/tab-stops-listener';
+import { HTMLElementUtils } from 'common/html-element-utils';
+import { TabStopEvent } from 'common/types/tab-stop-event';
+import { WindowUtils } from 'common/window-utils';
+import { VisualizationWindowMessage } from 'injected/drawing-controller';
+import { ErrorMessageContent } from 'injected/frameCommunicators/error-message-content';
+import { FrameCommunicator, MessageRequest } from 'injected/frameCommunicators/frame-communicator';
+import { FrameMessageResponseCallback } from 'injected/frameCommunicators/window-message-handler';
+import { ScannerUtils } from 'injected/scanner-utils';
+import { TabStopsListener } from 'injected/tab-stops-listener';
+import { IMock, It, Mock, Times } from 'typemoq';
 
 describe('TabStopsListenerTest', () => {
     const frameCommunicatorMock: IMock<FrameCommunicator> = Mock.ofType(FrameCommunicator);

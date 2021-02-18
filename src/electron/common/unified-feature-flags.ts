@@ -6,7 +6,7 @@ export class UnifiedFeatureFlags {
     public static readonly logTelemetryToConsole = 'logTelemetryToConsole';
     public static readonly showAllFeatureFlags = 'showAllFeatureFlags';
     public static readonly exportReport = 'exportReport';
-    public static readonly adbSetupView = 'adbSetupView';
+    public static readonly tabStops = 'tabStops';
 }
 
 export function getAllFeatureFlagDetailsUnified(): FeatureFlagDetail[] {
@@ -37,10 +37,10 @@ export function getAllFeatureFlagDetailsUnified(): FeatureFlagDetail[] {
             forceDefault: true,
         },
         {
-            id: UnifiedFeatureFlags.adbSetupView,
-            defaultValue: true,
-            displayableName: 'Enable the new adb experience',
-            displayableDescription: 'Enable the new adb setup and installation experience',
+            id: UnifiedFeatureFlags.tabStops,
+            defaultValue: false,
+            displayableName: 'Show Tab Stops test',
+            displayableDescription: 'Show the Tab Stops test on the Left Nav',
             isPreviewFeature: false,
             forceDefault: false,
         },

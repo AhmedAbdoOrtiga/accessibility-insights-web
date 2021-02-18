@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import * as path from 'path';
-import { ElementHandle } from 'puppeteer';
+import { ElementHandle } from 'playwright';
 import * as testResourceServer from '../../../miscellaneous/test-resource-server/resource-server';
 import { ResourceServerConfig } from '../../../miscellaneous/test-resource-server/resource-server-config';
 import { Browser } from '../../common/browser';
@@ -39,10 +39,7 @@ describe('scanning', () => {
         });
 
         afterAll(async () => {
-            if (browser) {
-                await browser.close();
-                browser = undefined;
-            }
+            await browser?.close();
         });
 
         it('does not get results from inside cross-origin iframes', async () => {
@@ -75,10 +72,7 @@ describe('scanning', () => {
         });
 
         afterAll(async () => {
-            if (browser) {
-                await browser.close();
-                browser = undefined;
-            }
+            await browser?.close();
         });
 
         it('does find results from inside cross-origin iframes', async () => {
@@ -121,7 +115,6 @@ describe('scanning', () => {
         await browser.newPopupPage(targetPage); // Required for the details view to register as having permissions/being open
 
         fastPassAutomatedChecks = await openAutomatedChecks();
-        await fastPassAutomatedChecks.bringToFront();
     }
 
     async function openAutomatedChecks(): Promise<DetailsViewPage> {

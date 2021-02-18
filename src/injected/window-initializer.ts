@@ -2,10 +2,11 @@
 // Licensed under the MIT License.
 import { getRTL } from '@uifabric/utilities';
 import { BrowserAdapterFactory } from 'common/browser-adapters/browser-adapter-factory';
+import { WebVisualizationConfigurationFactory } from 'common/configs/web-visualization-configuration-factory';
 import { createDefaultLogger } from 'common/logging/default-logger';
 import { NavigatorUtils } from 'common/navigator-utils';
 import * as Q from 'q';
-import { UAParser } from 'ua-parser-js';
+import * as UAParser from 'ua-parser-js';
 import { AppDataAdapter } from '../common/browser-adapters/app-data-adapter';
 import { BrowserAdapter } from '../common/browser-adapters/browser-adapter';
 import { VisualizationConfigurationFactory } from '../common/configs/visualization-configuration-factory';
@@ -76,7 +77,7 @@ export class WindowInitializer {
         );
         asyncInitializationSteps.push(this.shadowInitializer.initialize());
 
-        this.visualizationConfigurationFactory = new VisualizationConfigurationFactory();
+        this.visualizationConfigurationFactory = new WebVisualizationConfigurationFactory();
 
         const windowMessageHandler = new WindowMessageHandler(
             this.windowUtils,
@@ -145,7 +146,6 @@ export class WindowInitializer {
             this.frameCommunicator,
             this.clientUtils,
             this.scannerUtils,
-            Q,
             document,
         );
         this.elementFinderByPosition.initialize();

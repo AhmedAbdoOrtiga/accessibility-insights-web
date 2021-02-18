@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { DeviceInfo } from 'electron/platform/android/adb-wrapper';
+import { rescanAutomationId } from 'electron/views/device-connect-view/components/automation-ids';
 import {
     CheckboxVisibility,
     DefaultButton,
@@ -16,40 +17,47 @@ import { CommonAndroidSetupStepProps } from './android-setup-types';
 import { DeviceDescription } from './device-description';
 import * as styles from './prompt-choose-device-step.scss';
 
+export type PromptChooseDeviceListItem = {
+    deviceInfo: DeviceInfo;
+};
+
 export type PromptChooseDeviceStepState = {
-    selectedDevice: DeviceInfo;
+    selectedDevice: PromptChooseDeviceListItem | null;
 };
 
 export class PromptChooseDeviceStep extends React.Component<
     CommonAndroidSetupStepProps,
     PromptChooseDeviceStepState
 > {
-    private selection: ISelection;
+    private selection: ISelection<PromptChooseDeviceListItem>;
     constructor(props) {
         super(props);
-        this.state = { selectedDevice: null };
 
-        this.selection = new Selection({
+        this.selection = new Selection<PromptChooseDeviceListItem>({
             onSelectionChanged: () => {
                 const details = this.selection.getSelection();
                 if (details.length > 0) {
-                    this.setState({ selectedDevice: details[0] as DeviceInfo });
+                    this.setState({ selectedDevice: details[0] as PromptChooseDeviceListItem });
                 }
             },
+            getKey: item => item.deviceInfo.id,
         });
+
+        this.setInitialListState();
     }
 
     public render(): JSX.Element {
-        const devices: DeviceInfo[] = this.props.androidSetupStoreData.availableDevices;
-        const items = devices.map(m => ({ metadata: m }));
+        const listItems = this.getListItems();
 
         const layoutProps: AndroidSetupStepLayoutProps = {
             headerText: 'Choose which device to use',
             children: (
                 <>
-                    <p>{devices.length} Android devices or emulators connected</p>
+                    <div className={styles.deviceCount}>
+                        {listItems.length} Android devices or emulators connected
+                    </div>
                     <DefaultButton
-                        data-automation-id={'rescan'}
+                        data-automation-id={rescanAutomationId}
                         text="Rescan"
                         onClick={this.props.deps.androidSetupActionCreator.rescan}
                     />
@@ -58,7 +66,7 @@ export class PromptChooseDeviceStep extends React.Component<
                         compact={true}
                         ariaLabel="android devices"
                         className={styles.phoneList}
-                        items={items}
+                        items={listItems}
                         selection={this.selection}
                         selectionMode={SelectionMode.single}
                         checkboxVisibility={CheckboxVisibility.always}
@@ -66,7 +74,7 @@ export class PromptChooseDeviceStep extends React.Component<
                         checkboxCellClassName={styles.checkmarkCell}
                         checkButtonAriaLabel="select"
                         onRenderCheckbox={checkboxProps => {
-                            return checkboxProps.checked ? (
+                            return checkboxProps?.checked ? (
                                 <>
                                     <FontIcon iconName="CheckMark" className={styles.checkmark} />
                                 </>
@@ -76,7 +84,7 @@ export class PromptChooseDeviceStep extends React.Component<
                             return (
                                 <DeviceDescription
                                     className={styles.row}
-                                    {...item.metadata}
+                                    deviceInfo={item.deviceInfo}
                                 ></DeviceDescription>
                             );
                         }}
@@ -91,12 +99,38 @@ export class PromptChooseDeviceStep extends React.Component<
                 text: 'Next',
                 disabled: this.state.selectedDevice === null,
                 onClick: _ => {
-                    const selectedDevice: DeviceInfo = this.state.selectedDevice['metadata'];
-                    this.props.deps.androidSetupActionCreator.setSelectedDevice(selectedDevice);
+                    const { selectedDevice } = this.state;
+                    if (selectedDevice != null) {
+                        this.props.deps.androidSetupActionCreator.setSelectedDevice(
+                            selectedDevice.deviceInfo,
+                        );
+                    }
                 },
             },
         };
 
         return <AndroidSetupStepLayout {...layoutProps}></AndroidSetupStepLayout>;
+    }
+
+    private getListItems(): PromptChooseDeviceListItem[] {
+        const devices: DeviceInfo[] = this.props.androidSetupStoreData.availableDevices ?? [];
+        const listItems = devices.map(m => ({ deviceInfo: m }));
+        return listItems;
+    }
+
+    private setInitialListState(): void {
+        const listItems = this.getListItems();
+        let selectedDevice: PromptChooseDeviceListItem | null = null;
+
+        if (listItems.length > 0) {
+            // We always select index 0 in the list.
+            this.selection.setChangeEvents(false, true);
+            this.selection.setItems(listItems, false);
+            this.selection.selectToIndex(0);
+            this.selection.setChangeEvents(true, true);
+            selectedDevice = listItems[0];
+        }
+
+        this.state = { selectedDevice: selectedDevice };
     }
 }

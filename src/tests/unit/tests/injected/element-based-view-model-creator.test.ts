@@ -49,7 +49,7 @@ describe('ElementBasedViewModelCreator', () => {
                 { results: [] } as UnifiedScanResultStoreData,
                 {} as CardSelectionStoreData,
             ),
-        ).toBeUndefined();
+        ).toBeNull();
     });
 
     test('getElementBasedViewModel: results are null', () => {
@@ -58,7 +58,7 @@ describe('ElementBasedViewModelCreator', () => {
                 { rules: [] } as UnifiedScanResultStoreData,
                 {} as CardSelectionStoreData,
             ),
-        ).toBeUndefined();
+        ).toBeNull();
     });
 
     test('getElementBasedViewModel: cardSelectionData are null', () => {
@@ -67,7 +67,7 @@ describe('ElementBasedViewModelCreator', () => {
                 { rules: [], results: [] } as UnifiedScanResultStoreData,
                 null,
             ),
-        ).toBeUndefined();
+        ).toBeNull();
     });
 
     test('getElementBasedViewModel: no highlighted results', () => {
@@ -93,45 +93,53 @@ describe('ElementBasedViewModelCreator', () => {
         ).toEqual(expectedResult);
     });
 
-    test('getElementBasedViewModel: one element, one result', () => {
-        const unifiedResult = exampleUnifiedResult;
-        const ruleStub = { id: unifiedResult.ruleId } as UnifiedRule;
-        const unifiedRules = [ruleStub];
-        const identifierStub = unifiedResult.identifiers['css-selector'];
-        const decoratedResultStub = {} as DecoratedAxeNodeResult;
-        const scanResultStoreData = {
-            results: [unifiedResult],
-            rules: unifiedRules,
-        } as UnifiedScanResultStoreData;
-        const cardSelectionViewData = {
-            resultsHighlightStatus: { [unifiedResult.uid]: 'visible' },
-        } as CardSelectionViewData;
+    test.each`
+        testStatus   | expectedIsFailure
+        ${'fail'}    | ${true}
+        ${'unknown'} | ${false}
+    `(
+        'getElementBasedViewModel: one element, one result, with status=$testStatus',
+        ({ testStatus, expectedIsFailure }) => {
+            const unifiedResult = cloneDeep(exampleUnifiedResult);
+            unifiedResult.status = testStatus;
+            const ruleStub = { id: unifiedResult.ruleId } as UnifiedRule;
+            const unifiedRules = [ruleStub];
+            const identifierStub = unifiedResult.identifiers['css-selector'];
+            const decoratedResultStub = {} as DecoratedAxeNodeResult;
+            const scanResultStoreData = {
+                results: [unifiedResult],
+                rules: unifiedRules,
+            } as UnifiedScanResultStoreData;
+            const cardSelectionViewData = {
+                resultsHighlightStatus: { [unifiedResult.uid]: 'visible' },
+            } as CardSelectionViewData;
 
-        getHighlightedResultInstanceIdsMock
-            .setup(mock =>
-                mock(cardSelectionData, scanResultStoreData, isResultHighlightUnavailableStub),
-            )
-            .returns(() => cardSelectionViewData);
+            getHighlightedResultInstanceIdsMock
+                .setup(mock =>
+                    mock(cardSelectionData, scanResultStoreData, isResultHighlightUnavailableStub),
+                )
+                .returns(() => cardSelectionViewData);
 
-        getDecoratedAxeNodeCallbackMock
-            .setup(mock => mock(unifiedResult, ruleStub, identifierStub))
-            .returns(() => decoratedResultStub);
+            getDecoratedAxeNodeCallbackMock
+                .setup(mock => mock(unifiedResult, ruleStub, identifierStub))
+                .returns(() => decoratedResultStub);
 
-        const expectedResult = {
-            [identifierStub]: {
-                isFailure: true,
-                isVisualizationEnabled: true,
-                target: identifierStub.split(';'),
-                ruleResults: {
-                    [ruleStub.id]: decoratedResultStub,
+            const expectedResult = {
+                [identifierStub]: {
+                    isFailure: expectedIsFailure,
+                    isVisualizationEnabled: true,
+                    target: identifierStub.split(';'),
+                    ruleResults: {
+                        [ruleStub.id]: decoratedResultStub,
+                    },
                 },
-            },
-        };
+            };
 
-        expect(
-            testSubject.getElementBasedViewModel(scanResultStoreData, cardSelectionData),
-        ).toEqual(expectedResult);
-    });
+            expect(
+                testSubject.getElementBasedViewModel(scanResultStoreData, cardSelectionData),
+            ).toEqual(expectedResult);
+        },
+    );
 
     test('getElementBasedViewModel: two results that map to one element', () => {
         const unifiedResultOne = cloneDeep(exampleUnifiedResult);

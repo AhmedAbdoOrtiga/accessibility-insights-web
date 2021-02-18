@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { IssueDetailsBuilder } from 'issue-filing/common/issue-details-builder';
 import { isEmpty, isString } from 'lodash';
 import { TextField } from 'office-ui-fabric-react';
 import * as React from 'react';
 
-import { IssueDetailsBuilder } from 'issue-filing/common/issue-details-builder';
 import { NamedFC } from '../../../common/react/named-fc';
 import { createFileIssueHandler } from '../../common/create-file-issue-handler';
 import { createSettingsGetter } from '../../common/create-settings-getter';
@@ -49,7 +49,7 @@ const settingsForm = NamedFC<SettingsFormProps<GitHubIssueFilingSettings>>(
         return (
             <TextField
                 className="issue-setting"
-                label="Enter desired GitHub issues link:"
+                label="Enter your GitHub issues URL"
                 onChange={onGitHubRepositoryChange}
                 value={isEmpty(props.settings) ? '' : props.settings.repository}
                 placeholder="https://github.com/owner/repo/issues"

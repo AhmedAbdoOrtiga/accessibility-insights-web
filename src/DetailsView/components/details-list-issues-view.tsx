@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { CommonInstancesSectionProps } from 'common/components/cards/common-instances-section-props';
+import { VisualizationConfiguration } from 'common/configs/visualization-configuration';
+import { NamedFC, ReactFCWithDisplayName } from 'common/react/named-fc';
+import { CardsViewModel } from 'common/types/store-data/card-view-model';
+import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
 import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
+import { UserConfigurationStoreData } from 'common/types/store-data/user-configuration-store';
+import { VisualizationStoreData } from 'common/types/store-data/visualization-store-data';
 import * as React from 'react';
-import { VisualizationConfiguration } from '../../common/configs/visualization-configuration';
-import { NamedFC } from '../../common/react/named-fc';
-import { CardsViewModel } from '../../common/types/store-data/card-view-model';
-import { FeatureFlagStoreData } from '../../common/types/store-data/feature-flag-store-data';
-import { UserConfigurationStoreData } from '../../common/types/store-data/user-configuration-store';
-import { VisualizationStoreData } from '../../common/types/store-data/visualization-store-data';
 import { IssuesTable, IssuesTableDeps } from './issues-table';
 
 export type DetailsListIssuesViewDeps = IssuesTableDeps;
@@ -20,6 +21,7 @@ export interface DetailsListIssuesViewProps {
     userConfigurationStoreData: UserConfigurationStoreData;
     scanMetadata: ScanMetadata;
     cardsViewData: CardsViewModel;
+    instancesSection: ReactFCWithDisplayName<CommonInstancesSectionProps>;
 }
 
 export const DetailsListIssuesView = NamedFC<DetailsListIssuesViewProps>(
@@ -41,6 +43,8 @@ export const DetailsListIssuesView = NamedFC<DetailsListIssuesViewProps>(
                 userConfigurationStoreData={props.userConfigurationStoreData}
                 scanMetadata={props.scanMetadata}
                 cardsViewData={props.cardsViewData}
+                instancesSection={props.instancesSection}
+                visualizationStoreData={props.visualizationStoreData}
             />
         );
     },

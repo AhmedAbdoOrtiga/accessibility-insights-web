@@ -1,25 +1,27 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { DetailsViewSwitcherNavConfiguration } from 'DetailsView/components/details-view-switcher-nav';
-import { WarningConfiguration } from 'DetailsView/components/warning-configuration';
-import { shallow } from 'enzyme';
-import * as React from 'react';
-import { IMock, Mock, MockBehavior } from 'typemoq';
-
-import { VisualizationConfiguration } from '../../../../../common/configs/visualization-configuration';
-import { DisplayableVisualizationTypeData } from '../../../../../common/configs/visualization-configuration-factory';
-import { TabStoreData } from '../../../../../common/types/store-data/tab-store-data';
+import { CommonInstancesSectionProps } from 'common/components/cards/common-instances-section-props';
+import { VisualizationConfiguration } from 'common/configs/visualization-configuration';
+import { NamedFC } from 'common/react/named-fc';
+import { DisplayableVisualizationTypeData } from 'common/types/displayable-visualization-type-data';
+import { TabStoreData } from 'common/types/store-data/tab-store-data';
 import {
     ScanData,
     TestsEnabledState,
     VisualizationStoreData,
-} from '../../../../../common/types/store-data/visualization-store-data';
-import { VisualizationType } from '../../../../../common/types/visualization-type';
+} from 'common/types/store-data/visualization-store-data';
+import { VisualizationType } from 'common/types/visualization-type';
+import { DetailsViewActionMessageCreator } from 'DetailsView/actions/details-view-action-message-creator';
 import {
     AdhocIssuesTestView,
     AdhocIssuesTestViewProps,
-} from '../../../../../DetailsView/components/adhoc-issues-test-view';
-import { DetailsViewToggleClickHandlerFactory } from '../../../../../DetailsView/handlers/details-view-toggle-click-handler-factory';
+} from 'DetailsView/components/adhoc-issues-test-view';
+import { DetailsViewSwitcherNavConfiguration } from 'DetailsView/components/details-view-switcher-nav';
+import { WarningConfiguration } from 'DetailsView/components/warning-configuration';
+import { DetailsViewToggleClickHandlerFactory } from 'DetailsView/handlers/details-view-toggle-click-handler-factory';
+import { shallow } from 'enzyme';
+import * as React from 'react';
+import { IMock, Mock, MockBehavior } from 'typemoq';
 
 describe('AdhocIssuesTestView', () => {
     const visualizationStoreDataStub = {
@@ -27,8 +29,10 @@ describe('AdhocIssuesTestView', () => {
         scanning: 'test-scanning',
     } as VisualizationStoreData;
 
-    let getStoreDataMock: IMock<(data: TestsEnabledState) => ScanData>;
-    getStoreDataMock = Mock.ofInstance(() => null, MockBehavior.Strict);
+    const getStoreDataMock: IMock<(data: TestsEnabledState) => ScanData> = Mock.ofInstance(
+        () => null,
+        MockBehavior.Strict,
+    );
 
     const displayableDataStub = {
         title: 'test title',
@@ -48,6 +52,10 @@ describe('AdhocIssuesTestView', () => {
         visualizationStoreData: visualizationStoreDataStub,
         selectedTest: selectedTest,
         scanIncompleteWarnings: [],
+        instancesSection: NamedFC<CommonInstancesSectionProps>('test', _ => null),
+        deps: {
+            detailsViewActionMessageCreator: {} as DetailsViewActionMessageCreator,
+        },
     } as AdhocIssuesTestViewProps;
 
     const scanDataStub: ScanData = {

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 import { AssessmentsProviderImpl } from 'assessments/assessments-provider';
 import { AssessmentsProvider } from 'assessments/types/assessments-provider';
-import { Requirement } from 'assessments/types/requirement';
+import { Requirement, VisualHelperToggleConfig } from 'assessments/types/requirement';
 import {
     AssessmentNavState,
     GeneratedAssessmentInstance,
@@ -38,7 +38,6 @@ describe('RequirementViewTest', () => {
     let featureFlagStoreDataStub: FeatureFlagStoreData;
     let pathSnippetStoreDataStub: PathSnippetStoreData;
     let updateHandlerMock: IMock<AssessmentViewUpdateHandler>;
-
     beforeEach(() => {
         requirementStub = {
             name: 'test-requirement-name',
@@ -52,7 +51,9 @@ describe('RequirementViewTest', () => {
         };
 
         selectedRequirementStub = {
-            getVisualHelperToggle: ({}) => <div>test-visual-helper-toggle</div>,
+            getVisualHelperToggle: (props: VisualHelperToggleConfig) => (
+                <div>test-visual-helper-toggle</div>
+            ),
         } as Readonly<Requirement>;
 
         assessmentsProviderMock = Mock.ofType(AssessmentsProviderImpl);

@@ -8,32 +8,32 @@ import { TelemetryDataFactory } from 'common/telemetry-data-factory';
 import { VisualizationType } from 'common/types/visualization-type';
 import { generateUID } from 'common/uid-generator';
 import { adhoc as content } from 'content/adhoc';
-import { AdhocStaticTestView } from 'DetailsView/components/adhoc-static-test-view';
 import { RuleAnalyzerConfiguration } from 'injected/analyzers/analyzer';
 import { ScannerUtils } from 'injected/scanner-utils';
 import { VisualizationInstanceProcessor } from 'injected/visualization-instance-processor';
 import { isEmpty } from 'lodash';
-import * as React from 'react';
 
 const { guidance } = content.headings;
+const headingsTestKey = AdHocTestkeys.Headings;
 
 const headingsRuleAnalyzerConfiguration: RuleAnalyzerConfiguration = {
     rules: ['heading-order'],
     resultProcessor: (scanner: ScannerUtils) => scanner.getAllCompletedInstances,
     telemetryProcessor: (telemetryFactory: TelemetryDataFactory) => telemetryFactory.forTestScan,
-    key: AdHocTestkeys.Headings,
+    key: headingsTestKey,
     testType: VisualizationType.Headings,
     analyzerMessageType: Messages.Visualizations.Common.ScanCompleted,
 };
 
 export const HeadingsAdHocVisualization: VisualizationConfiguration = {
-    getTestView: props => <AdhocStaticTestView {...props} />,
-    key: AdHocTestkeys.Headings,
+    testViewType: 'AdhocStatic',
+    key: headingsTestKey,
     testMode: TestMode.Adhoc,
-    getStoreData: data => data.adhoc.headings,
-    enableTest: data => (data.enabled = true),
+    getStoreData: data => data.adhoc[headingsTestKey],
+    enableTest: data => (data.adhoc[headingsTestKey].enabled = true),
     disableTest: data => (data.enabled = false),
     getTestStatus: data => data.enabled,
+    shouldShowExportReport: () => false,
     displayableData: {
         title: 'Headings',
         enableMessage: 'Finding headings...',
@@ -44,7 +44,7 @@ export const HeadingsAdHocVisualization: VisualizationConfiguration = {
     launchPanelDisplayOrder: 3,
     adhocToolsPanelDisplayOrder: 3,
     getAnalyzer: provider => provider.createRuleAnalyzer(headingsRuleAnalyzerConfiguration),
-    getIdentifier: () => AdHocTestkeys.Headings,
+    getIdentifier: () => headingsTestKey,
     visualizationInstanceProcessor: () => VisualizationInstanceProcessor.nullProcessor,
     getNotificationMessage: selectorMap => (isEmpty(selectorMap) ? 'No headings found' : null),
     getDrawer: provider => provider.createHeadingsDrawer(),

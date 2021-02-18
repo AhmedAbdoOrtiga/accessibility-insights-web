@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 import { NamedFC } from 'common/react/named-fc';
 import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
+import { productName } from 'content/strings/application';
 import * as React from 'react';
 import { HeaderSection } from 'reports/components/report-sections/header-section';
 
@@ -12,6 +13,8 @@ export interface AutomatedChecksHeaderSectionProps {
 export const AutomatedChecksHeaderSection = NamedFC<AutomatedChecksHeaderSectionProps>(
     'AutomatedChecksHeaderSection',
     ({ scanMetadata }) => {
-        return <HeaderSection targetAppInfo={scanMetadata.targetAppInfo} />;
+        return (
+            <HeaderSection targetAppInfo={scanMetadata.targetAppInfo} headerText={productName} />
+        );
     },
 );

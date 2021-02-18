@@ -2,7 +2,7 @@
 
 exports[`BaseLeftNav should render 1`] = `
 <StyledNavBase
-  className="details-view-test-nav-area"
+  className="detailsViewTestNavArea"
   componentRef={[Function]}
   groups={
     Array [
@@ -13,8 +13,7 @@ exports[`BaseLeftNav should render 1`] = `
       },
     ]
   }
-  onLinkClick={[Function]}
-  onRenderLink={[Function]}
+  linkAs={[Function]}
   selectedKey="some key"
   styles={
     Object {

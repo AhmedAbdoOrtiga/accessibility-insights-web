@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { ContentActionMessageCreator } from 'common/message-creators/content-action-message-creator';
+import { create } from 'content/common';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 import { It, Mock, Times } from 'typemoq';
 
 import { createMarkup } from 'views/content/markup';
-import { create } from '../../../../../../src/content/common';
-import { ContentActionMessageCreator } from '../../../../../common/message-creators/content-action-message-creator';
 
 describe('ContentPage', () => {
     const contentActionMessageCreatorMock = Mock.ofType<ContentActionMessageCreator>();

@@ -1,12 +1,24 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { guidanceLinkTo, linkTo } from 'views/content/content-page';
-import { guidanceTags } from './guidance-tags';
+import { GuidanceLink, GuidanceTag, guidanceTags } from 'common/guidance-links';
+import { HyperlinkDefinition } from 'common/types/hyperlink-definition';
+
+function linkTo(text: string, href: string): HyperlinkDefinition {
+    return { text, href };
+}
+
+function guidanceLinkTo(text: string, href: string, tags?: GuidanceTag[]): GuidanceLink {
+    return { text, href, tags };
+}
 
 export const link = {
     WCAG_1_1_1: guidanceLinkTo('WCAG 1.1.1', 'https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html'),
     WCAG_1_2_1: guidanceLinkTo('WCAG 1.2.1', 'https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded'),
     WCAG_1_2_2: guidanceLinkTo('WCAG 1.2.2', 'https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html'),
+    WCAG_1_2_3: guidanceLinkTo(
+        'WCAG 1.2.3',
+        'https://www.w3.org/WAI/WCAG21/Understanding/audio-description-or-media-alternative-prerecorded',
+    ),
     WCAG_1_2_4: guidanceLinkTo('WCAG 1.2.4', 'https://www.w3.org/WAI/WCAG21/Understanding/captions-live.html'),
     WCAG_1_2_5: guidanceLinkTo('WCAG 1.2.5', 'https://www.w3.org/WAI/WCAG21/Understanding/audio-description-prerecorded'),
     WCAG_1_3_1: guidanceLinkTo('WCAG 1.3.1', 'https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships'),
@@ -65,6 +77,10 @@ export const link = {
     WCAG_4_1_2: guidanceLinkTo('WCAG 4.1.2', 'https://www.w3.org/WAI/WCAG21/Understanding/name-role-value.html'),
     WCAG_4_1_3: guidanceLinkTo('WCAG 4.1.3', 'https://www.w3.org/WAI/WCAG21/Understanding/status-messages.html', [guidanceTags.WCAG_2_1]),
     BingoBakery: linkTo('Bingo Bakery Video', 'https://go.microsoft.com/fwlink/?linkid=2080372'),
+    VoiceControlVideo: linkTo('Voice Control Video', 'https://www.youtube.com/watch?v=bAFzL-dOzu0'),
+    TablesVideo: linkTo('Tables Video', 'https://www.youtube.com/watch?v=I2meEap25UA'),
+    HeadingsVideo: linkTo('Headings Video', 'https://www.youtube.com/watch?v=S0pJcYyxBWo'),
+    FormLabelsVideo: linkTo('Form Labels Video', 'https://www.youtube.com/watch?v=Mki-ZknCrB4'),
     IdentifyHeadings: linkTo('Techniques for WCAG 2.0: Using h1-h6 to identify headings', 'https://www.w3.org/TR/WCAG20-TECHS/H42.html'),
     LandmarkRegions: linkTo(
         'WAI-ARIA Authoring Practices 1.1: Landmark Regions',

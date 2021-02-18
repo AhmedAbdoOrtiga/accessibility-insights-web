@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { GuidanceLink, GuidanceTag } from 'common/guidance-links';
 import { isArray, isObject } from 'lodash';
-
-import { GuidanceTag } from 'content/guidance-tags';
-import { GuidanceLink } from '../scanner/rule-to-links-mappings';
 
 export type GetGuidanceTagsFromGuidanceLinks = (links: GuidanceLink[]) => GuidanceTag[];
 export const GetGuidanceTagsFromGuidanceLinks: GetGuidanceTagsFromGuidanceLinks = links => {
@@ -18,7 +16,7 @@ export const GetGuidanceTagsFromGuidanceLinks: GetGuidanceTagsFromGuidanceLinks 
             return;
         }
 
-        link.tags.forEach(tag => {
+        link.tags!.forEach(tag => {
             tags.push(tag);
         });
     });

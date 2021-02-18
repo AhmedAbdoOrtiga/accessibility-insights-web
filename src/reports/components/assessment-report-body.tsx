@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { ManualTestStatus } from 'common/types/manual-test-status';
 import * as React from 'react';
 
-import { ManualTestStatus } from 'common/types/manual-test-status';
 import { AssessmentDetailsReportModel, ReportModel } from '../assessment-report-model';
 import {
     AssessmentReportAssessmentList,
@@ -10,11 +10,12 @@ import {
 } from './assessment-report-assessment-list';
 import { AssessmentReportBodyHeader } from './assessment-report-body-header';
 import { AssessmentReportSummary } from './assessment-report-summary';
-import { AssessmentScanDetails } from './assessment-scan-details';
+import { AssessmentScanDetails, AssessmentScanDetailsDeps } from './assessment-scan-details';
 import { OutcomeChip } from './outcome-chip';
 import { allRequirementOutcomeTypes } from './requirement-outcome-type';
 
-export type AssessmentReportBodyDeps = AssessmentReportAssessmentListDeps;
+export type AssessmentReportBodyDeps = AssessmentReportAssessmentListDeps &
+    AssessmentScanDetailsDeps;
 
 export interface AssessmentReportBodyProps {
     deps: AssessmentReportBodyDeps;
@@ -29,6 +30,7 @@ export class AssessmentReportBody extends React.Component<AssessmentReportBodyPr
                 <AssessmentReportBodyHeader />
                 <AssessmentReportSummary summary={this.props.data.summary} />
                 <AssessmentScanDetails
+                    deps={this.props.deps}
                     details={this.props.data.scanDetails}
                     description={this.props.description}
                 />

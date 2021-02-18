@@ -32,6 +32,7 @@ export const REMOVE_FAILURE_INSTANCE: string = 'removeFailureInstance';
 export const EDIT_FAILURE_INSTANCE: string = 'editFailureInstance';
 export const PASS_UNMARKED_INSTANCES: string = 'passUnmarkedInstances';
 export const CONTINUE_PREVIOUS_ASSESSMENT: string = 'ContinuePreviousAssessment';
+export const LOAD_ASSESSMENT: string = 'loadAssessment';
 export const ENABLE_VISUAL_HELPER: string = 'enableVisualHelper';
 export const UNDO_TEST_STATUS_CHANGE: string = 'undoTestStatusChange';
 export const UNDO_REQUIREMENT_STATUS_CHANGE: string = 'undoRequirementStatusChange';
@@ -66,6 +67,9 @@ export const RESCAN_VISUALIZATION: string = 'rescanVisualization';
 export const EXISTING_TAB_URL_UPDATED: string = 'existingTabUrlUpdated';
 export const SCAN_INCOMPLETE_WARNINGS: string = 'scanIncompleteWarnings';
 export const ALL_URLS_PERMISSION_UPDATED: string = 'allUrlsPermissionUpdated';
+export const LEFT_NAV_PANEL_EXPANDED: string = 'leftNavPanelExpanded';
+export const NEEDS_REVIEW_TOGGLE: string = 'NeedsReviewToggled';
+export const NAVIGATE_TO_NEW_CARDS_VIEW: string = 'NavigateToNewCardsView';
 
 export const TriggeredByNotApplicable: TriggeredBy = 'N/A';
 export type TriggeredBy = 'mouseclick' | 'keypress' | 'shortcut' | 'N/A';
@@ -88,7 +92,7 @@ export enum TelemetryEventSource {
     TargetPage,
     ContentPage,
     ElectronDeviceConnect,
-    ElectronAutomatedChecksView,
+    ElectronResultsView,
 }
 
 export type BaseTelemetryData = {
@@ -167,14 +171,14 @@ export type ScopingTelemetryData = {
 } & BaseTelemetryData;
 
 export type AssessmentRequirementScanTelemetryData = {
-    requirementName: string;
+    requirementName?: string;
 } & RuleAnalyzerScanTelemetryData;
 
 export type RuleAnalyzerScanTelemetryData = {
     scanDuration: number;
     NumberOfElementsScanned: number;
-    include: SingleElementSelector[];
-    exclude: SingleElementSelector[];
+    include?: SingleElementSelector[];
+    exclude?: SingleElementSelector[];
     testName: string;
 };
 
@@ -223,6 +227,10 @@ export type ScanIncompleteWarningsTelemetryData = {
     scanIncompleteWarnings: ScanIncompleteWarningId[];
 };
 
+export type DeviceFocusKeyEventTelemetryData = {
+    keyEventCode: number;
+};
+
 export type TelemetryData =
     | BaseTelemetryData
     | ToggleTelemetryData
@@ -246,5 +254,6 @@ export type TelemetryData =
     | ValidatePortTelemetryData
     | AndroidScanCompletedTelemetryData
     | AndroidScanFailedTelemetryData
+    | DeviceFocusKeyEventTelemetryData
     | ScanIncompleteWarningsTelemetryData
     | SetAllUrlsPermissionTelemetryData;

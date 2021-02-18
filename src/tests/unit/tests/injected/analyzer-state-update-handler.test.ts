@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { IMock, It, Mock, Times } from 'typemoq';
 
 import { HeadingsTestStep } from 'assessments/headings/test-steps/test-steps';
 import { LandmarkTestStep } from 'assessments/landmarks/test-steps/test-steps';
+import { WebVisualizationConfigurationFactory } from 'common/configs/web-visualization-configuration-factory';
+import { IMock, It, Mock, Times } from 'typemoq';
 import { VisualizationConfigurationFactory } from '../../../../common/configs/visualization-configuration-factory';
 import { VisualizationStoreData } from '../../../../common/types/store-data/visualization-store-data';
 import { AnalyzerStateUpdateHandler } from '../../../../injected/analyzer-state-update-handler';
@@ -16,7 +17,7 @@ describe('AnalyzerStateUpdateHandlerTest', () => {
     let testObject: TestableAnalyzerStateUpdateHandler;
 
     beforeEach(() => {
-        visualizationConfigurationFactoryMock = Mock.ofType(VisualizationConfigurationFactory);
+        visualizationConfigurationFactoryMock = Mock.ofType<VisualizationConfigurationFactory>();
         startScanMock = Mock.ofInstance(id => {});
         teardownMock = Mock.ofInstance(id => {});
         testObject = new TestableAnalyzerStateUpdateHandler(
@@ -53,7 +54,7 @@ describe('AnalyzerStateUpdateHandlerTest', () => {
     test('do not start scan if inject in progress', () => {
         const state = new VisualizationStoreDataBuilder()
             .with('scanning', 'landmarks')
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .withLandmarksEnable()
             .build();
 
@@ -98,7 +99,7 @@ describe('AnalyzerStateUpdateHandlerTest', () => {
     test('start scan: inject just completed', () => {
         const enabledStep = HeadingsTestStep.headingFunction;
         const prevState = new VisualizationStoreDataBuilder()
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', enabledStep)
             .withHeadingsAssessment(true, enabledStep)
             .build();
@@ -203,7 +204,7 @@ describe('AnalyzerStateUpdateHandlerTest', () => {
     function setupDefaultVisualizationConfigFactory(): void {
         visualizationConfigurationFactoryMock
             .setup(vcfm => vcfm.getConfiguration(It.isAnyNumber()))
-            .returns(test => new VisualizationConfigurationFactory().getConfiguration(test));
+            .returns(test => new WebVisualizationConfigurationFactory().getConfiguration(test));
     }
 });
 

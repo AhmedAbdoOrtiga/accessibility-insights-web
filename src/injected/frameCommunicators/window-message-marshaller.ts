@@ -19,14 +19,14 @@ export class WindowMessageMarshaller {
         this.messageSourceId = manifest.name;
         this.messageVersion = manifest.version;
     }
-    public parseMessage(serializedData: any): WindowMessage {
+    public parseMessage(serializedData: any): WindowMessage | null {
         let data;
         if (typeof serializedData !== 'string' || serializedData == null) {
             return null;
         }
         try {
             data = JSON.parse(serializedData);
-            // tslint:disable-next-line:no-empty
+            // eslint-disable-next-line no-empty
         } catch (ex) {}
 
         if (!this.isMessageOurs(data)) {

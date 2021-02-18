@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CollapsibleUrlResultSection renders 1`] = `
+<div
+  className="urlResultSection"
+>
+  <div>
+    Collapsible component
+  </div>
+</div>
+`;

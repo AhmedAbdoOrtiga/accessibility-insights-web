@@ -1,18 +1,19 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { ScopingInputTypes } from 'background/scoping-input-types';
+import { BaseStore } from 'common/base-store';
+import { Logger } from 'common/logging/logger';
+import { TelemetryDataFactory } from 'common/telemetry-data-factory';
+import { ForRuleAnalyzerScanCallback } from 'common/types/analyzer-telemetry-callbacks';
+import { AxeAnalyzerResult } from 'common/types/axe-analyzer-result';
+import { ScopingStoreData } from 'common/types/store-data/scoping-store-data';
 import { ScanIncompleteWarningDetector } from 'injected/scan-incomplete-warning-detector';
 import * as Q from 'q';
+import { ScanResults } from 'scanner/iruleresults';
+import { ScanOptions } from 'scanner/scan-options';
 
-import { BaseStore } from '../../common/base-store';
-import { VisualizationConfigurationFactory } from '../../common/configs/visualization-configuration-factory';
-import { TelemetryDataFactory } from '../../common/telemetry-data-factory';
-import { ForRuleAnalyzerScanCallback } from '../../common/types/analyzer-telemetry-callbacks';
-import { ScopingStoreData } from '../../common/types/store-data/scoping-store-data';
-import { ScanResults } from '../../scanner/iruleresults';
-import { ScanOptions } from '../../scanner/scan-options';
 import { ScannerUtils } from '../scanner-utils';
-import { AxeAnalyzerResult, RuleAnalyzerConfiguration } from './analyzer';
+import { RuleAnalyzerConfiguration } from './analyzer';
 import { BaseAnalyzer } from './base-analyzer';
 
 export type MessageDelegate = (message: any) => void;
@@ -29,11 +30,11 @@ export class RuleAnalyzer extends BaseAnalyzer {
         protected sendMessageDelegate: (message) => void,
         protected dateGetter: () => Date,
         protected telemetryFactory: TelemetryDataFactory,
-        protected readonly visualizationConfigFactory: VisualizationConfigurationFactory,
-        private postOnResolve: PostResolveCallback,
+        private postOnResolve: PostResolveCallback | null,
         scanIncompleteWarningDetector: ScanIncompleteWarningDetector,
+        logger: Logger,
     ) {
-        super(config, sendMessageDelegate, scanIncompleteWarningDetector);
+        super(config, sendMessageDelegate, scanIncompleteWarningDetector, logger);
     }
 
     protected getResults = (): Q.Promise<AxeAnalyzerResult> => {
@@ -72,7 +73,9 @@ export class RuleAnalyzer extends BaseAnalyzer {
 
     protected onResolve = (analyzerResult: AxeAnalyzerResult): void => {
         this.sendScanCompleteResolveMessage(analyzerResult, this.config);
-        this.postOnResolve(analyzerResult);
+        if (this.postOnResolve != null) {
+            this.postOnResolve(analyzerResult);
+        }
     };
 
     protected sendScanCompleteResolveMessage(
@@ -85,13 +88,11 @@ export class RuleAnalyzer extends BaseAnalyzer {
         const telemetryGetter: ForRuleAnalyzerScanCallback = config.telemetryProcessor(
             this.telemetryFactory,
         );
-        const testName = this.visualizationConfigFactory.getConfiguration(config.testType)
-            .displayableData.title;
         const telemetry = telemetryGetter(
             analyzerResult,
             elapsedTime,
             this.elementsScanned,
-            testName,
+            config.testType,
             config.key,
         );
 

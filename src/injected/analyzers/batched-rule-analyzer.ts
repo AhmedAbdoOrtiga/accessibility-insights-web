@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { BaseStore } from 'common/base-store';
+import { Logger } from 'common/logging/logger';
+import { TelemetryDataFactory } from 'common/telemetry-data-factory';
+import { AxeAnalyzerResult } from 'common/types/axe-analyzer-result';
+import { ScopingStoreData } from 'common/types/store-data/scoping-store-data';
 import { ScanIncompleteWarningDetector } from 'injected/scan-incomplete-warning-detector';
+import { ScanResults } from 'scanner/iruleresults';
 
-import { BaseStore } from '../../common/base-store';
-import { VisualizationConfigurationFactory } from '../../common/configs/visualization-configuration-factory';
-import { TelemetryDataFactory } from '../../common/telemetry-data-factory';
-import { ScopingStoreData } from '../../common/types/store-data/scoping-store-data';
-import { ScanResults } from '../../scanner/iruleresults';
 import { ScannerUtils } from '../scanner-utils';
-import { AxeAnalyzerResult, RuleAnalyzerConfiguration } from './analyzer';
+import { RuleAnalyzerConfiguration } from './analyzer';
 import { RuleAnalyzer } from './rule-analyzer';
 
 export type IResultRuleFilter = (results: ScanResults, rules: string[]) => ScanResults;
@@ -23,9 +24,9 @@ export class BatchedRuleAnalyzer extends RuleAnalyzer {
         protected sendMessageDelegate: (message) => void,
         protected dateGetter: () => Date,
         protected telemetryFactory: TelemetryDataFactory,
-        protected readonly visualizationConfigFactory: VisualizationConfigurationFactory,
         private postScanFilter: IResultRuleFilter,
         scanIncompleteWarningDetector: ScanIncompleteWarningDetector,
+        logger: Logger,
     ) {
         super(
             config,
@@ -34,9 +35,9 @@ export class BatchedRuleAnalyzer extends RuleAnalyzer {
             sendMessageDelegate,
             dateGetter,
             telemetryFactory,
-            visualizationConfigFactory,
             null,
             scanIncompleteWarningDetector,
+            logger,
         );
         BatchedRuleAnalyzer.batchConfigs.push(config);
     }

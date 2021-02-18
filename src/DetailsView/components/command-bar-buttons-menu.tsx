@@ -1,55 +1,64 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { FeatureFlags } from 'common/feature-flags';
 import { NamedFC } from 'common/react/named-fc';
-import { CommandBarProps } from 'DetailsView/components/details-view-command-bar';
-import { CommandBarButton, IOverflowSetItemProps, OverflowSet } from 'office-ui-fabric-react';
+import { StartOverMenuItem } from 'DetailsView/components/start-over-component-factory';
+import { CommandBarButton, IButton, IContextualMenuItem, IRefObject } from 'office-ui-fabric-react';
 import * as React from 'react';
+import { FeatureFlagStoreData } from '../../common/types/store-data/feature-flag-store-data';
 import * as styles from './command-bar-buttons-menu.scss';
 
-export type CommandBarButtonsMenuProps = CommandBarProps;
+export type CommandBarButtonsMenuProps = {
+    renderExportReportButton: () => JSX.Element;
+    renderSaveAssessmentButton?: () => JSX.Element | null;
+    renderLoadAssessmentButton?: () => JSX.Element | null;
+    getStartOverMenuItem: () => StartOverMenuItem;
+    buttonRef: IRefObject<IButton>;
+    featureFlagStoreData?: FeatureFlagStoreData;
+};
 
 export const CommandBarButtonsMenu = NamedFC<CommandBarButtonsMenuProps>(
     'CommandBarButtonsMenu',
     props => {
-        const onRenderItem = (item: IOverflowSetItemProps): JSX.Element => {
-            return item.onRender(props);
-        };
+        const exportButton = props.renderExportReportButton();
+        const overflowItems: IContextualMenuItem[] = [];
 
-        const onRenderOverflowButton = (overflow: IOverflowSetItemProps[]): JSX.Element => {
-            return (
-                <CommandBarButton
-                    ariaLabel="More items"
-                    role="menuitem"
-                    menuIconProps={{
-                        iconName: 'More',
-                        className: styles.commandBarButtonsMenuButton,
-                    }}
-                    menuProps={{ items: overflow, className: styles.commandBarButtonsSubmenu }}
-                />
+        overflowItems.push({
+            key: 'export report',
+            onRender: () => <div role="menuitem">{exportButton}</div>,
+        });
+        if (
+            props.featureFlagStoreData?.[FeatureFlags.saveAndLoadAssessment] &&
+            props.renderSaveAssessmentButton &&
+            props.renderLoadAssessmentButton
+        ) {
+            overflowItems.push(
+                {
+                    key: 'save assessment',
+                    onRender: () => <div role="menuitem">{props.renderSaveAssessmentButton()}</div>,
+                },
+                {
+                    key: 'load assessment',
+                    onRender: () => <div role="menuitem">{props.renderLoadAssessmentButton()}</div>,
+                },
             );
-        };
-
-        const overflowItems = [
-            {
-                key: 'export report',
-                onRender: () => props.switcherNavConfiguration.ReportExportComponentFactory(props),
-            },
-            {
-                key: 'start over',
-                onRender: () =>
-                    props.switcherNavConfiguration.StartOverComponentFactory({
-                        ...props,
-                        dropdownDirection: 'left',
-                    }),
-            },
-        ];
+        }
+        overflowItems.push({
+            key: 'start over',
+            ...props.getStartOverMenuItem(),
+        });
 
         return (
-            <OverflowSet
-                onRenderItem={onRenderItem}
-                overflowItems={overflowItems}
-                onRenderOverflowButton={onRenderOverflowButton}
+            <CommandBarButton
+                ariaLabel="More items"
                 className={styles.commandBarButtonsMenu}
+                role="button"
+                menuIconProps={{
+                    iconName: 'More',
+                    className: styles.commandBarButtonsMenuButton,
+                }}
+                menuProps={{ items: overflowItems, className: styles.commandBarButtonsSubmenu }}
+                componentRef={props.buttonRef}
             />
         );
     },

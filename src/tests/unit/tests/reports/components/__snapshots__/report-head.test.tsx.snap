@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ReportHead renders 1`] = `
+exports[`Head renders 1`] = `
 <head>
   <meta
     charSet="UTF-8"
   />
   <title>
-    Accessibility Insights for Web
+    some title preface
      automated checks result
   </title>
   <style
@@ -19,9 +19,31 @@ exports[`ReportHead renders 1`] = `
   <style
     dangerouslySetInnerHTML={
       Object {
-        "__html": "<<CSS:detailsView.css>>",
+        "__html": "some style sheet",
       }
     }
   />
 </head>
+`;
+
+exports[`ReporterHead renders 1`] = `
+<Head
+  bundledStyles={
+    Object {
+      "styleSheet": "<<CSS:../../packages/report/bundle/report.css>>",
+    }
+  }
+  titlePreface="Accessibility Insights"
+/>
+`;
+
+exports[`WebReportHead renders 1`] = `
+<Head
+  bundledStyles={
+    Object {
+      "styleSheet": "<<CSS:detailsView.css>>",
+    }
+  }
+  titlePreface="Accessibility Insights for Web"
+/>
 `;

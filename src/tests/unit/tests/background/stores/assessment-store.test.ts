@@ -41,15 +41,16 @@ import {
     PersistedTabInfo,
     TestStepResult,
 } from 'common/types/store-data/assessment-result-data';
+import { TabStopEvent } from 'common/types/tab-stop-event';
 import { VisualizationType } from 'common/types/visualization-type';
 import {
     ScanBasePayload,
     ScanCompletedPayload,
     ScanUpdatePayload,
 } from 'injected/analyzers/analyzer';
-import { TabStopEvent } from 'injected/tab-stops-listener';
 import { cloneDeep, isFunction } from 'lodash';
 import { ScanResults } from 'scanner/iruleresults';
+import { failTestOnErrorLogger } from 'tests/unit/common/fail-test-on-error-logger';
 import { IMock, It, Mock, MockBehavior, Times } from 'typemoq';
 import { DictionaryStringTo } from 'types/common-types';
 import { AssessmentDataBuilder } from '../../../common/assessment-data-builder';
@@ -98,9 +99,7 @@ describe('AssessmentStore', () => {
             .returns(step => getDefaultManualTestStepResult(step));
 
         indexDBInstanceMock = Mock.ofType<IndexedDBAPI>(undefined, MockBehavior.Strict);
-        initialAssessmentStoreDataGeneratorMock = Mock.ofType<
-            InitialAssessmentStoreDataGenerator
-        >();
+        initialAssessmentStoreDataGeneratorMock = Mock.ofType<InitialAssessmentStoreDataGenerator>();
     });
 
     afterEach(() => {
@@ -130,6 +129,7 @@ describe('AssessmentStore', () => {
             null,
             null,
             initialAssessmentStoreDataGeneratorMock.object,
+            failTestOnErrorLogger,
         );
 
         const actualState = testObject.getDefaultState();
@@ -224,6 +224,7 @@ describe('AssessmentStore', () => {
             null,
             persisted,
             initialAssessmentStoreDataGeneratorMock.object,
+            failTestOnErrorLogger,
         );
         const actualState = testObject.getDefaultState();
 
@@ -1981,6 +1982,7 @@ describe('AssessmentStore', () => {
                 indexDBInstanceMock.object,
                 null,
                 initialAssessmentStoreDataGeneratorMock.object,
+                failTestOnErrorLogger,
             );
         return new AssessmentStoreTester(
             AssessmentActions,

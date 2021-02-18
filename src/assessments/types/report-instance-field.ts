@@ -5,8 +5,8 @@ import {
     ColumnValueBag,
     isScalarColumnValue,
 } from 'common/types/property-bag/column-value-bag';
+import { PropertyBagColumnRendererConfig } from 'common/types/property-bag/property-bag-column-renderer-config';
 import { TestStepInstance } from 'common/types/store-data/assessment-result-data';
-import { PropertyBagColumnRendererConfig } from '../common/property-bag-column-renderer';
 
 export type ReportInstanceField = {
     key: string;
@@ -92,10 +92,15 @@ function fromColumns<T extends ColumnValueBag>(
     }
 }
 
+function fromSnippet(key: string, label: string): ReportInstanceField {
+    return { key, label, getValue: i => i.html };
+}
+
 export const ReportInstanceField = {
     fromPropertyBagField,
     fromColumnValueBagField,
     fromPropertyBagFunction,
     fromColumns,
+    fromSnippet,
     common,
 };

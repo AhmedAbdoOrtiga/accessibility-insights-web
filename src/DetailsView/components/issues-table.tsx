@@ -1,18 +1,23 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import * as Markup from 'assessments/markup';
+import {
+    CommonInstancesSectionDeps,
+    CommonInstancesSectionProps,
+} from 'common/components/cards/common-instances-section-props';
 import { ScanningSpinner } from 'common/components/scanning-spinner/scanning-spinner';
+import { ReactFCWithDisplayName } from 'common/react/named-fc';
 import { CardsViewModel } from 'common/types/store-data/card-view-model';
 import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
 import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
 import { UserConfigurationStoreData } from 'common/types/store-data/user-configuration-store';
+import { VisualizationStoreData } from 'common/types/store-data/visualization-store-data';
+import { InlineStartOverButton } from 'DetailsView/components/inline-start-over-button';
 import * as styles from 'DetailsView/components/issues-table.scss';
 import * as React from 'react';
 import { ReportGenerator } from 'reports/report-generator';
-import { CardsView, CardsViewDeps } from './cards-view';
 import { ExportDialogDeps } from './export-dialog';
 
-export type IssuesTableDeps = CardsViewDeps &
+export type IssuesTableDeps = CommonInstancesSectionDeps &
     ExportDialogDeps & {
         getDateFromTimestamp: (timestamp: string) => Date;
         reportGenerator: ReportGenerator;
@@ -28,6 +33,8 @@ export interface IssuesTableProps {
     userConfigurationStoreData: UserConfigurationStoreData;
     scanMetadata: ScanMetadata;
     cardsViewData: CardsViewModel;
+    instancesSection: ReactFCWithDisplayName<CommonInstancesSectionProps>;
+    visualizationStoreData: VisualizationStoreData;
 }
 
 export class IssuesTable extends React.Component<IssuesTableProps> {
@@ -73,12 +80,15 @@ export class IssuesTable extends React.Component<IssuesTableProps> {
             return this.renderSpinner('Scanning...');
         }
 
+        const InstancesSection = this.props.instancesSection;
+
         return (
-            <CardsView
+            <InstancesSection
                 deps={this.props.deps}
                 cardsViewData={this.props.cardsViewData}
                 userConfigurationStoreData={this.props.userConfigurationStoreData}
                 scanMetadata={this.props.scanMetadata}
+                shouldAlertFailuresCount={true}
             />
         );
     }
@@ -88,10 +98,15 @@ export class IssuesTable extends React.Component<IssuesTableProps> {
     }
 
     private renderDisabledMessage(): JSX.Element {
+        const selectedTest = this.props.visualizationStoreData.selectedFastPassDetailsView;
+        const startOverButton = (
+            <InlineStartOverButton
+                selectedTest={selectedTest}
+                detailsViewActionMessageCreator={this.props.deps.detailsViewActionMessageCreator}
+            />
+        );
         const disabledMessage = (
-            <span>
-                Use the <Markup.Term>Start over button</Markup.Term> to scan the target page.
-            </span>
+            <span>Use the {startOverButton} button to scan the target page.</span>
         );
 
         return (

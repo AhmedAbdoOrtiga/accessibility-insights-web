@@ -1,25 +1,27 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+
+import { BaseStore } from 'common/base-store';
+import { BrowserAdapter } from 'common/browser-adapters/browser-adapter';
 import {
     FixInstructionPanel,
     FixInstructionPanelDeps,
 } from 'common/components/fix-instruction-panel';
+import { GuidanceLinks } from 'common/components/guidance-links';
+import { NewTabLink } from 'common/components/new-tab-link';
+import { FeatureFlags } from 'common/feature-flags';
+import { CancelIcon } from 'common/icons/cancel-icon';
+import { DevToolActionMessageCreator } from 'common/message-creators/dev-tool-action-message-creator';
+import { HyperlinkDefinition } from 'common/types/hyperlink-definition';
+import { DevToolStoreData } from 'common/types/store-data/dev-tool-store-data';
+import { UserConfigurationStoreData } from 'common/types/store-data/user-configuration-store';
 import { isEmpty, size } from 'lodash';
-import { css } from 'office-ui-fabric-react';
 import { Dialog, DialogType } from 'office-ui-fabric-react';
+import { css } from 'office-ui-fabric-react';
 import * as React from 'react';
-import { HyperlinkDefinition } from 'views/content/content-page';
+import { DictionaryStringTo } from 'types/common-types';
 
-import { BaseStore } from '../../common/base-store';
-import { BrowserAdapter } from '../../common/browser-adapters/browser-adapter';
-import { GuidanceLinks } from '../../common/components/guidance-links';
-import { NewTabLink } from '../../common/components/new-tab-link';
-import { FeatureFlags } from '../../common/feature-flags';
-import { CancelIcon } from '../../common/icons/cancel-icon';
-import { DevToolActionMessageCreator } from '../../common/message-creators/dev-tool-action-message-creator';
-import { DevToolStoreData } from '../../common/types/store-data/dev-tool-store-data';
-import { UserConfigurationStoreData } from '../../common/types/store-data/user-configuration-store';
-import { DictionaryStringTo } from '../../types/common-types';
+import { CheckType } from '../../common/types/check-type';
 import { DetailsDialogHandler } from '../details-dialog-handler';
 import { DecoratedAxeNodeResult } from '../scanner-utils';
 import { TargetPageActionMessageCreator } from '../target-page-action-message-creator';
@@ -28,12 +30,6 @@ import {
     IssueDetailsNavigationControls,
     IssueDetailsNavigationControlsProps,
 } from './issue-details-navigation-controls';
-
-export enum CheckType {
-    All,
-    Any,
-    None,
-}
 
 export type DetailsDialogDeps = {
     targetPageActionMessageCreator: TargetPageActionMessageCreator;
@@ -115,7 +111,9 @@ export class DetailsDialog extends React.Component<DetailsDialogProps, DetailsDi
         this.state = {
             showDialog: true,
             currentRuleIndex: 0,
+            // eslint-disable-next-line react/no-unused-state
             canInspect: true,
+            // eslint-disable-next-line react/no-unused-state
             showInspectMessage: false,
             userConfigurationStoreData: props.userConfigStore.getState(),
         };

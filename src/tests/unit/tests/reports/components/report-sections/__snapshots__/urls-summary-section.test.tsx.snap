@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` renders 1`] = `
+<div
+  className="urlsSummarySection"
+>
+  <React.Fragment>
+    <h2>
+      URLs
+    </h2>
+    <span
+      className="totalUrls"
+    >
+      6
+    </span>
+     total URLs scanned
+  </React.Fragment>
+  <OutcomeSummaryBar
+    allOutcomeTypes={
+      Array [
+        "fail",
+        "unscannable",
+        "pass",
+      ]
+    }
+    iconStyleInverted={true}
+    outcomeStats={
+      Object {
+        "fail": 2,
+        "pass": 1,
+        "unscannable": 3,
+      }
+    }
+    textLabel={true}
+  />
+  <div
+    className="failureInstances"
+  >
+    <h2>
+      Failure Instances
+    </h2>
+    <span
+      className="failureOutcomeChip"
+    >
+      <OutcomeChip
+        count={10}
+        outcomeType="fail"
+      />
+      <span>
+        Failure instances were detected
+      </span>
+    </span>
+  </div>
+</div>
+`;

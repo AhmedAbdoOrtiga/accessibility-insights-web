@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import * as Puppeteer from 'puppeteer';
+import * as Playwright from 'playwright';
+import { WaitForSelectorOptions } from 'tests/end-to-end/common/playwright-option-types';
 import { CommonSelectors } from '../element-identifiers/common-selectors';
 import {
     detailsViewSelectors,
@@ -9,7 +10,7 @@ import {
 import { Page, PageOptions } from './page';
 
 export class DetailsViewPage extends Page {
-    constructor(underlyingPage: Puppeteer.Page, options?: PageOptions) {
+    constructor(underlyingPage: Playwright.Page, options?: PageOptions) {
         super(underlyingPage, options);
     }
 
@@ -31,19 +32,31 @@ export class DetailsViewPage extends Page {
         await this.clickSelector('button[title="Assessment"]');
     }
 
-    public async navigateToTest(testName: string): Promise<void> {
+    public async closeNavTestLink(testName: string): Promise<void> {
         await this.clickSelector(detailsViewSelectors.testNavLink(testName));
-        await this.waitForSelectorXPath(`//h1[text()="${testName}"]`);
+        await this.waitForSelectorToDisappear(detailsViewSelectors.gettingStartedNavLink);
     }
 
-    public async navigateToRequirement(requirementName: string): Promise<void> {
+    public async navigateToTestRequirement(
+        testName: string,
+        requirementName: string,
+    ): Promise<void> {
+        await this.clickSelector(detailsViewSelectors.testNavLink(testName));
+        await this.waitForSelector(`//div[@name="${requirementName}"]`);
         await this.clickSelector(detailsViewSelectors.requirementNavLink(requirementName));
-        await this.waitForSelectorXPath(`//h3[text()="${requirementName}"]`);
+        await this.waitForSelector(`//h1[text()="${requirementName}"]`);
+    }
+
+    public async navigateToGettingStarted(testName: string): Promise<void> {
+        await this.clickSelector(detailsViewSelectors.testNavLink(testName));
+        await this.waitForSelector(`//div[@name="Getting started"]`);
+        await this.clickSelector(detailsViewSelectors.gettingStartedNavLink);
+        await this.waitForSelector(`//h1/span[text()="${testName}"]`);
     }
 
     public async waitForVisualHelperState(
         state: 'On' | 'Off' | 'disabled',
-        waitOptions?: Puppeteer.WaitForSelectorOptions,
+        waitOptions?: WaitForSelectorOptions,
     ): Promise<void> {
         const selectorStateSuffix = {
             On: ':not([disabled])[aria-checked="true"]',
@@ -59,11 +72,12 @@ export class DetailsViewPage extends Page {
 
     public async waitForRequirementStatus(
         requirementName: string,
+        requirementIndex: string,
         status: 'Passed' | 'Failed' | 'Incomplete',
-        waitOptions?: Puppeteer.WaitForSelectorOptions,
+        waitOptions?: WaitForSelectorOptions,
     ): Promise<void> {
         await this.waitForSelector(
-            detailsViewSelectors.requirementWithStatus(requirementName, status),
+            detailsViewSelectors.requirementWithStatus(requirementName, requirementIndex, status),
             waitOptions,
         );
     }

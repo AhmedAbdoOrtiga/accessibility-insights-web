@@ -12,9 +12,9 @@ import { InjectionActions } from 'background/actions/injection-actions';
 import { TabActions } from 'background/actions/tab-actions';
 import { VisualizationActions } from 'background/actions/visualization-actions';
 import { VisualizationStore } from 'background/stores/visualization-store';
+import { WebVisualizationConfigurationFactory } from 'common/configs/web-visualization-configuration-factory';
 import { cloneDeep } from 'lodash';
 import { AdHocTestkeys } from '../../../../../common/configs/adhoc-test-keys';
-import { VisualizationConfigurationFactory } from '../../../../../common/configs/visualization-configuration-factory';
 import { StoreNames } from '../../../../../common/stores/store-names';
 import { DetailsViewPivotType } from '../../../../../common/types/details-view-pivot-type';
 import { VisualizationStoreData } from '../../../../../common/types/store-data/visualization-store-data';
@@ -257,7 +257,7 @@ describe('VisualizationStoreTest ', () => {
             .with('scanning', 'headings')
             .with('selectedAdhocDetailsView', VisualizationType.Issues)
             .with('selectedDetailsViewPivot', DetailsViewPivotType.fastPass)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .build();
 
         createStoreTesterForVisualizationActions(actionName)
@@ -277,7 +277,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = dataBuilder
             .withHeadingsAssessment(true, payload.requirement)
             .with('selectedAdhocDetailsView', VisualizationType.Issues)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .build();
 
         createStoreTesterForVisualizationActions(actionName)
@@ -313,7 +313,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withHeadingsEnable()
             .withHeadingsAssessment(false, HeadingsTestStep.missingHeadings)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', 'headings')
             .build();
 
@@ -334,7 +334,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withHeadingsAssessment(true, payload.requirement)
             .withHeadingsEnable()
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', HeadingsTestStep.missingHeadings)
             .build();
 
@@ -357,7 +357,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withLandmarksAssessment(false, LandmarkTestStep.landmarkRoles)
             .withHeadingsAssessment(true, payload.requirement)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', HeadingsTestStep.missingHeadings)
             .build();
 
@@ -380,7 +380,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withHeadingsAssessment(false, HeadingsTestStep.headingFunction)
             .withHeadingsAssessment(true, payload.requirement)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', HeadingsTestStep.missingHeadings)
             .build();
 
@@ -424,7 +424,7 @@ describe('VisualizationStoreTest ', () => {
         const initialState = dataBuilder.build();
         const expectedState = dataBuilder
             .withTabStopsEnable()
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('scanning', 'tabStops')
             .with('selectedDetailsViewPivot', DetailsViewPivotType.fastPass)
             .build();
@@ -506,7 +506,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withLandmarksEnable()
             .with('scanning', 'landmarks')
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('selectedDetailsViewPivot', DetailsViewPivotType.fastPass)
             .build();
 
@@ -569,7 +569,7 @@ describe('VisualizationStoreTest ', () => {
         const expectedState = new VisualizationStoreDataBuilder()
             .withIssuesEnable()
             .with('scanning', 'issues')
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('selectedAdhocDetailsView', VisualizationType.Issues)
             .with('selectedDetailsViewPivot', DetailsViewPivotType.fastPass)
             .build();
@@ -634,7 +634,7 @@ describe('VisualizationStoreTest ', () => {
             .withColorEnable()
             .with('scanning', 'color')
             .with('selectedDetailsViewPivot', DetailsViewPivotType.fastPass)
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .build();
 
         createStoreTesterForVisualizationActions(actionName)
@@ -691,7 +691,7 @@ describe('VisualizationStoreTest ', () => {
         const initialState = new VisualizationStoreDataBuilder().build();
 
         const expectedState = new VisualizationStoreDataBuilder()
-            .with('injectingInProgress', false)
+            .with('injectingRequested', false)
             .with('injectingStarted', false)
             .build();
 
@@ -709,7 +709,7 @@ describe('VisualizationStoreTest ', () => {
             .build();
 
         const expectedState = new VisualizationStoreDataBuilder()
-            .with('injectingInProgress', true)
+            .with('injectingRequested', true)
             .with('injectingStarted', true)
             .build();
 
@@ -727,7 +727,7 @@ describe('VisualizationStoreTest ', () => {
             .build();
 
         const expectedState = new VisualizationStoreDataBuilder()
-            .with('injectingInProgress', null)
+            .with('injectingRequested', false)
             .with('injectingStarted', true)
             .build();
 
@@ -857,7 +857,7 @@ describe('VisualizationStoreTest ', () => {
                 new VisualizationActions(),
                 actions,
                 new InjectionActions(),
-                new VisualizationConfigurationFactory(),
+                new WebVisualizationConfigurationFactory(),
             );
 
         return new StoreTester(TabActions, actionName, factory);
@@ -871,7 +871,7 @@ describe('VisualizationStoreTest ', () => {
                 actions,
                 new TabActions(),
                 new InjectionActions(),
-                new VisualizationConfigurationFactory(),
+                new WebVisualizationConfigurationFactory(),
             );
 
         return new StoreTester(VisualizationActions, actionName, factory);
@@ -885,7 +885,7 @@ describe('VisualizationStoreTest ', () => {
                 new VisualizationActions(),
                 new TabActions(),
                 actions,
-                new VisualizationConfigurationFactory(),
+                new WebVisualizationConfigurationFactory(),
             );
 
         return new StoreTester(InjectionActions, actionName, factory);

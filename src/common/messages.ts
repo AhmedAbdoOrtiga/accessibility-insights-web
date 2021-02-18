@@ -100,6 +100,7 @@ export class Messages {
         SetIssueFilingServiceProperty: `${messagePrefix}/userConfig/setIssueFilingServiceProperty`,
         SaveIssueFilingSettings: `${messagePrefix}/userConfig/saveIssueFilingSettings`,
         SetAdbLocationConfig: `${messagePrefix}/userConfig/setAdbLocationConfig`,
+        SaveWindowBounds: `${messagePrefix}/userConfig/saveWindowBounds`,
     };
 
     public static readonly Popup = {
@@ -143,6 +144,7 @@ export class Messages {
         ChangeVisualizationStateForAll: `${messagePrefix}/assessment/changeVisualizationStateForAll`,
         ScanUpdate: `${messagePrefix}/assessment/scanUpdate`,
         ContinuePreviousAssessment: `${messagePrefix}/assessment/continuePreviousAssessment`,
+        LoadAssessment: `${messagePrefix}/assessment/loadAssessment`,
     };
 
     public static readonly FeatureFlags = {
@@ -205,6 +207,7 @@ export class Messages {
         CollapseAllRules: `${messagePrefix}/cardSelection/collapseAllRules`,
         ExpandAllRules: `${messagePrefix}/cardSelection/expandAllRules`,
         ToggleVisualHelper: `${messagePrefix}/cardSelection/toggleVisualHelper`,
+        NavigateToNewCardsView: `${messagePrefix}/cardSelection/navigateToNewCardsView`,
     };
 
     public static readonly PermissionsState = {

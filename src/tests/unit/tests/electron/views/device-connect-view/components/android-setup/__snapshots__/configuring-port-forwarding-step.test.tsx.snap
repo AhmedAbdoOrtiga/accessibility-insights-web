@@ -5,13 +5,9 @@ exports[`ConfiguringPortForwardingStep renders 1`] = `
   deps={
     Object {
       "LinkComponent": [Function],
-      "androidSetupActionCreator": null,
-      "androidSetupStepComponentProvider": null,
-      "closeApp": null,
-      "showOpenFileDialog": null,
-      "startTesting": null,
     }
   }
+  disableCancel={true}
   spinnerLabel="Configuring ports..."
 />
 `;

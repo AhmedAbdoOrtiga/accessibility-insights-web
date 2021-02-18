@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import * as axe from 'axe-core';
-import { GlobalMock, GlobalScope, IGlobalMock, It, MockBehavior, Times } from 'typemoq';
+import { withAxeCommonsMocked } from 'tests/unit/tests/scanner/mock-axe-utils';
+import { GlobalMock, GlobalScope, IGlobalMock, It, Mock, MockBehavior, Times } from 'typemoq';
 
 import * as AxeUtils from '../../../../scanner/axe-utils';
 import { setAxeGlobalTreeTo } from '../../common/axe-internals';
@@ -10,6 +10,10 @@ describe('AxeUtils', () => {
     describe('getMatchesFromRule', () => {
         it('should find color-contrast rule', () => {
             expect(AxeUtils.getMatchesFromRule('color-contrast')).toBeDefined();
+        });
+
+        it('color-contrast matches should be a function', () => {
+            expect(AxeUtils.getMatchesFromRule('color-contrast')).toHaveProperty('call');
         });
 
         it('should fail if rule does not exist', () => {
@@ -22,40 +26,43 @@ describe('AxeUtils', () => {
             expect(AxeUtils.getEvaluateFromCheck('color-contrast')).toBeDefined();
         });
 
+        it('color-contrast evaluate should be a function', () => {
+            expect(AxeUtils.getEvaluateFromCheck('color-contrast')).toHaveProperty('call');
+        });
+
         it('should fail if rule does not exist', () => {
             expect(() => AxeUtils.getEvaluateFromCheck('fake-rule')).toThrow();
         });
     });
 
-    describe('getAccessibleText', () => {
-        const accessibleTextMock = GlobalMock.ofInstance(
-            axe.commons.text.accessibleText,
-            'accessibleText',
-            axe.commons.text,
-        );
-        it('should call mock when labelledbycontext true', () => {
-            GlobalScope.using(accessibleTextMock).with(() => {
-                const elementStub = {} as HTMLElement;
-                const isLabelledByContext = true;
-                accessibleTextMock
-                    .setup(m => m(It.isValue(elementStub), isLabelledByContext))
-                    .verifiable(Times.once());
-                AxeUtils.getAccessibleText(elementStub, isLabelledByContext);
-            });
-            accessibleTextMock.verifyAll();
+    describe('getOptionsFromCheck', () => {
+        it('should find color-contrast rule', () => {
+            expect(AxeUtils.getOptionsFromCheck('color-contrast')).toBeDefined();
         });
 
-        it('should call mock when labelledbycontext false', () => {
-            GlobalScope.using(accessibleTextMock).with(() => {
+        it('should fail if rule does not exist', () => {
+            expect(() => AxeUtils.getOptionsFromCheck('fake-rule')).toThrow();
+        });
+    });
+
+    describe('getAccessibleText', () => {
+        it.each([true, false])(
+            'calls axe.commons.text.accessibleText with given node & isLabelledByContext %p',
+            isLabelledByContext => {
+                const accessibleTextMock = Mock.ofInstance(
+                    (node, context) => '',
+                    MockBehavior.Strict,
+                );
                 const elementStub = {} as HTMLElement;
-                const isLabelledByContext = false;
                 accessibleTextMock
                     .setup(m => m(It.isValue(elementStub), isLabelledByContext))
                     .verifiable(Times.once());
-                AxeUtils.getAccessibleText(elementStub, isLabelledByContext);
-            });
-            accessibleTextMock.verifyAll();
-        });
+                withAxeCommonsMocked('text', { accessibleText: accessibleTextMock.object }, () => {
+                    AxeUtils.getAccessibleText(elementStub, isLabelledByContext);
+                });
+                accessibleTextMock.verifyAll();
+            },
+        );
     });
 
     describe('getAccessibleDescription', () => {

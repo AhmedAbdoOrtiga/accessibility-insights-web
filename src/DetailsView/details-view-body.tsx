@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 import { AssessmentsProvider } from 'assessments/types/assessments-provider';
 import * as classNames from 'classnames';
-import { FlaggedComponent } from 'common/components/flagged-component';
-import { FeatureFlags } from 'common/feature-flags';
 import { ScanIncompleteWarningId } from 'common/types/scan-incomplete-warnings';
 import { CardsViewModel } from 'common/types/store-data/card-view-model';
-import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
+import {
+    ScanMetadata,
+    UnifiedScanResultStoreData,
+} from 'common/types/store-data/unified-data-interface';
 import { DetailsViewCommandBarProps } from 'DetailsView/components/details-view-command-bar';
 import { FluentSideNav, FluentSideNavDeps } from 'DetailsView/components/left-nav/fluent-side-nav';
 import { NarrowModeStatus } from 'DetailsView/components/narrow-mode-detector';
@@ -65,38 +66,37 @@ export interface DetailsViewBodyProps {
     scanIncompleteWarnings: ScanIncompleteWarningId[];
     scanMetadata: ScanMetadata;
     isSideNavOpen: boolean;
-    setSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setSideNavOpen: (isOpen: boolean, event?: React.MouseEvent<any>) => void;
     narrowModeStatus: NarrowModeStatus;
+    unifiedScanResultStoreData: UnifiedScanResultStoreData;
 }
 
 export class DetailsViewBody extends React.Component<DetailsViewBodyProps> {
     public render(): JSX.Element {
         const bodyLayoutClassName = classNames({
-            'details-view-body-nav-content-layout': true,
-            'reflow-ui': this.props.featureFlagStoreData[FeatureFlags.reflowUI],
+            [styles.detailsViewBodyNavContentLayout]: true,
+            'reflow-ui': true,
         });
 
         const bodyContentClassName = classNames({
-            'details-view-body-content-pane': true,
-
-            'reflow-ui': this.props.featureFlagStoreData[FeatureFlags.reflowUI],
+            [styles.detailsViewBodyContentPane]: true,
+            'reflow-ui': true,
         });
 
         const bodyContentContainerClassName = classNames(styles.detailsViewContentPaneContainer, {
             [styles.narrowMode]: this.props.narrowModeStatus.isHeaderAndNavCollapsed,
-            'reflow-ui': this.props.featureFlagStoreData[FeatureFlags.reflowUI],
+            'reflow-ui': true,
         });
 
         return (
             <div className={styles.detailsViewBody}>
-                {this.renderCommandBarUnderHeader()}
                 <div className={bodyLayoutClassName}>
                     {this.renderNavBar()}
                     <div className={bodyContentContainerClassName}>
-                        {this.renderReflowCommandBar()}
+                        {this.renderCommandBar()}
                         <div className={bodyContentClassName}>
                             {this.getTargetPageHiddenBar()}
-                            <div className="view" role="main">
+                            <div className={styles.view} role="main">
                                 {this.renderRightPanel()}
                             </div>
                         </div>
@@ -114,28 +114,6 @@ export class DetailsViewBody extends React.Component<DetailsViewBodyProps> {
         };
 
         return <switcherNavConfiguration.CommandBar {...detailsViewCommandBarProps} />;
-    }
-
-    private renderCommandBarUnderHeader(): JSX.Element {
-        return (
-            <FlaggedComponent
-                enableJSXElement={null}
-                disableJSXElement={this.renderCommandBar()}
-                featureFlag={FeatureFlags.reflowUI}
-                featureFlagStoreData={this.props.featureFlagStoreData}
-            />
-        );
-    }
-
-    private renderReflowCommandBar(): JSX.Element {
-        return (
-            <FlaggedComponent
-                enableJSXElement={this.renderCommandBar()}
-                disableJSXElement={null}
-                featureFlag={FeatureFlags.reflowUI}
-                featureFlagStoreData={this.props.featureFlagStoreData}
-            />
-        );
     }
 
     private renderNavBar(): JSX.Element {

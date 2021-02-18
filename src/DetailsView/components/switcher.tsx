@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { DetailsViewPivotType } from 'common/types/details-view-pivot-type';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react';
 import { ResponsiveMode } from 'office-ui-fabric-react';
 import * as React from 'react';
-import { SwitcherStyleNames } from './switcher-style-names';
 
-import { DetailsViewPivotType } from 'common/types/details-view-pivot-type';
 import { DetailsViewActionMessageCreator } from '../actions/details-view-action-message-creator';
+import * as styles from './switcher.scss';
 
 export type SwitcherDeps = {
     detailsViewActionMessageCreator: DetailsViewActionMessageCreator;
@@ -16,7 +16,6 @@ export type SwitcherDeps = {
 export interface SwitcherProps {
     deps: SwitcherDeps;
     pivotKey: DetailsViewPivotType;
-    styles: SwitcherStyleNames;
 }
 
 export interface SwitcherState {
@@ -37,7 +36,7 @@ export class Switcher extends React.Component<SwitcherProps, SwitcherState> {
 
     private onRenderOption = (option: IDropdownOption): JSX.Element => {
         return (
-            <span className={this.props.styles.dropdownOptionClassName}>
+            <span className={styles.switcherDropdownOption}>
                 {option.data && option.data.icon && <Icon iconName={option.data.icon} />}
                 <span>{option.text}</span>
             </span>
@@ -78,9 +77,9 @@ export class Switcher extends React.Component<SwitcherProps, SwitcherState> {
 
     public render(): JSX.Element {
         return (
-            <div className={this.props.styles.switcherClassName}>
+            <div className={styles.leftNavSwitcher} role="region" aria-label="activity">
                 <Dropdown
-                    className={this.props.styles.dropdownClassName}
+                    className={styles.leftNavSwitcherDropdown}
                     ariaLabel="select activity"
                     responsiveMode={ResponsiveMode.large}
                     selectedKey={this.state.selectedKey}

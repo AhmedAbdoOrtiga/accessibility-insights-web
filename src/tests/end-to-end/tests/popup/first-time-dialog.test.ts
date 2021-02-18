@@ -18,10 +18,7 @@ describe('First time Dialog', () => {
     });
 
     afterEach(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     async function newPopupPage(): Promise<PopupPage> {
@@ -30,7 +27,6 @@ describe('First time Dialog', () => {
 
     it('should be dismissed by clicking the OK button', async () => {
         const firstPopupPage = await newPopupPage();
-        await firstPopupPage.bringToFront();
 
         await firstPopupPage.clickSelector(popupPageElementIdentifiers.startUsingProductButton);
         await firstPopupPage.waitForSelectorToDisappear(

@@ -21,6 +21,7 @@ export interface ReportExportComponentProps {
     updatePersistedDescription: (value: string) => void;
     getExportDescription: () => string;
     featureFlagStoreData: FeatureFlagStoreData;
+    onDialogDismiss?: () => void;
 }
 
 export interface ReportExportComponentState {
@@ -29,6 +30,8 @@ export interface ReportExportComponentState {
     exportDescription: string;
     exportData: string;
 }
+
+export const exportReportCommandBarButtonId = 'export-report-command-bar-button';
 
 export class ReportExportComponent extends React.Component<
     ReportExportComponentProps,
@@ -54,9 +57,14 @@ export class ReportExportComponent extends React.Component<
     };
 
     private generateHtml = () => {
-        const { htmlGenerator } = this.props;
-        const exportData = htmlGenerator(this.state.exportDescription);
-        this.setState({ exportDescription: '', exportData });
+        this.setState((prevState, prevProps) => {
+            const { htmlGenerator } = prevProps;
+
+            return {
+                exportDescription: '',
+                exportData: htmlGenerator(prevState.exportDescription),
+            };
+        });
     };
 
     private onExportButtonClick = () => {
@@ -76,6 +84,7 @@ export class ReportExportComponent extends React.Component<
         return (
             <>
                 <InsightsCommandButton
+                    data-automation-id={exportReportCommandBarButtonId}
                     iconProps={{ iconName: 'Export' }}
                     onClick={this.onExportButtonClick}
                 >
@@ -92,6 +101,7 @@ export class ReportExportComponent extends React.Component<
                     reportExportFormat={reportExportFormat}
                     onExportClick={this.generateHtml}
                     featureFlagStoreData={this.props.featureFlagStoreData}
+                    afterDismissed={this.props.onDialogDismiss}
                 />
             </>
         );

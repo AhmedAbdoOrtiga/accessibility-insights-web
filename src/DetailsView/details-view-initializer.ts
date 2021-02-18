@@ -8,22 +8,30 @@ import { UserConfigurationActions } from 'background/actions/user-configuration-
 import { IssueDetailsTextGenerator } from 'background/issue-details-text-generator';
 import { UserConfigurationStore } from 'background/stores/global/user-configuration-store';
 import { createToolData } from 'common/application-properties-provider';
+import { AssessmentDataFormatter } from 'common/assessment-data-formatter';
+import { AssessmentDataParser } from 'common/assessment-data-parser';
 import { BrowserAdapterFactory } from 'common/browser-adapters/browser-adapter-factory';
 import { ExpandCollapseVisualHelperModifierButtons } from 'common/components/cards/cards-visualization-modifier-buttons';
 import { ThemeInnerState } from 'common/components/theme';
+import { WebVisualizationConfigurationFactory } from 'common/configs/web-visualization-configuration-factory';
+import { FileNameBuilder } from 'common/filename-builder';
 import { getCardSelectionViewData } from 'common/get-card-selection-view-data';
+import { Globalization } from 'common/globalization';
 import { isResultHighlightUnavailableWeb } from 'common/is-result-highlight-unavailable';
 import { createDefaultLogger } from 'common/logging/default-logger';
+import { Logger } from 'common/logging/logger';
 import { CardSelectionMessageCreator } from 'common/message-creators/card-selection-message-creator';
 import { CardSelectionStoreData } from 'common/types/store-data/card-selection-store-data';
 import { toolName } from 'content/strings/application';
 import { textContent } from 'content/strings/text-content';
 import { AssessmentViewUpdateHandler } from 'DetailsView/components/assessment-view-update-handler';
 import { NavLinkRenderer } from 'DetailsView/components/left-nav/nav-link-renderer';
+import { LoadAssessmentHelper } from 'DetailsView/components/load-assessment-helper';
 import { NoContentAvailableViewDeps } from 'DetailsView/components/no-content-available/no-content-available-view';
 import { AllUrlsPermissionHandler } from 'DetailsView/handlers/allurls-permission-handler';
 import { NoContentAvailableViewRenderer } from 'DetailsView/no-content-available-view-renderer';
 import { NullStoreActionMessageCreator } from 'electron/adapters/null-store-action-message-creator';
+import { getNarrowModeThresholdsForWeb } from 'electron/common/narrow-mode-thresholds';
 import { loadTheme, setFocusVisibility } from 'office-ui-fabric-react';
 import * as ReactDOM from 'react-dom';
 import { ReportExportServiceProviderImpl } from 'report-export/report-export-service-provider-impl';
@@ -44,8 +52,7 @@ import { ReactStaticRenderer } from 'reports/react-static-renderer';
 import { ReportGenerator } from 'reports/report-generator';
 import { ReportHtmlGenerator } from 'reports/report-html-generator';
 import { WebReportNameGenerator } from 'reports/report-name-generator';
-import { UAParser } from 'ua-parser-js';
-
+import * as UAParser from 'ua-parser-js';
 import { A11YSelfValidator } from '../common/a11y-self-validator';
 import { AutoChecker } from '../common/auto-checker';
 import { AxeInfo } from '../common/axe-info';
@@ -55,7 +62,6 @@ import { CardsCollapsibleControl } from '../common/components/cards/collapsible-
 import { FixInstructionProcessor } from '../common/components/fix-instruction-processor';
 import { NewTabLink } from '../common/components/new-tab-link';
 import { getPropertyConfiguration } from '../common/configs/unified-result-property-configurations';
-import { VisualizationConfigurationFactory } from '../common/configs/visualization-configuration-factory';
 import { DateProvider } from '../common/date-provider';
 import { DocumentManipulator } from '../common/document-manipulator';
 import { DropdownClickHandler } from '../common/dropdown-click-handler';
@@ -117,7 +123,6 @@ import { NavLinkHandler } from './components/left-nav/nav-link-handler';
 import { DetailsViewContainerDeps, DetailsViewContainerState } from './details-view-container';
 import { DetailsViewRenderer } from './details-view-renderer';
 import { DocumentTitleUpdater } from './document-title-updater';
-import { detailsViewExtensionPoint } from './extensions/details-view-extension-point';
 import { AssessmentInstanceTableHandler } from './handlers/assessment-instance-table-handler';
 import { DetailsViewToggleClickHandlerFactory } from './handlers/details-view-toggle-click-handler-factory';
 import { MasterCheckBoxConfigProvider } from './handlers/master-checkbox-config-provider';
@@ -276,7 +281,7 @@ if (tabId != null) {
                 visualizationActionCreator,
                 telemetryFactory,
             );
-            const visualizationConfigurationFactory = new VisualizationConfigurationFactory();
+            const visualizationConfigurationFactory = new WebVisualizationConfigurationFactory();
             const assessmentDefaultMessageGenerator = new AssessmentDefaultMessageGenerator();
             const assessmentInstanceTableHandler = new AssessmentInstanceTableHandler(
                 detailsViewActionMessageCreator,
@@ -302,10 +307,10 @@ if (tabId != null) {
             const browserSpec = navigatorUtils.getBrowserSpec();
 
             const toolData = createToolData(
-                toolName,
-                browserAdapter.getVersion(),
                 'axe-core',
                 AxeInfo.Default.version,
+                toolName,
+                browserAdapter.getVersion(),
                 browserSpec,
             );
 
@@ -324,11 +329,19 @@ if (tabId != null) {
                 getPropertyConfiguration,
             );
 
+            // Represents the language in which pages are to be displayed
+            // For the time being, content is only in English
+            const globalization: Globalization = {
+                languageCode: 'en-us',
+            };
+
             const assessmentReportHtmlGeneratorDeps = {
                 outcomeTypeSemanticsFromTestStatus,
                 getGuidanceTagsFromGuidanceLinks: GetGuidanceTagsFromGuidanceLinks,
                 LinkComponent: NewTabLink,
+                globalization,
             };
+
             const assessmentReportHtmlGenerator = new AssessmentReportHtmlGenerator(
                 assessmentReportHtmlGeneratorDeps,
                 reactStaticRenderer,
@@ -376,6 +389,21 @@ if (tabId != null) {
                 assessmentReportHtmlGenerator,
             );
 
+            const assessmentDataFormatter = new AssessmentDataFormatter();
+
+            const assessmentDataParser = new AssessmentDataParser();
+
+            const fileReader = new FileReader();
+
+            const loadAssessmentHelper = new LoadAssessmentHelper(
+                assessmentDataParser,
+                detailsViewActionMessageCreator,
+                fileReader,
+                document,
+            );
+
+            const fileNameBuilder = new FileNameBuilder();
+
             const axeResultToIssueFilingDataConverter = new AxeResultToIssueFilingDataConverter(
                 IssueFilingUrlStringUtils.getSelectorLastPart,
             );
@@ -404,6 +432,10 @@ if (tabId != null) {
                 issueDetailsTextGenerator,
                 windowUtils,
                 fileURLProvider,
+                assessmentDataFormatter,
+                assessmentDataParser,
+                fileNameBuilder,
+                loadAssessmentHelper,
                 getAssessmentSummaryModelFromProviderAndStoreData: getAssessmentSummaryModelFromProviderAndStoreData,
                 getAssessmentSummaryModelFromProviderAndStatusData: getAssessmentSummaryModelFromProviderAndStatusData,
                 visualizationConfigurationFactory,
@@ -446,7 +478,7 @@ if (tabId != null) {
                 isResultHighlightUnavailable: isResultHighlightUnavailableWeb,
                 setFocusVisibility,
                 documentManipulator,
-                customCongratsMessage: null, // uses default message
+                customCongratsContinueInvestigatingMessage: null, // uses default message
                 scopingActionMessageCreator,
                 inspectActionMessageCreator,
                 issuesSelection,
@@ -457,8 +489,8 @@ if (tabId != null) {
                 scopingFlagsHandler,
                 Assessments,
                 assessmentViewUpdateHandler,
-                detailsViewExtensionPoint,
                 navLinkRenderer,
+                getNarrowModeThresholds: getNarrowModeThresholdsForWeb,
             };
 
             const renderer = new DetailsViewRenderer(
@@ -478,7 +510,11 @@ if (tabId != null) {
             window.A11YSelfValidator = a11ySelfValidator;
         },
         () => {
-            const renderer = createNullifiedRenderer(document, ReactDOM.render);
+            const renderer = createNullifiedRenderer(
+                document,
+                ReactDOM.render,
+                createDefaultLogger(),
+            );
             renderer.render();
         },
     );
@@ -487,15 +523,17 @@ if (tabId != null) {
 function createNullifiedRenderer(
     doc: Document,
     render: typeof ReactDOM.render,
+    logger: Logger,
 ): NoContentAvailableViewRenderer {
     // using an instance of an actual store (instead of a StoreProxy) so we can get the default state.
-    const store = new UserConfigurationStore(null, new UserConfigurationActions(), null);
+    const store = new UserConfigurationStore(null, new UserConfigurationActions(), null, logger);
     const storesHub = new BaseClientStoresHub<ThemeInnerState>([store]);
 
     const deps: NoContentAvailableViewDeps = {
         textContent,
         storesHub,
         storeActionMessageCreator: new NullStoreActionMessageCreator(),
+        getNarrowModeThresholds: getNarrowModeThresholdsForWeb,
     };
 
     return new NoContentAvailableViewRenderer(deps, doc, render, documentElementSetter);

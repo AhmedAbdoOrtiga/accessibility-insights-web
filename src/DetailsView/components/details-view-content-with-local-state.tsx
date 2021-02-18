@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { FeatureFlags } from 'common/feature-flags';
 import { DetailsViewContent } from 'DetailsView/components/details-view-content';
 import { NarrowModeDetector } from 'DetailsView/components/narrow-mode-detector';
 import { DetailsViewContainerProps } from 'DetailsView/details-view-container';
@@ -20,22 +19,25 @@ export class DetailsViewContentWithLocalState extends React.Component<
         this.state = { isSideNavOpen: false };
     }
 
-    private setSideNavOpen(isOpen: boolean): void {
+    private setSideNavOpen(isOpen: boolean, event?: React.MouseEvent<any>): void {
         this.setState({ isSideNavOpen: isOpen });
+        if (isOpen) {
+            this.props.deps.detailsViewActionMessageCreator.leftNavPanelExpanded(event!);
+        }
     }
 
     public render(): JSX.Element {
         return (
             <>
                 <NarrowModeDetector
-                    isNarrowModeEnabled={
-                        this.props.storeState.featureFlagStoreData[FeatureFlags.reflowUI]
-                    }
+                    deps={this.props.deps}
+                    isNarrowModeEnabled={true}
                     Component={DetailsViewContent}
                     childrenProps={{
                         ...this.props,
                         isSideNavOpen: this.state.isSideNavOpen,
-                        setSideNavOpen: (isOpen: boolean) => this.setSideNavOpen(isOpen),
+                        setSideNavOpen: (isOpen: boolean, event?: React.MouseEvent<any>) =>
+                            this.setSideNavOpen(isOpen, event),
                     }}
                 />
             </>

@@ -42,12 +42,18 @@ export const ReflowAssessmentView = NamedFC<ReflowAssessmentViewProps>(
     'ReflowAssessmentView',
     props => {
         const renderGettingStartedView = () => {
+            const nextRequirement = props.assessmentTestResult
+                .getRequirementResults()
+                .find(req => req.definition.order === 1).definition;
+
             return (
                 <GettingStartedView
                     deps={props.deps}
                     gettingStartedContent={props.assessmentTestResult.definition.gettingStarted}
                     title={props.assessmentTestResult.definition.title}
                     guidance={props.assessmentTestResult.definition.guidance}
+                    nextRequirement={nextRequirement}
+                    currentTest={props.assessmentTestResult.visualizationType}
                 />
             );
         };
@@ -56,6 +62,11 @@ export const ReflowAssessmentView = NamedFC<ReflowAssessmentViewProps>(
             const selectedRequirement: RequirementResult = props.assessmentTestResult.getRequirementResult(
                 props.assessmentNavState.selectedTestSubview,
             );
+
+            const nextRequirement = props.assessmentTestResult
+                .getRequirementResults()
+                .find(req => req.definition.order === selectedRequirement.definition.order + 1)
+                ?.definition;
 
             return (
                 <RequirementView
@@ -75,6 +86,7 @@ export const ReflowAssessmentView = NamedFC<ReflowAssessmentViewProps>(
                     assessmentData={props.assessmentData}
                     currentTarget={props.currentTarget}
                     prevTarget={props.prevTarget}
+                    nextRequirement={nextRequirement}
                 />
             );
         };
@@ -85,14 +97,14 @@ export const ReflowAssessmentView = NamedFC<ReflowAssessmentViewProps>(
                 : renderRequirementView();
 
         return (
-            <div>
+            <>
                 <TargetChangeDialog
                     deps={props.deps}
                     prevTab={props.prevTarget}
                     newTab={props.currentTarget}
                 />
                 {mainContent}
-            </div>
+            </>
         );
     },
 );

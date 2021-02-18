@@ -12,24 +12,20 @@ import { Messages } from 'common/messages';
 import { ManualTestStatus } from 'common/types/manual-test-status';
 import { InstanceIdToInstanceDataMap } from 'common/types/store-data/assessment-result-data';
 import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
-import { AssessmentScanData, ScanData } from 'common/types/store-data/visualization-store-data';
 import {
-    AssessmentInstanceRowData,
-    AssessmentInstanceTable,
-} from 'DetailsView/components/assessment-instance-table';
-import { AssessmentTestView } from 'DetailsView/components/assessment-test-view';
-import { RequirementLink } from 'DetailsView/components/requirement-link';
+    AssessmentScanData,
+    ScanData,
+    TestsEnabledState,
+} from 'common/types/store-data/visualization-store-data';
 import { AnalyzerProvider } from 'injected/analyzers/analyzer-provider';
 import { DecoratedAxeNodeResult } from 'injected/scanner-utils';
 import {
-    PropertyBags,
     VisualizationInstanceProcessor,
     VisualizationInstanceProcessorCallback,
 } from 'injected/visualization-instance-processor';
 import { DrawerProvider } from 'injected/visualization/drawer-provider';
 import { cloneDeep } from 'lodash';
 import { IColumn } from 'office-ui-fabric-react';
-import * as React from 'react';
 import { DictionaryStringTo } from 'types/common-types';
 import { Assessment, AssistedAssessment, ManualAssessment } from './types/iassessment';
 import { ReportInstanceField } from './types/report-instance-field';
@@ -65,13 +61,8 @@ export class AssessmentBuilder {
             requirement.getInstanceStatusColumns = AssessmentBuilder.getInstanceStatusColumns;
         }
 
-        if (!requirement.renderInstanceTableHeader) {
-            requirement.renderInstanceTableHeader = AssessmentBuilder.renderInstanceTableHeader;
-        }
-
-        if (!requirement.renderRequirementDescription) {
-            requirement.renderRequirementDescription =
-                AssessmentBuilder.renderRequirementDescription;
+        if (!requirement.instanceTableHeaderType) {
+            requirement.instanceTableHeaderType = 'default';
         }
 
         if (!requirement.getDefaultMessage) {
@@ -106,17 +97,6 @@ export class AssessmentBuilder {
                 isResizable: false,
             },
         ];
-    }
-
-    private static renderInstanceTableHeader(
-        table: AssessmentInstanceTable,
-        items: AssessmentInstanceRowData[],
-    ): JSX.Element {
-        return table.renderDefaultInstanceTableHeader(items);
-    }
-
-    private static renderRequirementDescription(requirementLink: RequirementLink): JSX.Element {
-        return requirementLink.renderRequirementDescriptionWithIndex();
     }
 
     private static enableTest(scanData: ScanData, payload: AssessmentToggleActionPayload): void {
@@ -185,10 +165,17 @@ export class AssessmentBuilder {
             return requirementConfig.getNotificationMessage(selectorMap);
         };
 
+        const getStoreData: (data: TestsEnabledState) => ScanData = data =>
+            data.assessments[`${key}Assessment`];
+
         const visualizationConfiguration: AssessmentVisualizationConfiguration = {
-            getTestView: props => <AssessmentTestView {...props} />,
-            getStoreData: data => data.assessments[`${key}Assessment`],
-            enableTest: AssessmentBuilder.enableTest,
+            testViewType: 'Assessment',
+            getStoreData: getStoreData,
+            enableTest: (data, payload) =>
+                AssessmentBuilder.enableTest(
+                    getStoreData(data),
+                    payload as AssessmentToggleActionPayload,
+                ),
             disableTest: AssessmentBuilder.disableTest,
             getTestStatus: AssessmentBuilder.getTestStatus,
             getAssessmentData: data => data.assessments[key],
@@ -273,16 +260,23 @@ export class AssessmentBuilder {
             return requirementConfig.getNotificationMessage(selectorMap);
         };
 
+        const getStoreData: (data: TestsEnabledState) => ScanData = data =>
+            data.assessments[assessment.storeDataKey];
+
         const visualizationConfiguration: AssessmentVisualizationConfiguration = {
-            getTestView: props => <AssessmentTestView {...props} />,
+            testViewType: 'Assessment',
             getAssessmentData: data => data.assessments[key],
             setAssessmentData: (data, selectorMap, instanceMap) => {
                 const thisAssessment = data.assessments[key];
                 thisAssessment.fullAxeResultsMap = selectorMap;
                 thisAssessment.generatedAssessmentInstancesMap = instanceMap;
             },
-            getStoreData: data => data.assessments[assessment.storeDataKey],
-            enableTest: AssessmentBuilder.enableTest,
+            getStoreData: getStoreData,
+            enableTest: (data, payload) =>
+                AssessmentBuilder.enableTest(
+                    getStoreData(data),
+                    payload as AssessmentToggleActionPayload,
+                ),
             disableTest: AssessmentBuilder.disableTest,
             getTestStatus: AssessmentBuilder.getTestStatus,
             telemetryProcessor: factory => factory.forAssessmentRequirementScan,
@@ -316,10 +310,8 @@ export class AssessmentBuilder {
 
     private static getVisualizationInstanceProcessor(
         requirements: Requirement[],
-    ): (requirement: string) => VisualizationInstanceProcessorCallback<PropertyBags, PropertyBags> {
-        return (
-            requirementKey: string,
-        ): VisualizationInstanceProcessorCallback<PropertyBags, PropertyBags> => {
+    ): (requirement: string) => VisualizationInstanceProcessorCallback {
+        return (requirementKey: string): VisualizationInstanceProcessorCallback => {
             const requirementConfig = AssessmentBuilder.getRequirementConfig(
                 requirements,
                 requirementKey,

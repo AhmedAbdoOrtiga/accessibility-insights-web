@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { PropertyBagColumnRendererFactory } from 'assessments/common/property-bag-column-renderer-factory';
+import { InstanceTableRow } from 'assessments/types/instance-table-data';
+import { PropertyBagColumnRendererConfig } from 'common/types/property-bag/property-bag-column-renderer-config';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { PropertyBagColumnRendererConfig } from 'assessments/common/property-bag-column-renderer';
-import { PropertyBagColumnRendererFactory } from 'assessments/common/property-bag-column-renderer-factory';
 import { ColumnValueBag } from '../../../../../common/types/property-bag/column-value-bag';
-import { AssessmentInstanceRowData } from '../../../../../DetailsView/components/assessment-instance-table';
 import { RendererWrapper } from './renderer-wrapper';
 
 interface TestPropertyBag extends ColumnValueBag {
@@ -22,7 +22,8 @@ describe('PropertyBagColumnRendererFactoryTest', () => {
             },
         ];
 
-        const item: AssessmentInstanceRowData<TestPropertyBag> = {
+        const item: InstanceTableRow<TestPropertyBag> = {
+            key: 'stub-key',
             instance: {
                 html: null,
                 target: null,

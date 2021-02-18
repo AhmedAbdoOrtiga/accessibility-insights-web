@@ -4,20 +4,20 @@ import {
     MacContrastCheckerAppLink,
     WindowsContrastCheckerAppLink,
 } from 'common/components/contrast-checker-app-links';
-import { link } from 'content/link';
-import * as content from 'content/test/contrast/ui-components';
-import * as React from 'react';
-
-import { UIComponentsPropertyBag } from '../../../common/types/property-bag/ui-components';
-import { VisualizationType } from '../../../common/types/visualization-type';
-import { AssessmentVisualizationEnabledToggle } from '../../../DetailsView/components/assessment-visualization-enabled-toggle';
-import { ScannerUtils } from '../../../injected/scanner-utils';
-import { AnalyzerConfigurationFactory } from '../../common/analyzer-configuration-factory';
-import { AssistedTestRecordYourResults } from '../../common/assisted-test-record-your-results';
 import {
     NoValue,
     PropertyBagColumnRendererConfig,
-} from '../../common/property-bag-column-renderer';
+} from 'common/types/property-bag/property-bag-column-renderer-config';
+import { UIComponentsPropertyBag } from 'common/types/property-bag/ui-components';
+import { VisualizationType } from 'common/types/visualization-type';
+import { link } from 'content/link';
+import * as content from 'content/test/contrast/ui-components';
+import { AssessmentVisualizationEnabledToggle } from 'DetailsView/components/assessment-visualization-enabled-toggle';
+import { ScannerUtils } from 'injected/scanner-utils';
+import * as React from 'react';
+
+import { AnalyzerConfigurationFactory } from '../../common/analyzer-configuration-factory';
+import { AssistedTestRecordYourResults } from '../../common/assisted-test-record-your-results';
 import { PropertyBagColumnRendererFactory } from '../../common/property-bag-column-renderer-factory';
 import { ReportInstanceField } from '../../types/report-instance-field';
 import { Requirement } from '../../types/requirement';
@@ -25,8 +25,8 @@ import { ContrastTestStep } from './test-steps';
 
 const description: JSX.Element = (
     <span>
-        Visual information used to indicate states and boundaries of active interface components
-        must have sufficient contrast.
+        Visual information used to identify active user interface components and their states must
+        have sufficient contrast.
     </span>
 );
 
@@ -42,14 +42,26 @@ const howToTest: JSX.Element = (
                 disabled or selected, no mouseover or input focus).
             </li>
             <li>
-                Use <WindowsContrastCheckerAppLink /> (or if you are testing on a Mac, the{' '}
-                <MacContrastCheckerAppLink />) to verify that the following visual presentations (if
-                implemented) have a contrast ratio of at least 3:1 against the adjacent background:
+                Use <WindowsContrastCheckerAppLink /> (or the <MacContrastCheckerAppLink /> if you
+                are testing on a Mac) to verify that the following visual information (if present)
+                has a contrast ratio of at least 3:1 against the adjacent background:
                 <ol>
-                    <li>Any visual boundary that indicates the component's clickable area</li>
-                    <li>Any visual effect that indicates the component is in its normal state</li>
+                    <li>Any visual information that's needed to identify the component</li>
+                    <ol>
+                        <li>
+                            Visual information is almost always needed to identify text inputs,
+                            checkboxes, and radio buttons.
+                        </li>
+                        <li>
+                            Visual information might not be needed to identify other components if
+                            they are identified by their position, text style, or context.
+                        </li>
+                    </ol>
+                    <li>
+                        Any visual information that indicates the component is in its normal state
+                    </li>
                 </ol>
-                Exception: A lower contrast ratio is allowed if either of the following is true:
+                Exception: No minimum contrast ratio is required if either of the following is true:
                 <ol>
                     <li>The component is inactive/disabled.</li>
                     <li>The component's appearance is determined solely by the browser.</li>

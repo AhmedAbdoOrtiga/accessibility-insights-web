@@ -1,31 +1,48 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { DateTime } from 'luxon';
 import { FormattedDate, FormattedDateProps } from 'reports/components/formatted-date';
 
 describe('FormattedDate', () => {
     describe('render', () => {
         test('end of last millennium', () => {
-            testDate(new Date(1999, 11, 31, 23, 59, 59), '1999-12-31 11:59 PM FTZ');
+            const date = DateTime.fromISO('1999-12-31T23:59:59', { zone: 'utc' }).toJSDate();
+            testDate('en-us', date, '12/31/1999, 11:59:59 PM GMT');
         });
 
         test('start of this millennium', () => {
-            testDate(new Date(2000, 0, 1, 0, 0, 0), '2000-01-01 12:00 AM FTZ');
+            const date = DateTime.fromISO('2000-01-01T00:00:00', { zone: 'utc' }).toJSDate();
+            testDate('en-us', date, '1/1/2000, 12:00:00 AM GMT');
         });
 
-        function testDate(date: Date, expected: string): void {
-            const dateWithFakeTimeZone = new Date(date);
-            dateWithFakeTimeZone.toLocaleTimeString = () => {
-                return 'blah FTZ';
-            };
-            const props: FormattedDateProps = {
-                date: dateWithFakeTimeZone,
-            };
-            const testSubject = new FormattedDate(props);
+        (platformSupportsNonEnLocales() ? test : test.skip)('German format', () => {
+            const date = DateTime.fromISO('1999-12-31T23:59:59', { zone: 'utc' }).toJSDate();
+            testDate('de', date, '31.12.1999, 23:59:59 GMT');
+        });
 
-            const actual = testSubject.render();
+        function testDate(lang: string, date: Date, expected: string): void {
+            const props: FormattedDateProps = {
+                deps: {
+                    globalization: {
+                        languageCode: lang,
+                    },
+                },
+                date,
+            };
+
+            const formattedDate = new FormattedDate(props);
+            const actual = formattedDate.render();
 
             expect(actual.props.children).toBe(expected);
-            expect(actual).toMatchSnapshot();
         }
     });
+
+    function platformSupportsNonEnLocales(): boolean {
+        // Node 14 and all modern browsers support this
+        // Node 12 supports Intl (which luxon uses), but only comes with the 'en' local
+        const stubDate = new Date();
+        const germanFormattedDate = Intl.DateTimeFormat('de').format(stubDate);
+        const englishFormattedDate = Intl.DateTimeFormat('en').format(stubDate);
+        return germanFormattedDate !== englishFormattedDate;
+    }
 });

@@ -39,9 +39,9 @@ describe('LeftNavBuilder', () => {
     let getAssessmentSummaryModelFromProviderAndStatusDataMock: IMock<GetAssessmentSummaryModelFromProviderAndStatusData>;
     let getStatusForTestMock: IMock<(stats: RequirementOutcomeStats) => ManualTestStatus>;
     let outcomeTypeFromTestStatusMock: IMock<(testStatus: ManualTestStatus) => OutcomeTypeSemantic>;
-    let outcomeStatsFromManualTestStatusMock: IMock<(
-        testStepStatus: ManualTestStatusData,
-    ) => RequirementOutcomeStats>;
+    let outcomeStatsFromManualTestStatusMock: IMock<
+        (testStepStatus: ManualTestStatusData) => RequirementOutcomeStats
+    >;
     let navLinkHandlerMock: IMock<NavLinkHandler>;
     let navLinkRendererMock: IMock<NavLinkRenderer>;
     let onRightPanelContentSwitchMock: IMock<() => void>;
@@ -331,7 +331,7 @@ describe('LeftNavBuilder', () => {
                     testType: visualizationType,
                 };
                 const expectedGettingStartedLink = {
-                    name: 'Getting Started',
+                    name: 'Getting started',
                     key: `${VisualizationType[visualizationType]}: ${gettingStartedSubview}`,
                     forceAnchor: true,
                     url: '',

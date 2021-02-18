@@ -14,7 +14,12 @@ export class LaunchPanelHeaderClickHandler {
         if (item == null) {
             return;
         }
+
         const url: string = item.data;
+
+        // the following warning is thrown incorrectly because the call to 'open' is not on the file system
+        // see bug: https://github.com/nodesecurity/eslint-plugin-security/issues/54
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         popupWindow.open(url);
     }
 
@@ -25,12 +30,7 @@ export class LaunchPanelHeaderClickHandler {
         });
     }
 
-    public onDismissFeedbackMenu(header: LaunchPanelHeader, event?: any): void {
-        header.setState({ isContextMenuVisible: false });
-    }
-
     public openAdhocToolsPanel(header: LaunchPanelHeader): void {
         header.props.openAdhocToolsPanel();
-        header.props.deps.launchPanelHeaderClickHandler.onDismissFeedbackMenu(header);
     }
 }

@@ -17,15 +17,11 @@ describe('Popup -> Launch Pad', () => {
         browser = await launchBrowser({ suppressFirstTimeDialog: true });
         targetPage = await browser.newTargetPage();
         popupPage = await browser.newPopupPage(targetPage);
-        await popupPage.bringToFront();
         await popupPage.waitForSelector(popupPageElementIdentifiers.launchPad);
     });
 
     afterAll(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     it('content should match snapshot', async () => {

@@ -5,7 +5,6 @@ import {
     withStoreSubscription,
     WithStoreSubscriptionDeps,
 } from 'common/components/with-store-subscription';
-import { FeatureFlags } from 'common/feature-flags';
 import { NamedFC } from 'common/react/named-fc';
 import {
     CurrentView,
@@ -17,7 +16,10 @@ import {
     DebugToolsNavDeps,
     DebugToolsNavState,
 } from 'debug-tools/components/debug-tools-nav';
-import { NarrowModeDetector } from 'DetailsView/components/narrow-mode-detector';
+import {
+    NarrowModeDetector,
+    NarrowModeDetectorDeps,
+} from 'DetailsView/components/narrow-mode-detector';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import * as React from 'react';
 import * as styles from './debug-tools-view.scss';
@@ -27,7 +29,8 @@ export type DebugToolsViewState = DebugToolsNavState & CurrentViewState;
 export type DebugToolsViewDeps = WithStoreSubscriptionDeps<DebugToolsViewState> &
     HeaderDeps &
     DebugToolsNavDeps &
-    CurrentViewDeps;
+    CurrentViewDeps &
+    NarrowModeDetectorDeps;
 
 export interface DebugToolsViewProps {
     deps: DebugToolsViewDeps;
@@ -43,7 +46,8 @@ export const DebugTools = NamedFC<DebugToolsViewProps>('DebugToolsView', ({ deps
     return (
         <div className={styles.debugToolsContainer}>
             <NarrowModeDetector
-                isNarrowModeEnabled={storeState.featureFlagStoreData[FeatureFlags.reflowUI]}
+                deps={deps}
+                isNarrowModeEnabled={true}
                 Component={Header}
                 childrenProps={headerProps}
             />

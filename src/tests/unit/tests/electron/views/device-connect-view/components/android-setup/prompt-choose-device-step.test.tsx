@@ -6,6 +6,7 @@ import { DeviceInfo } from 'electron/platform/android/adb-wrapper';
 import { AndroidSetupStepLayout } from 'electron/views/device-connect-view/components/android-setup/android-setup-step-layout';
 import { CommonAndroidSetupStepProps } from 'electron/views/device-connect-view/components/android-setup/android-setup-types';
 import { PromptChooseDeviceStep } from 'electron/views/device-connect-view/components/android-setup/prompt-choose-device-step';
+import { rescanAutomationId } from 'electron/views/device-connect-view/components/automation-ids';
 import { mount, shallow } from 'enzyme';
 import * as React from 'react';
 import { AndroidSetupStepPropsBuilder } from 'tests/unit/common/android-setup-step-props-builder';
@@ -59,7 +60,7 @@ describe('PromptChooseDeviceStep', () => {
 
     it('passes rescan dep through', () => {
         const rendered = shallow(<PromptChooseDeviceStep {...props} />);
-        const rescanButton = rendered.find({ 'data-automation-id': 'rescan' });
+        const rescanButton = rendered.find({ 'data-automation-id': rescanAutomationId });
         rescanButton.simulate('click');
         actionMessageCreatorMock.verify(m => m.rescan(), Times.once());
     });
@@ -68,15 +69,18 @@ describe('PromptChooseDeviceStep', () => {
         const expectedDevice: DeviceInfo = props.androidSetupStoreData.availableDevices[0];
         const stubEvent = {} as React.MouseEvent<HTMLButtonElement>;
         const rendered = mount(<PromptChooseDeviceStep {...props} />);
-        rendered.find('DeviceDescription').at(0).simulate('click');
         rendered.find(AndroidSetupStepLayout).prop('rightFooterButtonProps').onClick(stubEvent);
         actionMessageCreatorMock.verify(m => m.setSelectedDevice(expectedDevice), Times.once());
     });
 
-    it('next button becomes enabled after device is selected', () => {
+    it('next button is disabled on entry if no devices are in list (not expected in production)', () => {
+        props.androidSetupStoreData.availableDevices = [];
         const rendered = mount(<PromptChooseDeviceStep {...props} />);
         expect(rendered.find('button').at(2).props().disabled).toBeTruthy();
-        rendered.find('DeviceDescription').at(0).simulate('click');
+    });
+
+    it('next button is enabled on entry if devices are in list', () => {
+        const rendered = mount(<PromptChooseDeviceStep {...props} />);
         expect(rendered.find('button').at(2).props().disabled).toBeUndefined();
     });
 });

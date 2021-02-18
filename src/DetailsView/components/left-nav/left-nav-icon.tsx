@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import * as styles from 'DetailsView/components/left-nav/left-nav-icon.scss';
 import { css, INavLink } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { NamedFC } from '../../../common/react/named-fc';
@@ -12,7 +13,7 @@ export type LeftNavIconProps = {
 
 export const LeftNavStatusIcon = NamedFC<LeftNavIconProps>('LeftNavStatusIcon', props => {
     const { item } = props;
-    const classes = css('dark-gray', props.className);
+    const classes = css('left-nav-icon', props.className);
 
     return <StatusIcon status={item.status} className={classes} level="test" />;
 });
@@ -20,5 +21,5 @@ export const LeftNavStatusIcon = NamedFC<LeftNavIconProps>('LeftNavStatusIcon', 
 export const LeftNavIndexIcon = NamedFC<LeftNavIconProps>('LeftNavIndexIcon', props => {
     const { item } = props;
 
-    return <span className={'index-circle'}>{item.index}</span>;
+    return <span className={styles.indexCircle}>{item.index}</span>;
 });

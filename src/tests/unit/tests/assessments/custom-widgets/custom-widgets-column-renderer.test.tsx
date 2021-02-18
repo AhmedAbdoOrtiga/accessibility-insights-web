@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { customWidgetsColumnRenderer } from 'assessments/custom-widgets/custom-widgets-column-renderer';
+import { InstanceTableRow } from 'assessments/types/instance-table-data';
+import { PropertyBagColumnRendererConfig } from 'common/types/property-bag/property-bag-column-renderer-config';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { PropertyBagColumnRendererConfig } from 'assessments/common/property-bag-column-renderer';
-import { customWidgetsColumnRenderer } from 'assessments/custom-widgets/custom-widgets-column-renderer';
 import { ColumnValueBag } from '../../../../../common/types/property-bag/column-value-bag';
-import { AssessmentInstanceRowData } from '../../../../../DetailsView/components/assessment-instance-table';
 import { RendererWrapper } from '../common/renderer-wrapper';
 
 describe('CustomWidgetsColumnRenderer', () => {
     let configs: PropertyBagColumnRendererConfig<TestPropertyBag>[];
-    let item: AssessmentInstanceRowData<TestPropertyBag>;
+    let item: InstanceTableRow<TestPropertyBag>;
 
     beforeEach(() => {
         configs = [
@@ -26,6 +26,7 @@ describe('CustomWidgetsColumnRenderer', () => {
         ];
 
         item = {
+            key: 'stub-key',
             instance: {
                 html: null,
                 target: null,

@@ -15,10 +15,7 @@ describe('Details View -> Assessment -> Landmarks', () => {
     });
 
     afterEach(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     describe('Primary content', () => {
@@ -26,10 +23,9 @@ describe('Details View -> Assessment -> Landmarks', () => {
             const { detailsViewPage } = await browser.newAssessment({
                 testResourcePath: 'landmarks/no-landmarks.html',
             });
-            await detailsViewPage.navigateToTest('Landmarks');
-            await detailsViewPage.navigateToRequirement('Primary content');
+            await detailsViewPage.navigateToTestRequirement('Landmarks', 'Primary content');
 
-            await detailsViewPage.waitForRequirementStatus('Primary content', 'Passed', {
+            await detailsViewPage.waitForRequirementStatus('Primary content', '4.2', 'Passed', {
                 timeout: DEFAULT_TARGET_PAGE_SCAN_TIMEOUT_MS,
             });
         });
@@ -38,13 +34,12 @@ describe('Details View -> Assessment -> Landmarks', () => {
             const { detailsViewPage } = await browser.newAssessment({
                 testResourcePath: 'landmarks/mixed-landmarks.html',
             });
-            await detailsViewPage.navigateToTest('Landmarks');
-            await detailsViewPage.navigateToRequirement('Primary content');
+            await detailsViewPage.navigateToTestRequirement('Landmarks', 'Primary content');
 
             await detailsViewPage.waitForVisualHelperState('Off', {
                 timeout: DEFAULT_TARGET_PAGE_SCAN_TIMEOUT_MS,
             });
-            await detailsViewPage.waitForRequirementStatus('Primary content', 'Incomplete');
+            await detailsViewPage.waitForRequirementStatus('Primary content', '4.2', 'Incomplete');
         });
     });
 });

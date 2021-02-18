@@ -1,0 +1,35 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+import { shallow } from 'enzyme';
+import * as React from 'react';
+import {
+    SummaryResultsTable,
+    TableColumn,
+} from 'reports/components/report-sections/summary-results-table';
+
+describe(SummaryResultsTable, () => {
+    it('renders', () => {
+        const columns: TableColumn[] = [
+            {
+                header: 'heading1',
+                contentType: 'text',
+            },
+            {
+                header: 'heading2',
+                contentType: 'url',
+            },
+            {
+                header: 'heading3',
+                contentType: 'text',
+            },
+        ];
+        const rows = [
+            ['cell1', 'cell2', <div>cell3</div>],
+            ['cell4', 'cell5', <div>cell6</div>],
+        ];
+        const wrapped = shallow(
+            <SummaryResultsTable columns={columns} rows={rows} id="table-id" />,
+        );
+        expect(wrapped.getElement()).toMatchSnapshot();
+    });
+});

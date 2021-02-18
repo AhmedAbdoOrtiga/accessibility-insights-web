@@ -7,7 +7,7 @@ import { DictionaryStringTo } from '../../types/common-types';
 import { HtmlElementAxeResults } from '../scanner-utils';
 
 export interface HTMLIFrameResult {
-    frame: HTMLIFrameElement;
+    frame: HTMLIFrameElement | null;
     elementResults: AssessmentVisualizationInstance[];
 }
 
@@ -62,9 +62,9 @@ export class HtmlElementAxeResultsHelper {
         const missingFrames: HTMLIFrameElement[] = [];
 
         const allFramesIncludingCurrentFrames = Array.prototype.slice.call(
-            this.htmlElementUtils.getAllElementsByTagName('iframe') as HTMLCollectionOf<
-                HTMLIFrameElement
-            >,
+            this.htmlElementUtils.getAllElementsByTagName(
+                'iframe',
+            ) as HTMLCollectionOf<HTMLIFrameElement>,
         );
         allFramesIncludingCurrentFrames.push(null); // current frame
 
@@ -99,7 +99,7 @@ export class HtmlElementAxeResultsHelper {
             const elementResult = elementResults[i];
             const targetLength = elementResult.target.length;
 
-            if (elementResult.targetIndex == undefined) {
+            if (elementResult.targetIndex == null) {
                 elementResult.targetIndex = 0;
             }
             if (targetLength === elementResult.targetIndex + 1) {

@@ -1,25 +1,25 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { GuidanceLink } from 'common/guidance-links';
+import { Logger } from 'common/logging/logger';
 import { CheckData } from 'injected/element-based-view-model-creator';
-import { Logger } from '../common/logging/logger';
-import { scan as scanRunner } from '../scanner/exposed-apis';
-import { RuleResult, ScanResults } from '../scanner/iruleresults';
-import { GuidanceLink } from '../scanner/rule-to-links-mappings';
-import { ScanOptions } from '../scanner/scan-options';
-import { DictionaryStringTo } from '../types/common-types';
+import { scan as scanRunner } from 'scanner/exposed-apis';
+import { RuleResult, ScanResults } from 'scanner/iruleresults';
+import { ScanOptions } from 'scanner/scan-options';
+import { DictionaryStringTo } from 'types/common-types';
 
-declare var axe: any;
+declare let axe: any;
 
 export type DecoratedAxeNodeResult = {
-    status: boolean;
+    status?: boolean;
     ruleId: string;
-    failureSummary: string;
+    failureSummary?: string;
     selector: string;
-    html: string;
-    help: string;
-    id: string;
+    html?: string;
+    help?: string;
+    id?: string;
     guidanceLinks: GuidanceLink[];
-    helpUrl: string;
+    helpUrl?: string;
 } & CheckData;
 
 export interface HtmlElementAxeResults {
@@ -125,12 +125,12 @@ export class ScannerUtils {
     private addResultstoDictionary(
         dictionary: DictionaryStringTo<HtmlElementAxeResults>,
         axeRules: RuleResult[],
-        status: boolean,
+        status: boolean | undefined,
     ): void {
         axeRules.forEach(ruleResult => {
             ruleResult.nodes.forEach(node => {
                 const selectorKey = node.target.join(';');
-                node.instanceId = this.generateUID ? this.generateUID() : null;
+                node.instanceId = this.generateUID ? this.generateUID() : undefined;
 
                 const elementResult = dictionary[selectorKey] || {
                     target: node.target,
@@ -149,7 +149,7 @@ export class ScannerUtils {
                     html: node.html,
                     selector: selectorKey,
                     id: node.instanceId,
-                    guidanceLinks: ruleResult.guidanceLinks,
+                    guidanceLinks: ruleResult.guidanceLinks ?? [],
                     helpUrl: ruleResult.helpUrl,
                 };
             });

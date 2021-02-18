@@ -3,7 +3,7 @@
 import { ReportInstanceField } from 'assessments/types/report-instance-field';
 import { BagOf } from 'common/types/property-bag/column-value-bag';
 
-import { PropertyBagColumnRendererConfig } from 'assessments/common/property-bag-column-renderer';
+import { PropertyBagColumnRendererConfig } from 'common/types/property-bag/property-bag-column-renderer-config';
 
 describe('ReportInstanceField', () => {
     type Bag = { one?: string; two?: string; attr?: BagOf<string> };
@@ -200,6 +200,27 @@ describe('ReportInstanceField', () => {
                 const [field] = ReportInstanceField.fromColumns([config]);
                 expect(field.getValue(inst)).toEqual(innerBag);
             });
+        });
+    });
+
+    describe('fromSnippet', () => {
+        const key = 'property-key';
+        const label = 'Property label';
+
+        it('sets key and label', () => {
+            const field = ReportInstanceField.fromSnippet(key, label);
+
+            expect(field.key).toBe(key);
+            expect(field.label).toBe(label);
+        });
+
+        it('returns html', () => {
+            const htmlSnippet = 'html snippet';
+            const instanceStub = { html: htmlSnippet };
+
+            const field = ReportInstanceField.fromSnippet(key, label);
+
+            expect(field.getValue(instanceStub)).toBe(htmlSnippet);
         });
     });
 });

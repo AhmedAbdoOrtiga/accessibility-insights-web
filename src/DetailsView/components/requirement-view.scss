@@ -6,9 +6,23 @@
     margin: 0px 18px;
     padding-left: 6px;
     padding-top: 1vh;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+
+    .next-requirement-button {
+        align-self: flex-end;
+        margin-bottom: 1vh;
+        margin-top: 1vh;
+    }
 
     .main-content {
         margin-top: 10px;
+
+        h3 {
+            @include h3;
+        }
     }
 }
 
@@ -16,7 +30,7 @@
     display: flex;
     padding-top: 1.5vh;
     flex-wrap: wrap;
-    &-text {
+    :global(.visual-helper-text) {
         padding-right: 0.9vh;
         font-family: $fontFamily;
         font-size: 14px;

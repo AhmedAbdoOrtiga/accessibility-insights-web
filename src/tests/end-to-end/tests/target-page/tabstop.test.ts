@@ -22,9 +22,7 @@ describe('Tab stops visualization', () => {
     });
 
     afterEach(async () => {
-        if (browser) {
-            await browser.close();
-        }
+        await browser?.close();
     });
 
     it('should show the expected visuals in the target page after enabling from popup and tabbing through target page', async () => {
@@ -32,7 +30,6 @@ describe('Tab stops visualization', () => {
         await popupPage.gotoAdhocPanel();
         await popupPage.enableToggleByAriaLabel('Tab stops');
 
-        await targetPage.bringToFront();
         await targetPage.waitForShadowRoot();
 
         // Should highlight first element with a transparent circle

@@ -1,6 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { css } from '@uifabric/utilities';
 import { NamedFC } from 'common/react/named-fc';
+import {
+    leftFooterButtonAutomationId,
+    moreInfoLinkAutomationId,
+    rightFooterButtonAutomationId,
+} from 'electron/views/device-connect-view/components/automation-ids';
 import { DefaultButton, IButtonProps, PrimaryButton } from 'office-ui-fabric-react';
 import * as React from 'react';
 import * as styles from './android-setup-step-layout.scss';
@@ -10,12 +16,10 @@ export type AndroidSetupStepLayoutProps = {
     headerText?: string;
     moreInfoLink?: JSX.Element;
     children?: JSX.Element | JSX.Element[];
+    contentClassName?: string;
     leftFooterButtonProps: AndroidSetupFooterButtonProps;
     rightFooterButtonProps: AndroidSetupFooterButtonProps;
 };
-export const moreInfoLinkAutomationId = 'more-info-link';
-export const leftFooterButtonAutomationId = 'android-left-footer-button';
-export const rightFooterButtonAutomationId = 'android-right-footer-button';
 
 export const AndroidSetupStepLayout = NamedFC<AndroidSetupStepLayoutProps>(
     'AndroidSetupStepLayout',
@@ -34,7 +38,7 @@ export const AndroidSetupStepLayout = NamedFC<AndroidSetupStepLayoutProps>(
             <main className={styles.layoutContainer}>
                 {optionalHeader}
                 {optionalMoreInfoLink}
-                <div className={styles.content}>{props.children}</div>
+                <div className={css(styles.content, props.contentClassName)}>{props.children}</div>
                 <div className={styles.footer}>
                     <DefaultButton
                         {...props.leftFooterButtonProps}

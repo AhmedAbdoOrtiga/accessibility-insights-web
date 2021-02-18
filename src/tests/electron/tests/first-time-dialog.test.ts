@@ -1,34 +1,30 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import * as path from 'path';
 import { createApplication } from 'tests/electron/common/create-application';
-import { scanForAccessibilityIssues } from 'tests/electron/common/scan-for-accessibility-issues';
+import { scanForAccessibilityIssuesInAllModes } from 'tests/electron/common/scan-for-accessibility-issues';
 import { AppController } from 'tests/electron/common/view-controllers/app-controller';
-import { DeviceConnectionDialogController } from 'tests/electron/common/view-controllers/device-connection-dialog-controller';
-
+import { commonAdbConfigs, setupMockAdb } from 'tests/miscellaneous/mock-adb/setup-mock-adb';
 describe('first time dialog', () => {
     let app: AppController;
-    let dialog: DeviceConnectionDialogController;
 
     beforeEach(async () => {
+        await setupMockAdb(
+            commonAdbConfigs['single-device'],
+            path.basename(__filename),
+            'beforeEach',
+        );
         app = await createApplication({ suppressFirstTimeDialog: false });
-        dialog = await app.openDeviceConnectionDialog();
+        await app.openDeviceConnectionDialog();
     });
 
     afterEach(async () => {
-        dialog = null;
         if (app != null) {
             await app.stop();
         }
     });
 
-    it.each([true, false])(
-        'should pass accessibility validation with highContrastMode=%s',
-        async highContrastMode => {
-            await app.setHighContrastMode(highContrastMode);
-            await app.waitForHighContrastMode(highContrastMode);
-
-            const violations = await scanForAccessibilityIssues(dialog);
-            expect(violations).toStrictEqual([]);
-        },
-    );
+    it('should pass accessibility validation in all contrast modes', async () => {
+        await scanForAccessibilityIssuesInAllModes(app);
+    });
 });

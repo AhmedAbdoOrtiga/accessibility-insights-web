@@ -22,17 +22,12 @@ describe('Target Page issue dialog', () => {
     });
 
     afterAll(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     it('should pass accessibility validation', async () => {
         await popupPage.gotoAdhocPanel();
         await popupPage.enableToggleByAriaLabel('Automated checks');
-
-        await targetPage.bringToFront();
 
         await targetPage.clickSelectorInShadowRoot(
             TargetPageInjectedComponentSelectors.failureLabel,

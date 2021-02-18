@@ -15,9 +15,10 @@
         "./extension",
         "./node_modules",
         "./package",
+        "./packages/*/bundle",
+        "./packages/*/drop",
         "./src/assessments/color/test-steps/flashing-text-example.html",
         "./src/tests/miscellaneous/mock-adb/bin",
-        "./test-results",
         ".gitattribute",
         ".gitattributes",
         ".ignoredRevs",
@@ -25,10 +26,15 @@
         "**/*.icns",
         "**/*.scss.d.ts",
         "**/*.snap",
+        "**/*.snap.html",
         "**/*.svg",
         "**/*.mp3",
+        "**/bundle",
+        "**/drop",
+        "**/test-results",
         "Dockerfile",
-        "yarn.lock"
+        "yarn.lock",
+        ".eslintignore"
     ],
     "licenseFormats": {
         "yaml|npmrc|yml|ps1|gitignore|dockerignore|prettierignore|yarnrc|nsh": {

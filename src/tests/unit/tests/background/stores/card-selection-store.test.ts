@@ -37,7 +37,11 @@ describe('CardSelectionStore Test', () => {
         expect(defaultState.rules).toBeDefined();
     });
 
-    test('onScanCompleted', () => {
+    it.each`
+        result
+        ${'fail'}
+        ${'unknown'}
+    `('onScanCompleted', ({ result }) => {
         const initialState = getDefaultState();
 
         const payload: UnifiedScanCompletedPayload = {
@@ -45,12 +49,12 @@ describe('CardSelectionStore Test', () => {
                 {
                     ruleId: 'sampleRuleId',
                     uid: 'sampleUid1',
-                    status: 'fail',
+                    status: result,
                 } as UnifiedResult,
                 {
                     ruleId: 'sampleRuleId',
                     uid: 'sampleUid2',
-                    status: 'fail',
+                    status: result,
                 } as UnifiedResult,
             ],
             rules: [],
@@ -292,6 +296,84 @@ describe('CardSelectionStore Test', () => {
             initialState,
             expectedState,
         );
+    });
+
+    describe('navigateToNewCardsView', () => {
+        beforeEach(() => {
+            expectedState.visualHelperEnabled = true;
+        });
+
+        it('should reset the focused element', () => {
+            initialState.focusedResultUid = 'sampleUid1';
+            expectedState.focusedResultUid = null;
+
+            createStoreForCardSelectionActions('navigateToNewCardsView').testListenerToBeCalledOnce(
+                initialState,
+                expectedState,
+            );
+        });
+
+        it('should keep all rules/cards/results but set them to collapsed/unselected', () => {
+            initialState.rules = {
+                sampleRuleId1: {
+                    isExpanded: true,
+                    cards: {
+                        sampleUid1: true,
+                        sampleUid2: false,
+                    },
+                },
+                sampleRuleId2: {
+                    isExpanded: false,
+                    cards: {
+                        sampleUid1: false,
+                        sampleUid2: false,
+                    },
+                },
+            };
+            expectedState.rules = {
+                sampleRuleId1: {
+                    isExpanded: false,
+                    cards: {
+                        sampleUid1: false,
+                        sampleUid2: false,
+                    },
+                },
+                sampleRuleId2: {
+                    isExpanded: false,
+                    cards: {
+                        sampleUid1: false,
+                        sampleUid2: false,
+                    },
+                },
+            };
+
+            createStoreForCardSelectionActions('navigateToNewCardsView').testListenerToBeCalledOnce(
+                initialState,
+                expectedState,
+            );
+        });
+
+        it('should set the visualHelperToggle to enabled if there are any rules', () => {
+            initialState.visualHelperEnabled = false;
+            expectedState.visualHelperEnabled = true;
+
+            createStoreForCardSelectionActions('navigateToNewCardsView').testListenerToBeCalledOnce(
+                initialState,
+                expectedState,
+            );
+        });
+
+        it('should set the visualHelperToggle to disabled if there are no rules', () => {
+            initialState.rules = {};
+            initialState.visualHelperEnabled = true;
+            expectedState.rules = {};
+            expectedState.visualHelperEnabled = false;
+
+            createStoreForCardSelectionActions('navigateToNewCardsView').testListenerToBeCalledOnce(
+                initialState,
+                expectedState,
+            );
+        });
     });
 
     function expandRuleSelectCards(rule: RuleExpandCollapseData): void {

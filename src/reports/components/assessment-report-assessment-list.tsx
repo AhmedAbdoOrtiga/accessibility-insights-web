@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { ManualTestStatus } from 'common/types/manual-test-status';
 import * as React from 'react';
 
-import { ManualTestStatus } from 'common/types/manual-test-status';
 import { AssessmentDetailsReportModel } from '../assessment-report-model';
 import {
     AssessmentReportStepList,
@@ -24,9 +24,7 @@ export interface IconWithCountProps {
     count: number;
 }
 
-export class AssessmentReportAssessmentList extends React.Component<
-    AssessmentReportAssessmentListProps
-> {
+export class AssessmentReportAssessmentList extends React.Component<AssessmentReportAssessmentListProps> {
     public render(): JSX.Element {
         return <div>{this.renderAssessments()}</div>;
     }

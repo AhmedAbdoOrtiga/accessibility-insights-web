@@ -6,8 +6,6 @@ import { VisualizationType } from 'common/types/visualization-type';
 import { title } from 'content/strings/application';
 import { test as content } from 'content/test';
 import { excludePassingInstancesFromAssessmentReport } from 'DetailsView/extensions/exclude-passing-instances-from-assessment-report';
-import { selectFirstRequirementAfterAutomatedChecks } from 'DetailsView/extensions/select-first-requirement-after-automated-checks';
-import { waitForAllRequirementsToComplete } from 'DetailsView/extensions/wait-for-all-requirements-to-complete';
 import * as React from 'react';
 import { getDefaultRules } from 'scanner/exposed-apis';
 
@@ -19,7 +17,7 @@ const { guidance } = content.automatedChecks;
 const gettingStarted: JSX.Element = (
     <p>
         {title} automated accessibility checks can detect some of the most common accessibility
-        issues, depending on the complexity of the site or the app​​​lication.
+        issues, depending on the complexity of the site or the application.
     </p>
 );
 
@@ -33,11 +31,7 @@ const config: AssistedAssessment = {
     guidance,
     requirements: buildTestStepsFromRules(getDefaultRules()),
     requirementOrder: RequirementComparer.byOutcomeAndName,
-    extensions: [
-        waitForAllRequirementsToComplete,
-        selectFirstRequirementAfterAutomatedChecks,
-        excludePassingInstancesFromAssessmentReport,
-    ],
+    extensions: [excludePassingInstancesFromAssessmentReport],
 };
 
 export const AutomatedChecks = AssessmentBuilder.Assisted(config);

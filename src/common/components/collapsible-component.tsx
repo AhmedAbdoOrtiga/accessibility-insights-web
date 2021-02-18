@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { css } from '@uifabric/utilities';
+import * as styles from 'common/components/collapsible-component.scss';
 import { ActionButton } from 'office-ui-fabric-react';
 import * as React from 'react';
 
@@ -28,33 +29,32 @@ export class CollapsibleComponent extends React.Component<
     }
 
     private onClick = (): void => {
-        const newState = !this.state.showContent;
-        this.setState({ showContent: newState });
+        this.setState(prevState => ({ showContent: !prevState.showContent }));
     };
 
     public render(): JSX.Element {
         const showContent = this.state.showContent;
         let iconName = this.iconNameUp;
-        let content = null;
+        let content: JSX.Element | null = null;
 
         if (showContent) {
             iconName = this.iconNameDown;
             content = (
-                <div className={css(this.props.contentClassName, 'collapsible-content')}>
+                <div className={css(this.props.contentClassName, styles.collapsibleContent)}>
                     {this.props.content}
                 </div>
             );
         }
 
         return (
-            <div className={css(this.props.containerClassName, 'collapsible-component')}>
+            <div className={css(this.props.containerClassName)}>
                 <ActionButton
-                    className="collapsible"
-                    iconProps={{ iconName: iconName, class: 'collapsible-icon' }}
+                    className={styles.collapsible}
+                    iconProps={{ iconName: iconName }}
                     onClick={this.onClick}
                     aria-expanded={showContent}
                 >
-                    <span className="collapsible-title">{this.props.header}</span>
+                    <span className={styles.collapsibleTitle}>{this.props.header}</span>
                 </ActionButton>
                 {content}
             </div>

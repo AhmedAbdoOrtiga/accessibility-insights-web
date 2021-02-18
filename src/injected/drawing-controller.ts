@@ -14,7 +14,6 @@ import {
     HTMLIFrameResult,
 } from './frameCommunicators/html-element-axe-results-helper';
 import { FrameMessageResponseCallback } from './frameCommunicators/window-message-handler';
-import { RegisterDrawer } from './visualization-type-drawer-registrar';
 import { Drawer } from './visualization/drawer';
 
 export interface VisualizationWindowMessage {
@@ -44,7 +43,7 @@ export class DrawingController {
         );
     }
 
-    public registerDrawer: RegisterDrawer = (id: string, drawer: Drawer) => {
+    public registerDrawer = (id: string, drawer: Drawer) => {
         if (this.drawers[id]) {
             throw new Error(`Drawer already registered to id: ${id}`);
         }
@@ -168,9 +167,9 @@ export class DrawingController {
     }
 
     private getAllFrames(): HTMLCollectionOf<HTMLIFrameElement> {
-        return this.htmlElementUtils.getAllElementsByTagName('iframe') as HTMLCollectionOf<
-            HTMLIFrameElement
-        >;
+        return this.htmlElementUtils.getAllElementsByTagName(
+            'iframe',
+        ) as HTMLCollectionOf<HTMLIFrameElement>;
     }
 
     private getDrawer(configId: string): Drawer {

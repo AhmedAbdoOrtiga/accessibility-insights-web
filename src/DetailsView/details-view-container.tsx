@@ -4,12 +4,13 @@ import { Header, HeaderProps } from 'common/components/header';
 import { GetCardSelectionViewData } from 'common/get-card-selection-view-data';
 import { IsResultHighlightUnavailable } from 'common/is-result-highlight-unavailable';
 import { CardSelectionStoreData } from 'common/types/store-data/card-selection-store-data';
+import { DetailsViewContentWithLocalState } from 'DetailsView/components/details-view-content-with-local-state';
+import {
+    NarrowModeDetector,
+    NarrowModeDetectorDeps,
+} from 'DetailsView/components/narrow-mode-detector';
 import { ISelection, Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import * as React from 'react';
-
-import { FeatureFlags } from 'common/feature-flags';
-import { DetailsViewContentWithLocalState } from 'DetailsView/components/details-view-content-with-local-state';
-import { NarrowModeDetector } from 'DetailsView/components/narrow-mode-detector';
 import { ThemeDeps } from '../common/components/theme';
 import {
     withStoreSubscription,
@@ -35,6 +36,7 @@ import { DetailsViewCommandBarDeps } from './components/details-view-command-bar
 import { DetailsViewOverlayDeps } from './components/details-view-overlay/details-view-overlay';
 import {
     DetailsRightPanelConfiguration,
+    DetailsViewContentDeps,
     GetDetailsRightPanelConfiguration,
 } from './components/details-view-right-panel';
 import { GetDetailsSwitcherNavConfiguration } from './components/details-view-switcher-nav';
@@ -67,7 +69,9 @@ export type DetailsViewContainerDeps = {
     InteractiveHeaderDeps &
     WithStoreSubscriptionDeps<DetailsViewContainerState> &
     ThemeDeps &
-    TargetChangeDialogDeps;
+    TargetChangeDialogDeps &
+    NarrowModeDetectorDeps &
+    DetailsViewContentDeps;
 
 export interface DetailsViewContainerProps {
     deps: DetailsViewContainerDeps;
@@ -100,10 +104,8 @@ export class DetailsViewContainer extends React.Component<DetailsViewContainerPr
             return (
                 <>
                     <NarrowModeDetector
-                        isNarrowModeEnabled={
-                            this.hasStores() &&
-                            this.props.storeState.featureFlagStoreData[FeatureFlags.reflowUI]
-                        }
+                        deps={this.props.deps}
+                        isNarrowModeEnabled={this.hasStores()}
                         Component={Header}
                         childrenProps={headerProps}
                     />

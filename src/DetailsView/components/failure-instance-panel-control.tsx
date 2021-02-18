@@ -1,6 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { AssessmentsProvider } from 'assessments/types/assessments-provider';
+import { FlaggedComponent } from 'common/components/flagged-component';
+import { FeatureFlags } from 'common/feature-flags';
+import { FailureInstanceData } from 'common/types/failure-instance-data';
+import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
+import { VisualizationType } from 'common/types/visualization-type';
 import { clone, isEqual } from 'lodash';
 import { ActionButton } from 'office-ui-fabric-react';
 import { Icon } from 'office-ui-fabric-react';
@@ -9,10 +14,6 @@ import { Link } from 'office-ui-fabric-react';
 import { ITextFieldStyles, TextField } from 'office-ui-fabric-react';
 import * as React from 'react';
 
-import { FlaggedComponent } from '../../common/components/flagged-component';
-import { FeatureFlags } from '../../common/feature-flags';
-import { FeatureFlagStoreData } from '../../common/types/store-data/feature-flag-store-data';
-import { VisualizationType } from '../../common/types/visualization-type';
 import { ActionAndCancelButtonsComponent } from './action-and-cancel-buttons-component';
 import { FailureInstancePanelDetails } from './failure-instance-panel-details';
 import * as styles from './failure-instance-panel.scss';
@@ -31,12 +32,6 @@ export interface FailureInstancePanelControlProps {
     assessmentsProvider: AssessmentsProvider;
     featureFlagStoreData: FeatureFlagStoreData;
 }
-
-export type FailureInstanceData = {
-    failureDescription?: string;
-    path?: string;
-    snippet?: string;
-};
 
 export interface FailureInstancePanelControlState {
     isPanelOpen: boolean;
@@ -74,11 +69,11 @@ export class FailureInstancePanelControl extends React.Component<
 
     public componentDidUpdate(prevProps: Readonly<FailureInstancePanelControlProps>): void {
         if (isEqual(prevProps, this.props) === false) {
-            this.setState(() => ({
+            this.setState((prevState, prevProps) => ({
                 currentInstance: {
-                    failureDescription: this.state.currentInstance.failureDescription,
-                    path: this.props.failureInstance.path,
-                    snippet: this.props.failureInstance.snippet,
+                    failureDescription: prevState.currentInstance.failureDescription,
+                    path: prevProps.failureInstance.path,
+                    snippet: prevProps.failureInstance.snippet,
                 },
             }));
         }
@@ -203,15 +198,21 @@ export class FailureInstancePanelControl extends React.Component<
     };
 
     protected onFailureDescriptionChange = (event, value: string): void => {
-        const updatedInstance = clone(this.state.currentInstance);
-        updatedInstance.failureDescription = value;
-        this.setState({ currentInstance: updatedInstance });
+        this.setState(prevState => {
+            const updatedInstance = clone(prevState.currentInstance);
+            updatedInstance.failureDescription = value;
+
+            return { currentInstance: updatedInstance };
+        });
     };
 
     private onSelectorChange = (event, value: string): void => {
-        const updatedInstance = clone(this.state.currentInstance);
-        updatedInstance.path = value;
-        this.setState({ currentInstance: updatedInstance });
+        this.setState(prevState => {
+            const updatedInstance = clone(prevState.currentInstance);
+            updatedInstance.path = value;
+
+            return { currentInstance: updatedInstance };
+        });
     };
 
     private onValidateSelector = (event): void => {

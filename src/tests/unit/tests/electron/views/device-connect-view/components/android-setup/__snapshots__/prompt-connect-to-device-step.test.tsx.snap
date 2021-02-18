@@ -19,11 +19,14 @@ exports[`PromptConnectToDeviceStep renders per snapshot 1`] = `
   rightFooterButtonProps={
     Object {
       "disabled": true,
-      "onClick": null,
+      "onClick": undefined,
       "text": "Next",
     }
   }
 >
+  <p>
+    Connect a hardware device to your computer via USB, or run a virtual device in Android Studio or the Android Virtual Device Manager.
+  </p>
   <CustomizedPrimaryButton
     className="detectButton"
     data-automation-id="detect-device"

@@ -45,7 +45,8 @@ export type SupportedMouseEvent =
     | MouseEvent
     | React.MouseEvent<HTMLElement>
     | React.KeyboardEvent<HTMLElement>
-    | React.SyntheticEvent<Element, Event>;
+    | React.SyntheticEvent<Element, Event>
+    | undefined;
 
 export class TelemetryDataFactory {
     public forVisualizationToggleByCommand(enabled: boolean): ToggleTelemetryData {
@@ -299,11 +300,16 @@ export class TelemetryDataFactory {
         analyzerResult,
         scanDuration,
         elementsScanned,
-        testName,
+        testVisualizationType,
         requirementName,
     ) => {
         const telemetry: AssessmentRequirementScanTelemetryData = {
-            ...this.forTestScan(analyzerResult, scanDuration, elementsScanned, testName),
+            ...this.forTestScan(
+                analyzerResult,
+                scanDuration,
+                elementsScanned,
+                testVisualizationType,
+            ),
             requirementName,
         };
 
@@ -314,14 +320,14 @@ export class TelemetryDataFactory {
         analyzerResult,
         scanDuration,
         elementsScanned,
-        testName,
+        testVisualizationType,
     ) => {
         const telemetry: RuleAnalyzerScanTelemetryData = {
             scanDuration: scanDuration,
             NumberOfElementsScanned: elementsScanned,
             include: analyzerResult.include,
             exclude: analyzerResult.exclude,
-            testName,
+            testName: VisualizationType[testVisualizationType],
         };
 
         return telemetry;
@@ -331,7 +337,7 @@ export class TelemetryDataFactory {
         analyzerResult,
         scanDuration,
         elementsScanned,
-        testName,
+        testVisualizationType,
     ) => {
         const passedRuleResults: DictionaryStringTo<number> = this.generateTelemetryRuleResult(
             analyzerResult.originalResult.passes,
@@ -340,7 +346,12 @@ export class TelemetryDataFactory {
             analyzerResult.originalResult.violations,
         );
         const telemetry: IssuesAnalyzerScanTelemetryData = {
-            ...this.forTestScan(analyzerResult, scanDuration, elementsScanned, testName),
+            ...this.forTestScan(
+                analyzerResult,
+                scanDuration,
+                elementsScanned,
+                testVisualizationType,
+            ),
             passedRuleResults: JSON.stringify(passedRuleResults),
             failedRuleResults: JSON.stringify(failedRuleResults),
         };
@@ -352,7 +363,7 @@ export class TelemetryDataFactory {
         analyzerResult,
         scanDuration,
         elementsScanned,
-        testName,
+        testVisualizationType,
     ) => {
         const passedRuleResults: DictionaryStringTo<number> = this.generateTelemetryRuleResult(
             analyzerResult.originalResult.passes,
@@ -364,7 +375,12 @@ export class TelemetryDataFactory {
             analyzerResult.originalResult.incomplete,
         );
         const telemetry: NeedsReviewAnalyzerScanTelemetryData = {
-            ...this.forTestScan(analyzerResult, scanDuration, elementsScanned, testName),
+            ...this.forTestScan(
+                analyzerResult,
+                scanDuration,
+                elementsScanned,
+                testVisualizationType,
+            ),
             passedRuleResults: JSON.stringify(passedRuleResults),
             failedRuleResults: JSON.stringify(failedRuleResults),
             incompleteRuleResults: JSON.stringify(incompleteRuleResults),
@@ -372,6 +388,13 @@ export class TelemetryDataFactory {
 
         return telemetry;
     };
+
+    public forLeftNavPanelExpanded(event: SupportedMouseEvent): BaseTelemetryData {
+        return {
+            source: TelemetryEventSource.DetailsView,
+            triggeredBy: this.getTriggeredBy(event),
+        };
+    }
 
     private getTriggeredBy(event: SupportedMouseEvent): TriggeredBy {
         // MouseEvent => event.detail === 0 ? "keypress" : "mouseclick"

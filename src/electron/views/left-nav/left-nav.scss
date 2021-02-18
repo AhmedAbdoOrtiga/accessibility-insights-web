@@ -1,0 +1,30 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+@import '../../../common/styles/common.scss';
+
+.left-nav {
+    display: flex;
+    flex-direction: column;
+    min-width: $reflowLeftNavWidth;
+    max-width: $reflowLeftNavWidth;
+    border-right: $reflowLeftNavBorderWidth solid $neutral-alpha-8;
+    background-color: $neutral-0;
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        border-bottom: 1px solid $neutral-alpha-8;
+
+        .rocket-icon {
+            padding-left: 16px;
+            padding-right: 16px;
+            font-size: 18px;
+        }
+
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+    }
+}

@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-const androidServiceBin = require('accessibility-insights-for-android-service-bin');
-const merge = require('lodash/merge');
 const path = require('path');
-const sass = require('node-sass');
-const targets = require('./targets.config');
+const androidServiceBin = require('accessibility-insights-for-android-service-bin');
 const yaml = require('js-yaml');
+const merge = require('lodash/merge');
+const sass = require('sass');
+const targets = require('./targets.config');
 
 module.exports = function (grunt) {
     const pkgPath = path.resolve('./node_modules/.bin/pkg');
@@ -14,18 +14,19 @@ module.exports = function (grunt) {
 
     const extensionPath = 'extension';
 
-    const packageReportPath = path.join('package', 'report');
+    const packageReportPath = path.join('packages', 'report');
     const packageReportBundlePath = path.join(packageReportPath, 'bundle');
     const packageReportDropPath = path.join(packageReportPath, 'drop');
 
-    const packageUIPath = path.join('package', 'ui');
+    const packageUIPath = path.join('packages', 'ui');
     const packageUIBundlePath = path.join(packageUIPath, 'bundle');
     const packageUIDropPath = path.join(packageUIPath, 'drop');
 
     const mockAdbAppPath = path.resolve('./src/tests/miscellaneous/mock-adb/app');
     const mockAdbBinSrcPath = path.join(mockAdbAppPath, 'bin.js');
     const mockAdbBinFilename = process.platform === 'win32' ? 'adb.exe' : 'adb';
-    const mockAdbBinOutPath = path.join('drop', 'mock-adb', mockAdbBinFilename);
+    const mockAdbDropPath = path.join('drop', 'mock-adb');
+    const mockAdbBinOutPath = path.join(mockAdbDropPath, mockAdbBinFilename);
 
     function mustExist(file, reason) {
         const normalizedFile = path.normalize(file);
@@ -44,6 +45,10 @@ module.exports = function (grunt) {
         },
         clean: {
             intermediates: ['dist', extensionPath],
+            'mock-adb': mockAdbDropPath,
+            'package-report': packageReportDropPath,
+            'package-ui': packageUIDropPath,
+            scss: path.join('src', '**/*.scss.d.ts'),
         },
         concurrent: {
             'webpack-all': ['exec:webpack-dev', 'exec:webpack-unified', 'exec:webpack-prod'],
@@ -144,12 +149,6 @@ module.exports = function (grunt) {
                         cwd: '.',
                         src: './src/reports/package/accessibilityInsightsReport.d.ts',
                         dest: path.join(packageReportDropPath, 'index.d.ts'),
-                    },
-                    {
-                        cwd: './src/reports/package/root',
-                        src: '*',
-                        dest: packageReportDropPath,
-                        expand: true,
                     },
                 ],
             },
@@ -287,6 +286,10 @@ module.exports = function (grunt) {
         if (productCategory === 'electron') {
             productCategorySpecificCopyFiles.push(
                 {
+                    src: 'src/electron/resources/license_en.txt',
+                    dest: `${dropExtensionPath}/LICENSE`,
+                },
+                {
                     src: androidServiceBin.apkPath,
                     // This should be kept in sync with android-service-apk.ts
                     dest: path.join(dropExtensionPath, 'android-service', 'android-service.apk'),
@@ -300,6 +303,11 @@ module.exports = function (grunt) {
                     ),
                 },
             );
+        } else {
+            productCategorySpecificCopyFiles.push({
+                src: 'LICENSE',
+                dest: `${dropExtensionPath}/LICENSE`,
+            });
         }
 
         grunt.config.merge({
@@ -325,9 +333,6 @@ module.exports = function (grunt) {
             },
             clean: {
                 [targetName]: dropPath,
-                'package-report': packageReportDropPath,
-                'package-ui': packageUIDropPath,
-                scss: path.join('src', '**/*.scss.d.ts'),
             },
             'embed-styles': {
                 [targetName]: {
@@ -390,12 +395,13 @@ module.exports = function (grunt) {
             grunt.log.writeln(`embedding style in ${src}`);
             const fileOptions = { options: { encoding: 'utf8' } };
             const input = grunt.file.read(src, fileOptions);
+            // eslint-disable-next-line no-useless-escape
             const rex = /\<\<CSS:([a-zA-Z\-\.\/]+)\>\>/g;
             const output = input.replace(rex, (_, cssName) => {
                 const cssFile = path.resolve(cssPath, cssName);
                 grunt.log.writeln(`    embedding from ${cssFile}`);
                 const styles = grunt.file.read(cssFile, fileOptions);
-                return styles.replace(/\n/g, '\\\n');
+                return styles.replace(/"/g, '\\"').replace(/\n/g, '\\\n');
             });
             grunt.file.write(dest, output, fileOptions);
             grunt.log.writeln(`    written to ${dest}`);
@@ -433,14 +439,14 @@ module.exports = function (grunt) {
             name: config.options.fullName,
             description: config.options.extensionDescription,
             icons: {
-                '16': config.options.icon16,
-                '48': config.options.icon48,
-                '128': config.options.icon128,
+                16: config.options.icon16,
+                48: config.options.icon48,
+                128: config.options.icon128,
             },
             browser_action: {
                 default_icon: {
-                    '20': config.options.icon16,
-                    '40': config.options.icon48,
+                    20: config.options.icon16,
+                    40: config.options.icon48,
                 },
             },
         });
@@ -471,6 +477,7 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('configure-electron-builder', function () {
         grunt.task.requires('drop:' + this.target);
         const { dropPath, electronIconBaseName, fullName, appId, publishUrl } = this.data;
+        const productDir = `${dropPath}/product`;
 
         const outElectronBuilderConfigFile = path.join(dropPath, 'electron-builder.yml');
         const srcElectronBuilderConfigFile = path.join(
@@ -486,7 +493,6 @@ module.exports = function (grunt) {
         config.appId = appId;
         config.directories.app = dropPath;
         config.directories.output = `${dropPath}/packed`;
-        config.extraResources[0].from = `${dropPath}/product/android-service`;
         config.extraMetadata.version = version;
         config.win.icon = `src/${electronIconBaseName}.ico`;
         // electron-builder infers the linux icon from the mac one
@@ -498,7 +504,26 @@ module.exports = function (grunt) {
         // See electron-userland/electron-builder#3547 and AppImage/AppImageKit#678
         config.linux.artifactName = fullName.replace(/ (- )?/g, '_') + '.${ext}';
 
-        const configFileContent = yaml.safeDump(config);
+        for (const fileset of [...config.extraResources, ...config.extraFiles]) {
+            fileset.from = fileset.from.replace(/TARGET_SPECIFIC_PRODUCT_DIR/g, productDir);
+        }
+
+        // Manually copying the license files is a workaround for electron-builder #1495.
+        // On win/linux builds these are automatically included, but in Mac they are omitted.
+        if (process.platform === 'darwin') {
+            config.extraFiles.push(
+                {
+                    from: 'node_modules/electron/dist/LICENSE',
+                    to: 'LICENSE.electron.txt',
+                },
+                {
+                    from: 'node_modules/electron/dist/LICENSES.chromium.html',
+                    to: 'LICENSES.chromium.html',
+                },
+            );
+        }
+
+        const configFileContent = yaml.dump(config);
         grunt.file.write(outElectronBuilderConfigFile, configFileContent);
         grunt.log.writeln(`generated ${outElectronBuilderConfigFile} from target config`);
     });
@@ -650,15 +675,11 @@ module.exports = function (grunt) {
         'build-assets',
         'drop:unified-dev',
     ]);
-    grunt.registerTask('build-unified-all', [
-        'clean:intermediates',
-        'exec:generate-scss-typings',
-        'exec:pkg-mock-adb',
-        'exec:webpack-unified',
-        'build-assets',
-        'drop:unified-dev',
-        'unified-release-drops',
+    grunt.registerTask('build-unified-canary', [
+        'build-unified',
+        'unified-release-drop:unified-canary',
     ]);
+    grunt.registerTask('build-unified-all', ['build-unified', 'unified-release-drops']);
     grunt.registerTask('build-package-report', [
         'clean:intermediates',
         'exec:generate-scss-typings',

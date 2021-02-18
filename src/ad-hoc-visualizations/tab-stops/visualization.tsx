@@ -8,15 +8,14 @@ import { VisualizationType } from 'common/types/visualization-type';
 import { generateUID } from 'common/uid-generator';
 import { adhoc as content } from 'content/adhoc';
 import { createHowToTest } from 'content/adhoc/tabstops/how-to-test';
-import { AdhocStaticTestView } from 'DetailsView/components/adhoc-static-test-view';
 import { FocusAnalyzerConfiguration } from 'injected/analyzers/analyzer';
 import { VisualizationInstanceProcessor } from 'injected/visualization-instance-processor';
-import * as React from 'react';
 
 const { guidance, extraGuidance } = content.tabstops;
+const tabStopsTestKey = AdHocTestkeys.TabStops;
 
 const tabStopVisualizationConfiguration: FocusAnalyzerConfiguration = {
-    key: AdHocTestkeys.TabStops,
+    key: tabStopsTestKey,
     testType: VisualizationType.TabStops,
     analyzerMessageType: Messages.Visualizations.Common.ScanCompleted,
     analyzerProgressMessageType: Messages.Visualizations.TabStops.TabbedElementAdded,
@@ -24,15 +23,18 @@ const tabStopVisualizationConfiguration: FocusAnalyzerConfiguration = {
 };
 
 export const TabStopsAdHocVisualization: VisualizationConfiguration = {
-    getTestView: props => (
-        <AdhocStaticTestView content={createHowToTest(2)} guidance={extraGuidance} {...props} />
-    ),
-    key: AdHocTestkeys.TabStops,
+    key: tabStopsTestKey,
     testMode: TestMode.Adhoc,
-    getStoreData: data => data.adhoc.tabStops,
-    enableTest: (data, _) => (data.enabled = true),
+    testViewType: 'AdhocStatic',
+    testViewOverrides: {
+        content: createHowToTest(2),
+        guidance: extraGuidance,
+    },
+    getStoreData: data => data.adhoc[tabStopsTestKey],
+    enableTest: (data, _) => (data.adhoc[tabStopsTestKey].enabled = true),
     disableTest: data => (data.enabled = false),
     getTestStatus: data => data.enabled,
+    shouldShowExportReport: () => false,
     displayableData: {
         title: 'Tab stops',
         enableMessage: 'Start pressing Tab to start visualizing tab stops.',
@@ -46,7 +48,7 @@ export const TabStopsAdHocVisualization: VisualizationConfiguration = {
     analyzerTerminatedMessageType: Messages.Visualizations.TabStops.TerminateScan,
     getAnalyzer: provider =>
         provider.createFocusTrackingAnalyzer(tabStopVisualizationConfiguration),
-    getIdentifier: () => AdHocTestkeys.TabStops,
+    getIdentifier: () => tabStopsTestKey,
     visualizationInstanceProcessor: () => VisualizationInstanceProcessor.nullProcessor,
     getDrawer: provider => provider.createSVGDrawer(),
     getNotificationMessage: selectorMap => 'Start pressing Tab to start visualizing tab stops.',

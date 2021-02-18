@@ -23,10 +23,7 @@ describe('Target Page visualization boxes', () => {
     });
 
     afterEach(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     const adhocTools = ['Landmarks', 'Headings', 'Automated checks'];
@@ -37,8 +34,8 @@ describe('Target Page visualization boxes', () => {
             await popupPage.enableToggleByAriaLabel(adhocTool);
 
             await targetPage.waitForSelectorInShadowRoot(
-                TargetPageInjectedComponentSelectors.insightsVisualizationBox,
-                { visible: true },
+                TargetPageInjectedComponentSelectors.insightsVisualizationContainer,
+                { state: 'attached' },
             );
 
             const results = await scanForAccessibilityIssues(

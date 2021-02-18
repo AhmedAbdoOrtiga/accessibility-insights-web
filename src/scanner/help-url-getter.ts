@@ -3,14 +3,19 @@
 import { RuleConfiguration } from './iruleresults';
 
 export class HelpUrlGetter {
-    constructor(private readonly ruleConfigs: RuleConfiguration[]) {}
+    constructor(
+        private readonly ruleConfigs: RuleConfiguration[],
+        private readonly getA11yInsightsHelpUrl: (ruleId: string) => string | null,
+    ) {}
 
-    public getHelpUrl(ruleId: string, axeHelpUrl: string): string {
+    public getHelpUrl(ruleId: string, axeHelpUrl?: string): string | undefined {
         const customHelpUrl = this.getCustomHelpUrl(ruleId);
-        return customHelpUrl || axeHelpUrl;
+        const a11yInsightsHelpUrl = this.getA11yInsightsHelpUrl(ruleId);
+
+        return customHelpUrl || a11yInsightsHelpUrl || axeHelpUrl;
     }
 
-    private getCustomHelpUrl(ruleId: string): string {
+    private getCustomHelpUrl(ruleId: string): string | null {
         for (let index = 0; index < this.ruleConfigs.length; index++) {
             const config = this.ruleConfigs[index];
             if (config.rule.id === ruleId && config.rule.helpUrl != null) {

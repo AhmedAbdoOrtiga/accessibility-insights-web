@@ -1,105 +1,719 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DetailsViewCommandBar renders with buttons collapsed into a menu 1`] = `
-"<div className=\\"detailsViewCommandBar\\">
+"<div className=\\"detailsViewCommandBar\\" role=\\"region\\" aria-label=\\"command bar\\">
   <div className=\\"detailsViewTargetPage\\" aria-labelledby=\\"switch-to-target\\">
     <span id=\\"switch-to-target\\">
       Target page: 
     </span>
-    <StyledTooltipHostBase content=\\"Switch to target page: command-bar-test-tab-title\\" styles={{...}}>
-      <StyledLinkBase role=\\"link\\" className=\\"insights-link targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
-        <span className=\\"targetPageTitle\\">
-          command-bar-test-tab-title
-        </span>
-      </StyledLinkBase>
-    </StyledTooltipHostBase>
+    <NewTabLinkWithTooltip tooltipContent=\\"Switch to target page: command-bar-test-tab-title\\" role=\\"link\\" className=\\"targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
+      <span className=\\"targetPageTitle\\">
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
   </div>
-  <CommandBarButtonsMenu deps={{...}} tabStoreData={{...}} switcherNavConfiguration={{...}} scanMetadata={{...}} narrowModeStatus={{...}} />
+  <CommandBarButtonsMenu renderExportReportButton={[Function]} renderSaveAssessmentButton={[Function]} renderLoadAssessmentButton={[Function]} featureFlagStoreData={{...}} getStartOverMenuItem={[Function]} buttonRef={[Function: buttonRef]} />
+  <StartOverDialog deps={{...}} tabStoreData={{...}} switcherNavConfiguration={{...}} scanMetadata={{...}} narrowModeStatus={{...}} featureFlagStoreData={{...}} dialogState=\\"none\\" dismissDialog={[Function]} />
 </div>"
 `;
 
-exports[`DetailsViewCommandBar renders with export button, with start over 1`] = `
-"<div className=\\"detailsViewCommandBar\\">
-  <div className=\\"detailsViewTargetPage\\" aria-labelledby=\\"switch-to-target\\">
-    <span id=\\"switch-to-target\\">
+exports[`DetailsViewCommandBar renders with export button, save assessment, load, assessment, and start over 1`] = `
+<div
+  aria-label="command bar"
+  className="detailsViewCommandBar"
+  role="region"
+>
+  <div
+    aria-labelledby="switch-to-target"
+    className="detailsViewTargetPage"
+  >
+    <span
+      id="switch-to-target"
+    >
       Target page: 
     </span>
-    <StyledTooltipHostBase content=\\"Switch to target page: command-bar-test-tab-title\\" styles={{...}}>
-      <StyledLinkBase role=\\"link\\" className=\\"insights-link targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
-        <span className=\\"targetPageTitle\\">
-          command-bar-test-tab-title
-        </span>
-      </StyledLinkBase>
-    </StyledTooltipHostBase>
+    <NewTabLinkWithTooltip
+      aria-label="Switch to target page: command-bar-test-tab-title"
+      className="targetPageLink"
+      onClick={[Function]}
+      role="link"
+      tooltipContent="Switch to target page: command-bar-test-tab-title"
+    >
+      <span
+        className="targetPageTitle"
+      >
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
   </div>
-  <div className=\\"detailsViewCommandButtons\\">
-    <CustomizedActionButton>
-      Report Export Component
-    </CustomizedActionButton>
+  <div
+    className="detailsViewCommandButtons"
+  >
+    <ReportExportButton
+      buttonRef={[Function]}
+      showReportExportDialog={[Function]}
+    />
+    <div>
+      Save assessment
+    </div>
+    <LoadAssessmentButton
+      deps={
+        Object {
+          "detailsViewActionMessageCreator": proxy {
+            "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+            "addPathForValidation": [Function],
+            "cancelStartOver": [Function],
+            "cancelStartOverAllAssessments": [Function],
+            "changeAssessmentVisualizationState": [Function],
+            "changeManualRequirementStatus": [Function],
+            "changeManualTestStatus": [Function],
+            "clearPathSnippetData": [Function],
+            "closePreviewFeaturesPanel": [Function],
+            "closeScopingPanel": [Function],
+            "closeSettingsPanel": [Function],
+            "continuePreviousAssessment": [Function],
+            "copyIssueDetailsClicked": [Function],
+            "dispatcher": undefined,
+            "editFailureInstance": [Function],
+            "leftNavPanelExpanded": [Function],
+            "loadAssessment": [Function],
+            "removeFailureInstance": [Function],
+            "rescanVisualization": [Function],
+            "setAllUrlsPermissionState": [Function],
+            "setFeatureFlag": [Function],
+            "startOverAllAssessments": [Function],
+            "switchToTargetTab": [Function],
+            "telemetryFactory": undefined,
+            "undoManualRequirementStatusChange": [Function],
+            "undoManualTestStatusChange": [Function],
+          },
+        }
+      }
+      featureFlagStoreData={
+        Object {
+          "saveAndLoadAssessment": true,
+        }
+      }
+      narrowModeStatus={
+        Object {
+          "isCommandBarCollapsed": false,
+        }
+      }
+      scanMetadata={
+        Object {
+          "targetAppInfo": Object {
+            "name": "command-bar-test-tab-title",
+            "url": "command-bar-test-url",
+          },
+        }
+      }
+      switcherNavConfiguration={
+        Object {
+          "CommandBar": [Function],
+          "LeftNav": [Function],
+          "ReportExportDialogFactory": [Function],
+          "SaveAssessmentFactory": [Function],
+          "StartOverComponentFactory": Object {
+            "getStartOverComponent": [Function],
+          },
+          "shouldShowReportExportButton": [Function],
+        }
+      }
+      tabStoreData={
+        Object {
+          "isClosed": false,
+          "title": "command-bar-test-tab-title",
+        }
+      }
+    />
     <CustomizedActionButton>
       Start Over Component
     </CustomizedActionButton>
   </div>
-</div>"
+  <div>
+    Export dialog
+  </div>
+  <StartOverDialog
+    deps={
+      Object {
+        "detailsViewActionMessageCreator": proxy {
+          "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+          "addPathForValidation": [Function],
+          "cancelStartOver": [Function],
+          "cancelStartOverAllAssessments": [Function],
+          "changeAssessmentVisualizationState": [Function],
+          "changeManualRequirementStatus": [Function],
+          "changeManualTestStatus": [Function],
+          "clearPathSnippetData": [Function],
+          "closePreviewFeaturesPanel": [Function],
+          "closeScopingPanel": [Function],
+          "closeSettingsPanel": [Function],
+          "continuePreviousAssessment": [Function],
+          "copyIssueDetailsClicked": [Function],
+          "dispatcher": undefined,
+          "editFailureInstance": [Function],
+          "leftNavPanelExpanded": [Function],
+          "loadAssessment": [Function],
+          "removeFailureInstance": [Function],
+          "rescanVisualization": [Function],
+          "setAllUrlsPermissionState": [Function],
+          "setFeatureFlag": [Function],
+          "startOverAllAssessments": [Function],
+          "switchToTargetTab": [Function],
+          "telemetryFactory": undefined,
+          "undoManualRequirementStatusChange": [Function],
+          "undoManualTestStatusChange": [Function],
+        },
+      }
+    }
+    dialogState="none"
+    dismissDialog={[Function]}
+    featureFlagStoreData={
+      Object {
+        "saveAndLoadAssessment": true,
+      }
+    }
+    narrowModeStatus={
+      Object {
+        "isCommandBarCollapsed": false,
+      }
+    }
+    scanMetadata={
+      Object {
+        "targetAppInfo": Object {
+          "name": "command-bar-test-tab-title",
+          "url": "command-bar-test-url",
+        },
+      }
+    }
+    switcherNavConfiguration={
+      Object {
+        "CommandBar": [Function],
+        "LeftNav": [Function],
+        "ReportExportDialogFactory": [Function],
+        "SaveAssessmentFactory": [Function],
+        "StartOverComponentFactory": Object {
+          "getStartOverComponent": [Function],
+        },
+        "shouldShowReportExportButton": [Function],
+      }
+    }
+    tabStoreData={
+      Object {
+        "isClosed": false,
+        "title": "command-bar-test-tab-title",
+      }
+    }
+  />
+</div>
 `;
 
-exports[`DetailsViewCommandBar renders with export button, without start over 1`] = `
-"<div className=\\"detailsViewCommandBar\\">
+exports[`DetailsViewCommandBar renders with export button, without save assessment, without load assessment, without start over 1`] = `
+<div
+  aria-label="command bar"
+  className="detailsViewCommandBar"
+  role="region"
+>
+  <div
+    aria-labelledby="switch-to-target"
+    className="detailsViewTargetPage"
+  >
+    <span
+      id="switch-to-target"
+    >
+      Target page: 
+    </span>
+    <NewTabLinkWithTooltip
+      aria-label="Switch to target page: command-bar-test-tab-title"
+      className="targetPageLink"
+      onClick={[Function]}
+      role="link"
+      tooltipContent="Switch to target page: command-bar-test-tab-title"
+    >
+      <span
+        className="targetPageTitle"
+      >
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
+  </div>
+  <div
+    className="detailsViewCommandButtons"
+  >
+    <ReportExportButton
+      buttonRef={[Function]}
+      showReportExportDialog={[Function]}
+    />
+  </div>
+  <div>
+    Export dialog
+  </div>
+  <StartOverDialog
+    deps={
+      Object {
+        "detailsViewActionMessageCreator": proxy {
+          "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+          "addPathForValidation": [Function],
+          "cancelStartOver": [Function],
+          "cancelStartOverAllAssessments": [Function],
+          "changeAssessmentVisualizationState": [Function],
+          "changeManualRequirementStatus": [Function],
+          "changeManualTestStatus": [Function],
+          "clearPathSnippetData": [Function],
+          "closePreviewFeaturesPanel": [Function],
+          "closeScopingPanel": [Function],
+          "closeSettingsPanel": [Function],
+          "continuePreviousAssessment": [Function],
+          "copyIssueDetailsClicked": [Function],
+          "dispatcher": undefined,
+          "editFailureInstance": [Function],
+          "leftNavPanelExpanded": [Function],
+          "loadAssessment": [Function],
+          "removeFailureInstance": [Function],
+          "rescanVisualization": [Function],
+          "setAllUrlsPermissionState": [Function],
+          "setFeatureFlag": [Function],
+          "startOverAllAssessments": [Function],
+          "switchToTargetTab": [Function],
+          "telemetryFactory": undefined,
+          "undoManualRequirementStatusChange": [Function],
+          "undoManualTestStatusChange": [Function],
+        },
+      }
+    }
+    dialogState="none"
+    dismissDialog={[Function]}
+    featureFlagStoreData={
+      Object {
+        "saveAndLoadAssessment": false,
+      }
+    }
+    narrowModeStatus={
+      Object {
+        "isCommandBarCollapsed": false,
+      }
+    }
+    scanMetadata={
+      Object {
+        "targetAppInfo": Object {
+          "name": "command-bar-test-tab-title",
+          "url": "command-bar-test-url",
+        },
+      }
+    }
+    switcherNavConfiguration={
+      Object {
+        "CommandBar": [Function],
+        "LeftNav": [Function],
+        "ReportExportDialogFactory": [Function],
+        "SaveAssessmentFactory": [Function],
+        "StartOverComponentFactory": Object {
+          "getStartOverComponent": [Function],
+        },
+        "shouldShowReportExportButton": [Function],
+      }
+    }
+    tabStoreData={
+      Object {
+        "isClosed": false,
+        "title": "command-bar-test-tab-title",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`DetailsViewCommandBar renders with load assessment button 1`] = `
+<InsightsCommandButton
+  iconProps={
+    Object {
+      "iconName": "FabricOpenFolderHorizontal",
+    }
+  }
+  onClick={[Function]}
+>
+  Load assessment
+</InsightsCommandButton>
+`;
+
+exports[`DetailsViewCommandBar renders with report export dialog open 1`] = `
+<div
+  aria-label="command bar"
+  className="detailsViewCommandBar"
+  role="region"
+>
+  <div
+    aria-labelledby="switch-to-target"
+    className="detailsViewTargetPage"
+  >
+    <span
+      id="switch-to-target"
+    >
+      Target page: 
+    </span>
+    <NewTabLinkWithTooltip
+      aria-label="Switch to target page: command-bar-test-tab-title"
+      className="targetPageLink"
+      onClick={[Function]}
+      role="link"
+      tooltipContent="Switch to target page: command-bar-test-tab-title"
+    >
+      <span
+        className="targetPageTitle"
+      >
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
+  </div>
+  <div
+    className="detailsViewCommandButtons"
+  >
+    <ReportExportButton
+      buttonRef={[Function]}
+      showReportExportDialog={[Function]}
+    />
+  </div>
+  <div>
+    Export dialog
+  </div>
+  <StartOverDialog
+    deps={
+      Object {
+        "detailsViewActionMessageCreator": proxy {
+          "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+          "addPathForValidation": [Function],
+          "cancelStartOver": [Function],
+          "cancelStartOverAllAssessments": [Function],
+          "changeAssessmentVisualizationState": [Function],
+          "changeManualRequirementStatus": [Function],
+          "changeManualTestStatus": [Function],
+          "clearPathSnippetData": [Function],
+          "closePreviewFeaturesPanel": [Function],
+          "closeScopingPanel": [Function],
+          "closeSettingsPanel": [Function],
+          "continuePreviousAssessment": [Function],
+          "copyIssueDetailsClicked": [Function],
+          "dispatcher": undefined,
+          "editFailureInstance": [Function],
+          "leftNavPanelExpanded": [Function],
+          "loadAssessment": [Function],
+          "removeFailureInstance": [Function],
+          "rescanVisualization": [Function],
+          "setAllUrlsPermissionState": [Function],
+          "setFeatureFlag": [Function],
+          "startOverAllAssessments": [Function],
+          "switchToTargetTab": [Function],
+          "telemetryFactory": undefined,
+          "undoManualRequirementStatusChange": [Function],
+          "undoManualTestStatusChange": [Function],
+        },
+      }
+    }
+    dialogState="none"
+    dismissDialog={[Function]}
+    featureFlagStoreData={Object {}}
+    narrowModeStatus={
+      Object {
+        "isCommandBarCollapsed": false,
+      }
+    }
+    scanMetadata={
+      Object {
+        "targetAppInfo": Object {
+          "name": "command-bar-test-tab-title",
+          "url": "command-bar-test-url",
+        },
+      }
+    }
+    switcherNavConfiguration={
+      Object {
+        "CommandBar": [Function],
+        "LeftNav": [Function],
+        "ReportExportDialogFactory": [Function],
+        "SaveAssessmentFactory": [Function],
+        "StartOverComponentFactory": Object {
+          "getStartOverComponent": [Function],
+        },
+        "shouldShowReportExportButton": [Function],
+      }
+    }
+    tabStoreData={
+      Object {
+        "isClosed": false,
+        "title": "command-bar-test-tab-title",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`DetailsViewCommandBar renders with save assessment button 1`] = `
+<InsightsCommandButton
+  iconProps={
+    Object {
+      "iconName": "Save",
+    }
+  }
+>
+  Save assessment
+</InsightsCommandButton>
+`;
+
+exports[`DetailsViewCommandBar renders with start assessment over dialog open 1`] = `
+"<div className=\\"detailsViewCommandBar\\" role=\\"region\\" aria-label=\\"command bar\\">
   <div className=\\"detailsViewTargetPage\\" aria-labelledby=\\"switch-to-target\\">
     <span id=\\"switch-to-target\\">
       Target page: 
     </span>
-    <StyledTooltipHostBase content=\\"Switch to target page: command-bar-test-tab-title\\" styles={{...}}>
-      <StyledLinkBase role=\\"link\\" className=\\"insights-link targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
-        <span className=\\"targetPageTitle\\">
-          command-bar-test-tab-title
-        </span>
-      </StyledLinkBase>
-    </StyledTooltipHostBase>
+    <NewTabLinkWithTooltip tooltipContent=\\"Switch to target page: command-bar-test-tab-title\\" role=\\"link\\" className=\\"targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
+      <span className=\\"targetPageTitle\\">
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
   </div>
   <div className=\\"detailsViewCommandButtons\\">
-    <CustomizedActionButton>
-      Report Export Component
-    </CustomizedActionButton>
+    <ReportExportButton showReportExportDialog={[Function]} buttonRef={[Function: buttonRef]} />
   </div>
+  <StartOverDialog deps={{...}} tabStoreData={{...}} switcherNavConfiguration={{...}} scanMetadata={{...}} narrowModeStatus={{...}} featureFlagStoreData={{...}} dialogState=\\"assessment\\" dismissDialog={[Function]} />
 </div>"
 `;
 
-exports[`DetailsViewCommandBar renders without export button, with start over 1`] = `
-"<div className=\\"detailsViewCommandBar\\">
+exports[`DetailsViewCommandBar renders with start test over dialog open 1`] = `
+"<div className=\\"detailsViewCommandBar\\" role=\\"region\\" aria-label=\\"command bar\\">
   <div className=\\"detailsViewTargetPage\\" aria-labelledby=\\"switch-to-target\\">
     <span id=\\"switch-to-target\\">
       Target page: 
     </span>
-    <StyledTooltipHostBase content=\\"Switch to target page: command-bar-test-tab-title\\" styles={{...}}>
-      <StyledLinkBase role=\\"link\\" className=\\"insights-link targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
-        <span className=\\"targetPageTitle\\">
-          command-bar-test-tab-title
-        </span>
-      </StyledLinkBase>
-    </StyledTooltipHostBase>
+    <NewTabLinkWithTooltip tooltipContent=\\"Switch to target page: command-bar-test-tab-title\\" role=\\"link\\" className=\\"targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
+      <span className=\\"targetPageTitle\\">
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
   </div>
   <div className=\\"detailsViewCommandButtons\\">
+    <ReportExportButton showReportExportDialog={[Function]} buttonRef={[Function: buttonRef]} />
+  </div>
+  <StartOverDialog deps={{...}} tabStoreData={{...}} switcherNavConfiguration={{...}} scanMetadata={{...}} narrowModeStatus={{...}} featureFlagStoreData={{...}} dialogState=\\"test\\" dismissDialog={[Function]} />
+</div>"
+`;
+
+exports[`DetailsViewCommandBar renders without export button, save assessment, load assessment, and start over 1`] = `
+<div
+  aria-label="command bar"
+  className="detailsViewCommandBar"
+  role="region"
+>
+  <div
+    aria-labelledby="switch-to-target"
+    className="detailsViewTargetPage"
+  >
+    <span
+      id="switch-to-target"
+    >
+      Target page: 
+    </span>
+    <NewTabLinkWithTooltip
+      aria-label="Switch to target page: command-bar-test-tab-title"
+      className="targetPageLink"
+      onClick={[Function]}
+      role="link"
+      tooltipContent="Switch to target page: command-bar-test-tab-title"
+    >
+      <span
+        className="targetPageTitle"
+      >
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
+  </div>
+  <div>
+    Export dialog
+  </div>
+  <StartOverDialog
+    deps={
+      Object {
+        "detailsViewActionMessageCreator": proxy {
+          "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+          "addPathForValidation": [Function],
+          "cancelStartOver": [Function],
+          "cancelStartOverAllAssessments": [Function],
+          "changeAssessmentVisualizationState": [Function],
+          "changeManualRequirementStatus": [Function],
+          "changeManualTestStatus": [Function],
+          "clearPathSnippetData": [Function],
+          "closePreviewFeaturesPanel": [Function],
+          "closeScopingPanel": [Function],
+          "closeSettingsPanel": [Function],
+          "continuePreviousAssessment": [Function],
+          "copyIssueDetailsClicked": [Function],
+          "dispatcher": undefined,
+          "editFailureInstance": [Function],
+          "leftNavPanelExpanded": [Function],
+          "loadAssessment": [Function],
+          "removeFailureInstance": [Function],
+          "rescanVisualization": [Function],
+          "setAllUrlsPermissionState": [Function],
+          "setFeatureFlag": [Function],
+          "startOverAllAssessments": [Function],
+          "switchToTargetTab": [Function],
+          "telemetryFactory": undefined,
+          "undoManualRequirementStatusChange": [Function],
+          "undoManualTestStatusChange": [Function],
+        },
+      }
+    }
+    dialogState="none"
+    dismissDialog={[Function]}
+    featureFlagStoreData={
+      Object {
+        "saveAndLoadAssessment": false,
+      }
+    }
+    narrowModeStatus={
+      Object {
+        "isCommandBarCollapsed": false,
+      }
+    }
+    scanMetadata={
+      Object {
+        "targetAppInfo": Object {
+          "name": "command-bar-test-tab-title",
+          "url": "command-bar-test-url",
+        },
+      }
+    }
+    switcherNavConfiguration={
+      Object {
+        "CommandBar": [Function],
+        "LeftNav": [Function],
+        "ReportExportDialogFactory": [Function],
+        "SaveAssessmentFactory": [Function],
+        "StartOverComponentFactory": Object {
+          "getStartOverComponent": [Function],
+        },
+        "shouldShowReportExportButton": [Function],
+      }
+    }
+    tabStoreData={
+      Object {
+        "isClosed": false,
+        "title": "command-bar-test-tab-title",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`DetailsViewCommandBar renders without export button, without save assessment, without load assessment, with start over 1`] = `
+<div
+  aria-label="command bar"
+  className="detailsViewCommandBar"
+  role="region"
+>
+  <div
+    aria-labelledby="switch-to-target"
+    className="detailsViewTargetPage"
+  >
+    <span
+      id="switch-to-target"
+    >
+      Target page: 
+    </span>
+    <NewTabLinkWithTooltip
+      aria-label="Switch to target page: command-bar-test-tab-title"
+      className="targetPageLink"
+      onClick={[Function]}
+      role="link"
+      tooltipContent="Switch to target page: command-bar-test-tab-title"
+    >
+      <span
+        className="targetPageTitle"
+      >
+        command-bar-test-tab-title
+      </span>
+    </NewTabLinkWithTooltip>
+  </div>
+  <div
+    className="detailsViewCommandButtons"
+  >
     <CustomizedActionButton>
       Start Over Component
     </CustomizedActionButton>
   </div>
-</div>"
-`;
-
-exports[`DetailsViewCommandBar renders without export button, without start over 1`] = `
-"<div className=\\"detailsViewCommandBar\\">
-  <div className=\\"detailsViewTargetPage\\" aria-labelledby=\\"switch-to-target\\">
-    <span id=\\"switch-to-target\\">
-      Target page: 
-    </span>
-    <StyledTooltipHostBase content=\\"Switch to target page: command-bar-test-tab-title\\" styles={{...}}>
-      <StyledLinkBase role=\\"link\\" className=\\"insights-link targetPageLink\\" onClick={[Function: proxy]} aria-label=\\"Switch to target page: command-bar-test-tab-title\\">
-        <span className=\\"targetPageTitle\\">
-          command-bar-test-tab-title
-        </span>
-      </StyledLinkBase>
-    </StyledTooltipHostBase>
+  <div>
+    Export dialog
   </div>
-</div>"
+  <StartOverDialog
+    deps={
+      Object {
+        "detailsViewActionMessageCreator": proxy {
+          "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+          "addPathForValidation": [Function],
+          "cancelStartOver": [Function],
+          "cancelStartOverAllAssessments": [Function],
+          "changeAssessmentVisualizationState": [Function],
+          "changeManualRequirementStatus": [Function],
+          "changeManualTestStatus": [Function],
+          "clearPathSnippetData": [Function],
+          "closePreviewFeaturesPanel": [Function],
+          "closeScopingPanel": [Function],
+          "closeSettingsPanel": [Function],
+          "continuePreviousAssessment": [Function],
+          "copyIssueDetailsClicked": [Function],
+          "dispatcher": undefined,
+          "editFailureInstance": [Function],
+          "leftNavPanelExpanded": [Function],
+          "loadAssessment": [Function],
+          "removeFailureInstance": [Function],
+          "rescanVisualization": [Function],
+          "setAllUrlsPermissionState": [Function],
+          "setFeatureFlag": [Function],
+          "startOverAllAssessments": [Function],
+          "switchToTargetTab": [Function],
+          "telemetryFactory": undefined,
+          "undoManualRequirementStatusChange": [Function],
+          "undoManualTestStatusChange": [Function],
+        },
+      }
+    }
+    dialogState="none"
+    dismissDialog={[Function]}
+    featureFlagStoreData={
+      Object {
+        "saveAndLoadAssessment": false,
+      }
+    }
+    narrowModeStatus={
+      Object {
+        "isCommandBarCollapsed": false,
+      }
+    }
+    scanMetadata={
+      Object {
+        "targetAppInfo": Object {
+          "name": "command-bar-test-tab-title",
+          "url": "command-bar-test-url",
+        },
+      }
+    }
+    switcherNavConfiguration={
+      Object {
+        "CommandBar": [Function],
+        "LeftNav": [Function],
+        "ReportExportDialogFactory": [Function],
+        "SaveAssessmentFactory": [Function],
+        "StartOverComponentFactory": Object {
+          "getStartOverComponent": [Function],
+        },
+        "shouldShowReportExportButton": [Function],
+      }
+    }
+    tabStoreData={
+      Object {
+        "isClosed": false,
+        "title": "command-bar-test-tab-title",
+      }
+    }
+  />
+</div>
 `;

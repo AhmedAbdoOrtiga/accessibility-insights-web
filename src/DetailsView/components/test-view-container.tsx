@@ -1,10 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { FailedInstancesSection } from 'common/components/cards/failed-instances-section';
+import { NeedsReviewInstancesSection } from 'common/components/cards/needs-review-instances-section';
 import { ScanIncompleteWarningId } from 'common/types/scan-incomplete-warnings';
+import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
 import { DetailsViewSwitcherNavConfiguration } from 'DetailsView/components/details-view-switcher-nav';
 import { ISelection } from 'office-ui-fabric-react';
+import * as React from 'react';
 
-import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
 import { VisualizationConfigurationFactory } from '../../common/configs/visualization-configuration-factory';
 import { NamedFC } from '../../common/react/named-fc';
 import { AssessmentStoreData } from '../../common/types/store-data/assessment-result-data';
@@ -19,6 +22,9 @@ import { VisualizationType } from '../../common/types/visualization-type';
 import { DetailsViewActionMessageCreator } from '../actions/details-view-action-message-creator';
 import { AssessmentInstanceTableHandler } from '../handlers/assessment-instance-table-handler';
 import { DetailsViewToggleClickHandlerFactory } from '../handlers/details-view-toggle-click-handler-factory';
+import { AdhocIssuesTestView } from './adhoc-issues-test-view';
+import { AdhocStaticTestView } from './adhoc-static-test-view';
+import { AssessmentTestView } from './assessment-test-view';
 import { IssuesTableHandler } from './issues-table-handler';
 import { OverviewContainerDeps } from './overview-content/overview-content-container';
 import { TestViewDeps } from './test-view';
@@ -53,6 +59,23 @@ export const TestViewContainer = NamedFC<TestViewContainerProps>('TestViewContai
     const configuration = props.visualizationConfigurationFactory.getConfiguration(
         props.selectedTest,
     );
-    const testViewProps = { configuration, ...props };
-    return configuration.getTestView(testViewProps);
+    const testViewProps = { configuration, ...configuration.testViewOverrides, ...props };
+
+    switch (configuration.testViewType) {
+        case 'AdhocStatic':
+            return <AdhocStaticTestView {...testViewProps} />;
+        case 'AdhocFailure':
+            return (
+                <AdhocIssuesTestView instancesSection={FailedInstancesSection} {...testViewProps} />
+            );
+        case 'AdhocNeedsReview':
+            return (
+                <AdhocIssuesTestView
+                    instancesSection={NeedsReviewInstancesSection}
+                    {...testViewProps}
+                />
+            );
+        case 'Assessment':
+            return <AssessmentTestView {...testViewProps} />;
+    }
 });

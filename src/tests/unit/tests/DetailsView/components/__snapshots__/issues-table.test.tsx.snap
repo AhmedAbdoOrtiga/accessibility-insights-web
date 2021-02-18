@@ -17,10 +17,40 @@ exports[`IssuesTableTest automated checks disabled 1`] = `
       >
         <span>
           Use the 
-          <Term>
-            Start over button
-          </Term>
-           to scan the target page.
+          <InlineStartOverButton
+            detailsViewActionMessageCreator={
+              proxy {
+                "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+                "addPathForValidation": [Function],
+                "cancelStartOver": [Function],
+                "cancelStartOverAllAssessments": [Function],
+                "changeAssessmentVisualizationState": [Function],
+                "changeManualRequirementStatus": [Function],
+                "changeManualTestStatus": [Function],
+                "clearPathSnippetData": [Function],
+                "closePreviewFeaturesPanel": [Function],
+                "closeScopingPanel": [Function],
+                "closeSettingsPanel": [Function],
+                "continuePreviousAssessment": [Function],
+                "copyIssueDetailsClicked": [Function],
+                "dispatcher": undefined,
+                "editFailureInstance": [Function],
+                "leftNavPanelExpanded": [Function],
+                "loadAssessment": [Function],
+                "removeFailureInstance": [Function],
+                "rescanVisualization": [Function],
+                "setAllUrlsPermissionState": [Function],
+                "setFeatureFlag": [Function],
+                "startOverAllAssessments": [Function],
+                "switchToTargetTab": [Function],
+                "telemetryFactory": undefined,
+                "undoManualRequirementStatusChange": [Function],
+                "undoManualTestStatusChange": [Function],
+              }
+            }
+            selectedTest={-1}
+          />
+           button to scan the target page.
         </span>
       </div>
     </React.Fragment>
@@ -59,7 +89,7 @@ exports[`IssuesTableTest not scanning, issuesEnabled is true 1`] = `
   <div
     className="issuesTableContent"
   >
-    <CardsView
+    <SomeInstancesSection
       cardsViewData={
         Object {
           "allCardsCollapsed": true,
@@ -113,6 +143,34 @@ exports[`IssuesTableTest not scanning, issuesEnabled is true 1`] = `
       }
       deps={
         Object {
+          "detailsViewActionMessageCreator": proxy {
+            "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
+            "addPathForValidation": [Function],
+            "cancelStartOver": [Function],
+            "cancelStartOverAllAssessments": [Function],
+            "changeAssessmentVisualizationState": [Function],
+            "changeManualRequirementStatus": [Function],
+            "changeManualTestStatus": [Function],
+            "clearPathSnippetData": [Function],
+            "closePreviewFeaturesPanel": [Function],
+            "closeScopingPanel": [Function],
+            "closeSettingsPanel": [Function],
+            "continuePreviousAssessment": [Function],
+            "copyIssueDetailsClicked": [Function],
+            "dispatcher": undefined,
+            "editFailureInstance": [Function],
+            "leftNavPanelExpanded": [Function],
+            "loadAssessment": [Function],
+            "removeFailureInstance": [Function],
+            "rescanVisualization": [Function],
+            "setAllUrlsPermissionState": [Function],
+            "setFeatureFlag": [Function],
+            "startOverAllAssessments": [Function],
+            "switchToTargetTab": [Function],
+            "telemetryFactory": undefined,
+            "undoManualRequirementStatusChange": [Function],
+            "undoManualTestStatusChange": [Function],
+          },
           "getDateFromTimestamp": [Function],
           "reportGenerator": proxy {
             "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
@@ -129,6 +187,7 @@ exports[`IssuesTableTest not scanning, issuesEnabled is true 1`] = `
           },
         }
       }
+      shouldAlertFailuresCount={true}
       userConfigurationStoreData={
         Object {
           "bugService": "gitHub",

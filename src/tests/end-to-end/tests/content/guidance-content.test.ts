@@ -20,10 +20,7 @@ describe('Guidance Content pages', () => {
     });
 
     afterAll(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     describe.each(contentPaths)('%s', path => {
@@ -46,7 +43,6 @@ describe('Guidance Content pages', () => {
             'has no accessibility issues with highContrastMode=%s',
             async highContrastMode => {
                 await browser.setHighContrastMode(highContrastMode);
-                await contentPage.bringToFront();
                 await contentPage.waitForHighContrastMode(highContrastMode);
 
                 const results = await scanForAccessibilityIssues(contentPage, '*');

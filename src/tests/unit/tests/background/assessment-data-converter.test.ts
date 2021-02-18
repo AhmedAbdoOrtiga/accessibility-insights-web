@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { IMock, It, Mock } from 'typemoq';
 
 import { AssessmentDataConverter } from 'background/assessment-data-converter';
 import { UniquelyIdentifiableInstances } from 'background/instance-identifier-generator';
-import { ManualTestStatus } from '../../../../common/types/manual-test-status';
+import { ManualTestStatus } from 'common/types/manual-test-status';
 import {
     AssessmentInstancesMap,
     TestStepResult,
-} from '../../../../common/types/store-data/assessment-result-data';
-import { DecoratedAxeNodeResult, HtmlElementAxeResults } from '../../../../injected/scanner-utils';
-import { TabStopEvent } from '../../../../injected/tab-stops-listener';
-import { DictionaryStringTo } from '../../../../types/common-types';
+} from 'common/types/store-data/assessment-result-data';
+import { TabStopEvent } from 'common/types/tab-stop-event';
+import { DecoratedAxeNodeResult, HtmlElementAxeResults } from 'injected/scanner-utils';
+import { IMock, It, Mock } from 'typemoq';
+import { DictionaryStringTo } from 'types/common-types';
 
 describe('AssessmentDataConverter', () => {
     let testSubject: AssessmentDataConverter;

@@ -19,19 +19,21 @@ import {
     SetAllUrlsPermissionStatePayload,
     SwitchToTargetTabPayload,
     ToggleActionPayload,
+    LoadAssessmentPayload,
 } from 'background/actions/action-payloads';
 import { FeatureFlagPayload } from 'background/actions/feature-flag-actions';
+import * as TelemetryEvents from 'common/extension-telemetry-events';
+import { ReportExportFormat } from 'common/extension-telemetry-events';
+import { Message } from 'common/message';
+import { DevToolActionMessageCreator } from 'common/message-creators/dev-tool-action-message-creator';
+import { Messages } from 'common/messages';
 import { SupportedMouseEvent } from 'common/telemetry-data-factory';
+import { DetailsViewPivotType } from 'common/types/details-view-pivot-type';
+import { FailureInstanceData } from 'common/types/failure-instance-data';
+import { ManualTestStatus } from 'common/types/manual-test-status';
+import { VersionedAssessmentData } from 'common/types/versioned-assessment-data';
+import { VisualizationType } from 'common/types/visualization-type';
 import * as React from 'react';
-import * as TelemetryEvents from '../../common/extension-telemetry-events';
-import { ReportExportFormat } from '../../common/extension-telemetry-events';
-import { Message } from '../../common/message';
-import { DevToolActionMessageCreator } from '../../common/message-creators/dev-tool-action-message-creator';
-import { Messages } from '../../common/messages';
-import { DetailsViewPivotType } from '../../common/types/details-view-pivot-type';
-import { ManualTestStatus } from '../../common/types/manual-test-status';
-import { VisualizationType } from '../../common/types/visualization-type';
-import { FailureInstanceData } from '../components/failure-instance-panel-control';
 import { DetailsViewRightContentPanelType } from '../components/left-nav/details-view-right-content-panel-type';
 
 const messages = Messages.Visualizations;
@@ -125,7 +127,7 @@ export class DetailsViewActionMessageCreator extends DevToolActionMessageCreator
         this.dispatcher.sendTelemetry(TelemetryEvents.EXPORT_RESULTS, telemetryData);
     }
 
-    public copyIssueDetailsClicked = (event: React.MouseEvent<any>): void => {
+    public copyIssueDetailsClicked = (event: SupportedMouseEvent): void => {
         const telemetryData = this.telemetryFactory.withTriggeredByAndSource(
             event,
             TelemetryEvents.TelemetryEventSource.DetailsView,
@@ -260,7 +262,7 @@ export class DetailsViewActionMessageCreator extends DevToolActionMessageCreator
     ): void {
         const telemetry = sendTelemetry
             ? this.telemetryFactory.forAssessmentActionFromDetailsViewNoTriggeredBy(test)
-            : null;
+            : undefined;
         const payload: AssessmentToggleActionPayload = {
             test,
             requirement,
@@ -506,11 +508,10 @@ export class DetailsViewActionMessageCreator extends DevToolActionMessageCreator
         requirement: string,
     ): void {
         const telemetry = this.telemetryFactory.fromDetailsViewNoTriggeredBy();
-        const payload: ChangeInstanceSelectionPayload = {
+        const payload: Omit<ChangeInstanceSelectionPayload, 'selector'> = {
             test: test,
             requirement: requirement,
             isVisualizationEnabled: isVisualizationEnabled,
-            selector: null,
             telemetry: telemetry,
         };
 
@@ -527,6 +528,18 @@ export class DetailsViewActionMessageCreator extends DevToolActionMessageCreator
         };
         this.dispatcher.dispatchMessage({
             messageType: Messages.Assessment.ContinuePreviousAssessment,
+            payload,
+        });
+    };
+
+    public loadAssessment = (assessmentData: VersionedAssessmentData): void => {
+        const telemetry = this.telemetryFactory.fromDetailsViewNoTriggeredBy();
+        const payload: LoadAssessmentPayload = {
+            telemetry: telemetry,
+            versionedAssessmentData: assessmentData,
+        };
+        this.dispatcher.dispatchMessage({
+            messageType: Messages.Assessment.LoadAssessment,
             payload,
         });
     };
@@ -622,5 +635,12 @@ export class DetailsViewActionMessageCreator extends DevToolActionMessageCreator
         };
 
         this.dispatcher.dispatchMessage(message);
+    };
+
+    public leftNavPanelExpanded = (event: SupportedMouseEvent) => {
+        this.dispatcher.sendTelemetry(
+            TelemetryEvents.LEFT_NAV_PANEL_EXPANDED,
+            this.telemetryFactory.forLeftNavPanelExpanded(event),
+        );
     };
 }

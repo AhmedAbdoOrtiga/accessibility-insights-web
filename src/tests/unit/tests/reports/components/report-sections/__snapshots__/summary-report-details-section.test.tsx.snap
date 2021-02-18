@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` renders 1`] = `
+<div
+  className="crawlDetailsSection"
+>
+  <h2>
+    Scan details
+  </h2>
+  <ul
+    className="crawlDetailsSectionList"
+  >
+    <li
+      className="targetSite"
+    >
+      <span
+        aria-hidden="true"
+        className="icon"
+      >
+        <UrlIcon />
+      </span>
+      <span
+        className="label"
+      >
+        Target site 
+      </span>
+      <span
+        className="text"
+      >
+        <NewTabLinkWithConfirmationDialog
+          href="page url"
+          title="page name"
+        >
+          page url
+        </NewTabLinkWithConfirmationDialog>
+      </span>
+    </li>
+    <li>
+      <span
+        aria-hidden="true"
+        className="icon"
+      >
+        <DateIcon />
+      </span>
+      <span
+        className="label"
+      >
+        Scans started 
+      </span>
+      <span
+        className="text"
+      >
+        scan start time
+      </span>
+    </li>
+    <li>
+      <span
+        className="noIcon label"
+      >
+        Scans completed 
+      </span>
+      <span
+        className="text"
+      >
+        scan end time
+      </span>
+    </li>
+    <li>
+      <span
+        className="noIcon label"
+      >
+        Duration 
+      </span>
+      <span
+        className="text"
+      >
+        scan duration
+      </span>
+    </li>
+  </ul>
+</div>
+`;

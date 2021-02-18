@@ -3,6 +3,7 @@
 import { Action } from 'common/flux/action';
 import {
     SaveIssueFilingSettingsPayload,
+    SaveWindowBoundsPayload,
     SetHighContrastModePayload,
     SetIssueFilingServicePayload,
     SetIssueFilingServicePropertyPayload,
@@ -15,8 +16,7 @@ export class UserConfigurationActions {
     public readonly setHighContrastMode = new Action<SetHighContrastModePayload>();
     public readonly setNativeHighContrastMode = new Action<SetHighContrastModePayload>();
     public readonly setIssueFilingService = new Action<SetIssueFilingServicePayload>();
-    public readonly setIssueFilingServiceProperty = new Action<
-        SetIssueFilingServicePropertyPayload
-    >();
+    public readonly setIssueFilingServiceProperty = new Action<SetIssueFilingServicePropertyPayload>();
     public readonly saveIssueFilingSettings = new Action<SaveIssueFilingSettingsPayload>();
+    public readonly saveWindowBounds = new Action<SaveWindowBoundsPayload>();
 }

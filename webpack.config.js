@@ -1,27 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 const path = require('path');
-const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 const commonPlugins = [
-    new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1, // Must be greater than or equal to one
-        minChunkSize: 1000000,
-    }),
-    // Be warned: this plugin supports tslint, but enabling it here causes webpack to occasionally
-    // process.exit(0) in the middle of execution on mac build machines, resulting in difficult to
-    // debug build failures. We aren't quite sure why this is yet, but until it's root caused, keep
-    // tslint separate from webpack.
     new ForkTsCheckerWebpackPlugin(),
     new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
-        // Options similar to the same options in webpackOptions.output
-        // both options are optional
+        // Similar to the same options in webpackOptions.output
         filename: '[name].css',
         chunkFilename: '[id].css',
     }),
@@ -62,14 +52,24 @@ const tsRule = {
 const scssRule = (useHash = true) => ({
     test: /\.scss$/,
     use: [
-        MiniCssExtractPlugin.loader,
+        {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+                esModule: true,
+                modules: {
+                    namedExport: true,
+                },
+            },
+        },
         {
             loader: 'css-loader',
             options: {
+                esModule: true,
                 modules: {
+                    namedExport: true,
                     localIdentName: '[local]' + (useHash ? '--[hash:base64:5]' : ''),
+                    exportLocalsConvention: 'camelCaseOnly',
                 },
-                localsConvention: 'camelCaseOnly',
             },
         },
         'sass-loader',
@@ -87,9 +87,6 @@ const commonConfig = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     plugins: commonPlugins,
-    node: {
-        setImmediate: false,
-    },
     performance: {
         // We allow higher-than-normal sizes because our users only have to do local fetches of our bundles
         maxEntrypointSize: 10 * 1024 * 1024,
@@ -155,7 +152,6 @@ const prodConfig = {
         splitChunks: false,
         minimizer: [
             new TerserWebpackPlugin({
-                sourceMap: false,
                 terserOptions: {
                     compress: false,
                     mangle: true,
@@ -182,7 +178,7 @@ const packageReportConfig = {
     mode: 'development',
     devtool: false,
     output: {
-        path: path.join(__dirname, 'package/report/bundle'),
+        path: path.join(__dirname, 'packages/report/bundle'),
         filename: '[name].bundle.js',
         pathinfo: false,
         library: '[name]',
@@ -203,7 +199,7 @@ const packageUIConfig = {
     mode: 'development',
     devtool: false,
     output: {
-        path: path.join(__dirname, 'package/ui/bundle'),
+        path: path.join(__dirname, 'packages/ui/bundle'),
         filename: '[name].bundle.js',
         pathinfo: false,
         library: '[name]',

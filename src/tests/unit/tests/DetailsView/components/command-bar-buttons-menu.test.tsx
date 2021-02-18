@@ -1,36 +1,37 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
 import {
     CommandBarButtonsMenu,
     CommandBarButtonsMenuProps,
 } from 'DetailsView/components/command-bar-buttons-menu';
-import { DetailsViewSwitcherNavConfiguration } from 'DetailsView/components/details-view-switcher-nav';
-import { StartOverFactoryProps } from 'DetailsView/components/start-over-component-factory';
+import { StartOverMenuItem } from 'DetailsView/components/start-over-component-factory';
 import { shallow } from 'enzyme';
-import { IOverflowSetItemProps } from 'office-ui-fabric-react';
+import { IButton, IOverflowSetItemProps, RefObject } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { IMock, Mock, Times } from 'typemoq';
-import {
-    DetailsViewCommandBarProps,
-    // tslint:disable-next-line: ordered-imports
-    ReportExportComponentFactory,
-    StartOverComponentFactory,
-} from '../../../../../DetailsView/components/details-view-command-bar';
 
 describe('CommandBarButtonsMenu', () => {
-    let reportExportComponentFactory: IMock<ReportExportComponentFactory>;
-    let startOverComponentFactory: IMock<StartOverComponentFactory>;
+    let renderExportReportComponentMock: IMock<() => JSX.Element>;
+    let renderSaveAssessmentButtonMock: IMock<() => JSX.Element>;
+    let renderLoadAssessmentButtonMock: IMock<() => JSX.Element>;
+    let getStartOverMenuItemMock: IMock<() => StartOverMenuItem>;
     let commandBarButtonsMenuProps: CommandBarButtonsMenuProps;
 
     beforeEach(() => {
-        reportExportComponentFactory = Mock.ofType<ReportExportComponentFactory>();
-        startOverComponentFactory = Mock.ofType<StartOverComponentFactory>();
+        renderExportReportComponentMock = Mock.ofInstance(() => null);
+        renderSaveAssessmentButtonMock = Mock.ofInstance(() => null);
+        renderLoadAssessmentButtonMock = Mock.ofInstance(() => null);
+        getStartOverMenuItemMock = Mock.ofInstance(() => null);
         commandBarButtonsMenuProps = {
-            switcherNavConfiguration: {
-                ReportExportComponentFactory: reportExportComponentFactory.object,
-                StartOverComponentFactory: startOverComponentFactory.object,
-            } as DetailsViewSwitcherNavConfiguration,
-        } as DetailsViewCommandBarProps;
+            renderExportReportButton: renderExportReportComponentMock.object,
+            renderSaveAssessmentButton: renderSaveAssessmentButtonMock.object,
+            renderLoadAssessmentButton: renderLoadAssessmentButtonMock.object,
+
+            getStartOverMenuItem: getStartOverMenuItemMock.object,
+            buttonRef: {} as RefObject<IButton>,
+            featureFlagStoreData: {} as FeatureFlagStoreData,
+        } as CommandBarButtonsMenuProps;
     });
 
     it('renders CommandBarButtonsMenu', () => {
@@ -38,51 +39,75 @@ describe('CommandBarButtonsMenu', () => {
         expect(wrapper.getElement()).toMatchSnapshot();
     });
 
-    it('renders child buttons', () => {
-        reportExportComponentFactory
-            .setup(r => r(commandBarButtonsMenuProps))
-            .returns(() => <></>)
-            .verifiable(Times.once());
+    it('renders all child buttons, including child behind the feature flag', () => {
+        setupExportReportMenuItem();
+        setupSaveAssessmentMenuItem();
+        setupLoadAssessmentMenuItem();
+        setupStartOverMenuItem();
 
-        const startOverFactoryProps: StartOverFactoryProps = {
-            ...commandBarButtonsMenuProps,
-            dropdownDirection: 'left',
-        };
-        startOverComponentFactory
-            .setup(s => s(startOverFactoryProps))
-            .returns(() => <></>)
-            .verifiable(Times.once());
+        commandBarButtonsMenuProps.featureFlagStoreData = { saveAndLoadAssessment: true };
+        const wrapper = shallow(<CommandBarButtonsMenu {...commandBarButtonsMenuProps} />);
+        const renderedProps = wrapper.getElement().props;
+        const overflowItems: IOverflowSetItemProps[] = renderedProps.menuProps?.items;
+
+        expect(overflowItems).toBeDefined();
+        expect(overflowItems).toHaveLength(4);
+
+        expect(overflowItems[0].onRender()).toMatchSnapshot('render export report menuitem');
+        expect(overflowItems[1].onRender()).toMatchSnapshot('render save assessment menuitem');
+        expect(overflowItems[2].onRender()).toMatchSnapshot('render load assessment menuitem');
+        expect(overflowItems[3].onRender()).toMatchSnapshot('render start over menuitem');
+
+        renderExportReportComponentMock.verifyAll();
+        renderSaveAssessmentButtonMock.verifyAll();
+        renderLoadAssessmentButtonMock.verifyAll();
+        getStartOverMenuItemMock.verifyAll();
+    });
+
+    it('renders child buttons with the exception of child behind feature flag', () => {
+        setupExportReportMenuItem();
+        setupStartOverMenuItem();
 
         const wrapper = shallow(<CommandBarButtonsMenu {...commandBarButtonsMenuProps} />);
         const renderedProps = wrapper.getElement().props;
-        const overflowItems: IOverflowSetItemProps[] = renderedProps.overflowItems;
-        const onRenderItem: (props: IOverflowSetItemProps) => JSX.Element =
-            renderedProps.onRenderItem;
+        const overflowItems: IOverflowSetItemProps[] = renderedProps.menuProps?.items;
         expect(overflowItems).toBeDefined();
         expect(overflowItems).toHaveLength(2);
-        expect(onRenderItem).toBeDefined();
+        expect(overflowItems[0].onRender()).toMatchSnapshot('render export report menuitem');
+        expect(overflowItems[1].onRender()).toMatchSnapshot('render start over menuitem');
 
-        overflowItems.forEach(item => {
-            onRenderItem(item);
-        });
-
-        reportExportComponentFactory.verifyAll();
-        startOverComponentFactory.verifyAll();
+        renderExportReportComponentMock.verifyAll();
+        getStartOverMenuItemMock.verifyAll();
     });
 
-    it('renders overflow button', () => {
-        const overflowItems: IOverflowSetItemProps[] = [
-            {
-                key: 'item 1',
-            },
-            {
-                key: 'item 2',
-            },
-        ];
-        const wrapper = shallow(<CommandBarButtonsMenu {...commandBarButtonsMenuProps} />);
-        const onRenderOverflowButton = wrapper.getElement().props.onRenderOverflowButton;
-        expect(onRenderOverflowButton).toBeDefined();
+    function setupExportReportMenuItem(): void {
+        renderExportReportComponentMock
+            .setup(r => r())
+            .returns(() => <>Report export button</>)
+            .verifiable(Times.once());
+    }
 
-        expect(onRenderOverflowButton(overflowItems)).toMatchSnapshot();
-    });
+    function setupSaveAssessmentMenuItem(): void {
+        renderSaveAssessmentButtonMock
+            .setup(r => r())
+            .returns(() => <>Save assessment button</>)
+            .verifiable(Times.once());
+    }
+
+    function setupLoadAssessmentMenuItem(): void {
+        renderLoadAssessmentButtonMock
+            .setup(r => r())
+            .returns(() => <>Load assessment button</>)
+            .verifiable(Times.once());
+    }
+
+    function setupStartOverMenuItem(): void {
+        const startOverMenuItem = {
+            onRender: () => <>Start over button</>,
+        };
+        getStartOverMenuItemMock
+            .setup(s => s())
+            .returns(() => startOverMenuItem)
+            .verifiable(Times.once());
+    }
 });

@@ -2,22 +2,12 @@
 // Licensed under the MIT License.
 import { NamedFC } from 'common/react/named-fc';
 import * as React from 'react';
+import { OutcomeCounter } from 'reports/components/outcome-counter';
 
-import { ScanMetadata } from 'common/types/store-data/unified-data-interface';
-import { CardsViewModel } from '../../types/store-data/card-view-model';
-import { UserConfigurationStoreData } from '../../types/store-data/user-configuration-store';
-import { ResultSection, ResultSectionDeps } from './result-section';
+import { CommonInstancesSectionProps } from './common-instances-section-props';
+import { ResultSection } from './result-section';
 
-export type FailedInstancesSectionDeps = ResultSectionDeps;
-export type FailedInstancesSectionProps = {
-    deps: FailedInstancesSectionDeps;
-    cardsViewData: CardsViewModel;
-    userConfigurationStoreData: UserConfigurationStoreData;
-    scanMetadata: ScanMetadata;
-    shouldAlertFailuresCount?: boolean;
-};
-
-export const FailedInstancesSection = NamedFC<FailedInstancesSectionProps>(
+export const FailedInstancesSection = NamedFC<CommonInstancesSectionProps>(
     'FailedInstancesSection',
     ({
         cardsViewData,
@@ -47,6 +37,8 @@ export const FailedInstancesSection = NamedFC<FailedInstancesSectionProps>(
                 shouldAlertFailuresCount={shouldAlertFailuresCount}
                 visualHelperEnabled={cardsViewData.visualHelperEnabled}
                 allCardsCollapsed={cardsViewData.allCardsCollapsed}
+                outcomeCounter={OutcomeCounter.countByCards}
+                headingLevel={3}
             />
         );
     },

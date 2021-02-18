@@ -11,13 +11,14 @@ import { LaunchPanelStore } from 'background/stores/global/launch-panel-store';
 import { PermissionsStateStore } from 'background/stores/global/permissions-state-store';
 import { ScopingStore } from 'background/stores/global/scoping-store';
 import { UserConfigurationStore } from 'background/stores/global/user-configuration-store';
+import { LaunchPanelType } from 'common/types/store-data/launch-panel-store-data';
 import { cloneDeep } from 'lodash';
+import { failTestOnErrorLogger } from 'tests/unit/common/fail-test-on-error-logger';
 import { IMock, Mock, Times } from 'typemoq';
 import { BaseStore } from '../../../../../../common/base-store';
 import { IndexedDBAPI } from '../../../../../../common/indexedDB/indexedDB';
 import { PersistedTabInfo } from '../../../../../../common/types/store-data/assessment-result-data';
 import { StoreType } from '../../../../../../common/types/store-type';
-import { LaunchPanelType } from '../../../../../../popup/components/popup-view';
 import { CreateTestAssessmentProvider } from '../../../../common/test-assessment-provider';
 
 describe('GlobalStoreHubTest', () => {
@@ -60,6 +61,7 @@ describe('GlobalStoreHubTest', () => {
             idbInstance,
             cloneDeep(persistedDataStub),
             null,
+            failTestOnErrorLogger,
         );
         const allStores = testSubject.getAllStores();
 
@@ -84,6 +86,7 @@ describe('GlobalStoreHubTest', () => {
             idbInstance,
             cloneDeep(persistedDataStub),
             null,
+            failTestOnErrorLogger,
         );
         const allStores = testSubject.getAllStores() as BaseStoreImpl<any>[];
         const initializeMocks: Array<IMock<Function>> = [];

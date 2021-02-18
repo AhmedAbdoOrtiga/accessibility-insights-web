@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LeftNav render 1`] = `
+<div
+  className="leftNav"
+  data-automation-id="left-nav"
+>
+  <div
+    className="headerContainer"
+  >
+    <StyledIconBase
+      className="rocketIcon"
+      iconName="Rocket"
+    />
+    <h3>
+      FastPass
+    </h3>
+  </div>
+  <BaseLeftNav
+    links={
+      Array [
+        Object {
+          "forceAnchor": true,
+          "iconProps": Object {
+            "className": "hidden",
+          },
+          "index": 1,
+          "key": "automated-checks",
+          "name": "some display name",
+          "onClickNavLink": [Function],
+          "onRenderNavLink": [Function],
+          "url": "",
+        },
+        Object {
+          "forceAnchor": true,
+          "iconProps": Object {
+            "className": "hidden",
+          },
+          "index": 2,
+          "key": "needs-review",
+          "name": "some display name 3",
+          "onClickNavLink": [Function],
+          "onRenderNavLink": [Function],
+          "url": "",
+        },
+      ]
+    }
+    selectedKey="automated-checks"
+  />
+</div>
+`;

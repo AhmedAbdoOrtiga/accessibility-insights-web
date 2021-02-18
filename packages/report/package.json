@@ -1,0 +1,31 @@
+{
+    "name": "accessibility-insights-report",
+    "version": "4.0.1",
+    "description": "Accessibility Insights Report",
+    "license": "MIT",
+    "files": [
+        "../../LICENSE",
+        "drop",
+        "README.md"
+    ],
+    "main": "drop/index.js",
+    "typings": "drop/index.d.ts",
+    "scripts": {
+        "build": "grunt build-package-report"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/accessibility-insights-web"
+    },
+    "dependencies": {
+        "axe-core": "4.1.1",
+        "classnames": "^2.2.6",
+        "lodash": "^4.17.20",
+        "luxon": "^1.26.0",
+        "office-ui-fabric-react": "7.98.0",
+        "react": "^16.14.0",
+        "react-dom": "^16.14.0",
+        "react-helmet": "^6.1.0",
+        "uuid": "^8.3.2"
+    }
+}

@@ -18,6 +18,7 @@ import {
     EXPORT_RESULTS,
     ExportResultsTelemetryData,
     FeatureFlagToggleTelemetryData,
+    LEFT_NAV_PANEL_EXPANDED,
     RequirementActionTelemetryData,
     RequirementSelectTelemetryData,
     SelectGettingStartedTelemetryData,
@@ -543,7 +544,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
             payload: {
                 test: VisualizationType.HeadingsAssessment,
                 requirement,
-                telemetry: null,
+                telemetry: undefined,
             },
         };
 
@@ -553,7 +554,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
                     VisualizationType.HeadingsAssessment,
                 ),
             )
-            .returns(() => null);
+            .verifiable(Times.never());
 
         testSubject.enableVisualHelper(
             VisualizationType.HeadingsAssessment,
@@ -562,6 +563,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
             false,
         );
 
+        telemetryFactoryMock.verifyAll();
         dispatcherMock.verify(
             dispatcher => dispatcher.dispatchMessage(It.isValue(expectedMessage)),
             Times.once(),
@@ -576,7 +578,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
             payload: {
                 test: VisualizationType.HeadingsAssessment,
                 requirement,
-                telemetry: null,
+                telemetry: undefined,
             },
         };
 
@@ -586,7 +588,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
                     VisualizationType.HeadingsAssessment,
                 ),
             )
-            .returns(() => null);
+            .verifiable(Times.never());
 
         testSubject.enableVisualHelper(
             VisualizationType.HeadingsAssessment,
@@ -595,6 +597,7 @@ describe('DetailsViewActionMessageCreatorTest', () => {
             false,
         );
 
+        telemetryFactoryMock.verifyAll();
         dispatcherMock.verify(
             dispatcher => dispatcher.dispatchMessage(It.isValue(expectedMessage)),
             Times.once(),
@@ -964,7 +967,6 @@ describe('DetailsViewActionMessageCreatorTest', () => {
                 test: 1,
                 requirement: 'requirement',
                 isVisualizationEnabled: true,
-                selector: null,
                 telemetry: telemetry,
             },
         };
@@ -1156,6 +1158,24 @@ describe('DetailsViewActionMessageCreatorTest', () => {
             dispatcher => dispatcher.dispatchMessage(It.isValue(expectedMessage)),
             Times.once(),
         );
+    });
+
+    test('leftNavPanelExpanded', () => {
+        const eventStub = {} as SupportedMouseEvent;
+        const telemetryStub = {
+            source: testSource,
+        } as BaseTelemetryData;
+        telemetryFactoryMock
+            .setup(tf => tf.forLeftNavPanelExpanded(eventStub))
+            .returns(() => telemetryStub);
+
+        dispatcherMock
+            .setup(d => d.sendTelemetry(LEFT_NAV_PANEL_EXPANDED, telemetryStub))
+            .verifiable(Times.once());
+
+        testSubject.leftNavPanelExpanded(eventStub);
+
+        dispatcherMock.verifyAll();
     });
 
     function setupTelemetryFactory(

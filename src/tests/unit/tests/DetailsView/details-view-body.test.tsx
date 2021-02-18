@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { getDefaultFeatureFlagsWeb } from 'common/feature-flags';
+import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
 import { ScanMetadata, TargetAppData } from 'common/types/store-data/unified-data-interface';
 import {
     DetailsViewCommandBarDeps,
     DetailsViewCommandBarProps,
 } from 'DetailsView/components/details-view-command-bar';
+import { FluentSideNav } from 'DetailsView/components/left-nav/fluent-side-nav';
+import { StartOverComponentFactory } from 'DetailsView/components/start-over-component-factory';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 
-import { FluentSideNav } from 'DetailsView/components/left-nav/fluent-side-nav';
 import { IMock, Mock } from 'typemoq';
 import { VisualizationConfigurationFactory } from '../../../../common/configs/visualization-configuration-factory';
 import { NamedFC, ReactFCWithDisplayName } from '../../../../common/react/named-fc';
@@ -51,22 +52,22 @@ describe('DetailsViewBody', () => {
         beforeEach(() => {
             setSideNavOpenMock = Mock.ofInstance(() => {});
             selectedTest = -1;
-            const RightPanelStub: Readonly<ReactFCWithDisplayName<RightPanelProps>> = NamedFC<
-                RightPanelProps
-            >('test', _ => null);
-            const CommandBarStub: Readonly<ReactFCWithDisplayName<
-                DetailsViewCommandBarProps
-            >> = NamedFC<DetailsViewCommandBarProps>('test', _ => null);
-            const LeftNavStub: Readonly<ReactFCWithDisplayName<LeftNavProps>> = NamedFC<
-                LeftNavProps
-            >('test', _ => null);
+            const RightPanelStub: Readonly<
+                ReactFCWithDisplayName<RightPanelProps>
+            > = NamedFC<RightPanelProps>('test', _ => null);
+            const CommandBarStub: Readonly<
+                ReactFCWithDisplayName<DetailsViewCommandBarProps>
+            > = NamedFC<DetailsViewCommandBarProps>('test', _ => null);
+            const LeftNavStub: Readonly<
+                ReactFCWithDisplayName<LeftNavProps>
+            > = NamedFC<LeftNavProps>('test', _ => null);
             rightPanelConfig = {
                 RightPanel: RightPanelStub,
             } as DetailsRightPanelConfiguration;
             switcherNavConfig = {
                 CommandBar: CommandBarStub,
-                ReportExportComponentFactory: p => null,
-                StartOverComponentFactory: p => null,
+                ReportExportDialogFactory: p => null,
+                StartOverComponentFactory: {} as StartOverComponentFactory,
                 LeftNav: LeftNavStub,
             } as DetailsViewSwitcherNavConfiguration;
             configFactoryStub = {} as VisualizationConfigurationFactory;
@@ -104,7 +105,7 @@ describe('DetailsViewBody', () => {
                 tabStoreData: new TabStoreDataBuilder().build(),
                 visualizationStoreData: new VisualizationStoreDataBuilder().build(),
                 visualizationScanResultData: new VisualizationScanResultStoreDataBuilder().build(),
-                featureFlagStoreData: getDefaultFeatureFlagsWeb(),
+                featureFlagStoreData: {} as FeatureFlagStoreData,
                 selectedTest: selectedTest,
                 visualizationConfigurationFactory: configFactoryStub,
                 clickHandlerFactory: clickHandlerFactoryStub,

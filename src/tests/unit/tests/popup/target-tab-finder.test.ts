@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { BrowserAdapter } from 'common/browser-adapters/browser-adapter';
-import { Tab } from 'common/itab';
 import { UrlParser } from 'common/url-parser';
 import { UrlValidator } from 'common/url-validator';
 import { TargetTabFinder } from 'popup/target-tab-finder';
@@ -15,7 +14,7 @@ describe('TargetTabFinderTest', () => {
     let urlParserMock: IMock<UrlParser>;
     let urlValidatorMock: IMock<UrlValidator>;
     const tabId: number = 15;
-    let tabStub: Tab;
+    let tabStub: Tabs.Tab;
 
     beforeEach(() => {
         windowStub = {
@@ -28,7 +27,7 @@ describe('TargetTabFinderTest', () => {
             id: tabId,
             title: 'some title',
             url: 'target page url',
-        };
+        } as Tabs.Tab;
 
         browserAdapterMock = Mock.ofType<BrowserAdapter>();
         urlParserMock = Mock.ofType(UrlParser);
@@ -72,7 +71,7 @@ describe('TargetTabFinderTest', () => {
             setupGetTabCall();
         } else {
             setupGetTabIdParamFromUrl(null);
-            setupTabQueryCall();
+            setupTabQueryCall([tabStub]);
         }
 
         setupIsSupportedCall(testCase.isUrlSupported);
@@ -84,17 +83,25 @@ describe('TargetTabFinderTest', () => {
         });
     });
 
-    test('no tab found', async () => {
+    it('throws an error if tabId URL parameter is not found', async () => {
         setupGetTabIdParamFromUrl(tabId);
         browserAdapterMock
             .setup(b => b.getTab(tabId, It.isAny(), It.isAny()))
             .callback((id, cb, reject) => {
                 reject();
             });
-        setupIsSupportedCall(true);
-        await testSubject
-            .getTargetTab()
-            .catch(error => expect(error).toEqual(`Tab with Id ${tabId} not found`));
+
+        await expect(testSubject.getTargetTab()).rejects.toThrowError(
+            `Tab with Id ${tabId} not found`,
+        );
+    });
+
+    it('throws an error there is neither a tabId URL parameter nor an active tab', async () => {
+        setupTabQueryCall([]);
+
+        await expect(testSubject.getTargetTab()).rejects.toThrowError(
+            'No active tabs found for current window',
+        );
     });
 
     function setupGetTabIdParamFromUrl(tabIdValue: number | null): void {
@@ -111,10 +118,10 @@ describe('TargetTabFinderTest', () => {
             });
     }
 
-    function setupTabQueryCall(): void {
+    function setupTabQueryCall(returnValue: Tabs.Tab[]): void {
         browserAdapterMock
             .setup(adapter => adapter.tabsQuery({ active: true, currentWindow: true }))
-            .returns(() => Promise.resolve([tabStub as Tabs.Tab]));
+            .returns(() => Promise.resolve(returnValue));
     }
 
     function setupIsSupportedCall(isSupported: boolean): void {

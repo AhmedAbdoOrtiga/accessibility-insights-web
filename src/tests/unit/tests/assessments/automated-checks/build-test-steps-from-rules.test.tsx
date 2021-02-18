@@ -1,28 +1,27 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 import { buildTestStepsFromRules } from 'assessments/automated-checks/build-test-steps-from-rules';
-import { InstanceTableColumn } from 'assessments/types/instance-table-column';
+import {
+    onRenderPathColumn,
+    onRenderSnippetColumn,
+} from 'assessments/common/element-column-renderers';
+
 import { Requirement } from 'assessments/types/requirement';
 import { InstanceIdentifierGenerator } from 'background/instance-identifier-generator';
+import { NewTabLink } from 'common/components/new-tab-link';
+import { Messages } from 'common/messages';
+import { TelemetryDataFactory } from 'common/telemetry-data-factory';
+import { HyperlinkDefinition } from 'common/types/hyperlink-definition';
+import { ManualTestStatus } from 'common/types/manual-test-status';
+import { VisualizationType } from 'common/types/visualization-type';
+import { RuleAnalyzerConfiguration } from 'injected/analyzers/analyzer';
+import { AnalyzerProvider } from 'injected/analyzers/analyzer-provider';
+import { DecoratedAxeNodeResult, ScannerUtils } from 'injected/scanner-utils';
+import { DrawerProvider } from 'injected/visualization/drawer-provider';
 import { isMatch } from 'lodash';
 import * as React from 'react';
-import { It, Mock, MockBehavior, Times } from 'typemoq';
-import { HyperlinkDefinition } from 'views/content/content-page';
-import { NewTabLink } from '../../../../../common/components/new-tab-link';
-import { Messages } from '../../../../../common/messages';
-import { TelemetryDataFactory } from '../../../../../common/telemetry-data-factory';
-import { ManualTestStatus } from '../../../../../common/types/manual-test-status';
-import { VisualizationType } from '../../../../../common/types/visualization-type';
-import {
-    AssessmentInstanceRowData,
-    AssessmentInstanceTable,
-} from '../../../../../DetailsView/components/assessment-instance-table';
-import { RequirementLink } from '../../../../../DetailsView/components/requirement-link';
-import { RuleAnalyzerConfiguration } from '../../../../../injected/analyzers/analyzer';
-import { AnalyzerProvider } from '../../../../../injected/analyzers/analyzer-provider';
-import { DecoratedAxeNodeResult, ScannerUtils } from '../../../../../injected/scanner-utils';
-import { DrawerProvider } from '../../../../../injected/visualization/drawer-provider';
-import { ScannerRuleInfo } from '../../../../../scanner/scanner-rule-info';
+import { ScannerRuleInfo } from 'scanner/scanner-rule-info';
+import { It, Mock, MockBehavior } from 'typemoq';
 
 describe('buildTestStepsFromRules', () => {
     it('should exist', () => {
@@ -121,48 +120,17 @@ describe('buildTestStepsFromRules', () => {
         expect(actual.getInstanceStatusColumns).toBeDefined();
         expect(actual.getInstanceStatusColumns()).toHaveLength(0);
 
-        expect(actual.renderInstanceTableHeader).toBeDefined();
-        expect(actual.renderInstanceTableHeader({} as AssessmentInstanceTable, [])).toBeNull();
-
-        const linkMock = Mock.ofType(RequirementLink, MockBehavior.Strict);
-        const descriptionStub = <div>descriptionWithoutIndexStub</div>;
-        linkMock
-            .setup(lm => lm.renderRequirementDescriptionWithoutIndex())
-            .returns(() => descriptionStub)
-            .verifiable(Times.once());
-        expect(actual.renderRequirementDescription).toBeDefined();
-        expect(actual.renderRequirementDescription(linkMock.object)).toBe(descriptionStub);
-        linkMock.verifyAll();
+        expect(actual.instanceTableHeaderType).toBe('none');
 
         expect(actual.columnsConfig).toHaveLength(2);
         expect(actual.columnsConfig[0].key).toBe('path');
         expect(actual.columnsConfig[0].name).toBe('Path');
+        expect(actual.columnsConfig[0].onRender).toBe(onRenderPathColumn);
+
         expect(actual.columnsConfig[1].key).toBe('snippet');
         expect(actual.columnsConfig[1].name).toBe('Snippet');
 
-        validateInstanceColumnsRender(actual.columnsConfig, null, null, 'null');
-        validateInstanceColumnsRender(actual.columnsConfig, ['A'], 'X', 'one');
-        validateInstanceColumnsRender(actual.columnsConfig, ['A', 'B'], 'XY', 'two');
-    }
-
-    function validateInstanceColumnsRender(
-        actualColumns: InstanceTableColumn[],
-        target: string[],
-        html: string,
-        message: string,
-    ): void {
-        const item: AssessmentInstanceRowData = {
-            statusChoiceGroup: null,
-            visualizationButton: null,
-            instance: {
-                target: target,
-                html: html,
-                testStepResults: null,
-            },
-        };
-
-        expect(actualColumns[0].onRender(item)).toMatchSnapshot(`render path - ${message}`);
-        expect(actualColumns[1].onRender(item)).toMatchSnapshot(`render snippet - ${message}`);
+        expect(actual.columnsConfig[1].onRender).toBe(onRenderSnippetColumn);
     }
 
     function expectResultToContainBase(result: Object, base: Object): void {

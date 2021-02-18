@@ -9,16 +9,26 @@ import { AssessmentCommandBar } from 'DetailsView/components/assessment-command-
 import { AutomatedChecksCommandBar } from 'DetailsView/components/automated-checks-command-bar';
 import {
     CommandBarProps,
-    ReportExportComponentFactory,
-    StartOverComponentFactory,
+    ReportExportDialogFactory,
+    SaveAssessmentFactory,
 } from 'DetailsView/components/details-view-command-bar';
 import {
-    getReportExportComponentForAssessment,
-    getReportExportComponentForFastPass,
-} from 'DetailsView/components/report-export-component-factory';
+    getReportExportDialogForAssessment,
+    getReportExportDialogForFastPass,
+} from 'DetailsView/components/report-export-dialog-factory';
 import {
-    getStartOverComponentForAssessment,
-    getStartOverComponentForFastPass,
+    getSaveButtonForAssessment,
+    getSaveButtonForFastPass,
+} from 'DetailsView/components/save-assessment-factory';
+import {
+    ShouldShowReportExportButton,
+    shouldShowReportExportButtonForAssessment,
+    shouldShowReportExportButtonForFastpass,
+} from 'DetailsView/components/should-show-report-export-button';
+import {
+    AssessmentStartOverFactory,
+    FastpassStartOverFactory,
+    StartOverComponentFactory,
 } from 'DetailsView/components/start-over-component-factory';
 import {
     assessmentWarningConfiguration,
@@ -43,13 +53,6 @@ import {
     getFastPassSelectedDetailsView,
     GetSelectedDetailsViewProps,
 } from './left-nav/get-selected-details-view';
-import { LeftNavLinkBuilder, LeftNavLinkBuilderDeps } from './left-nav/left-nav-link-builder';
-import { NavLinkHandler } from './left-nav/nav-link-handler';
-
-export type GetLeftNavDeps = {
-    navLinkHandler: NavLinkHandler;
-    leftNavLinkBuilder: LeftNavLinkBuilder;
-} & LeftNavLinkBuilderDeps;
 
 export type LeftNavDeps = AssessmentLeftNavDeps & FastPassLeftNavDeps;
 export type LeftNavProps = AssessmentLeftNavProps & FastPassLeftNavProps;
@@ -57,7 +60,9 @@ type InternalLeftNavProps = AssessmentLeftNavProps | FastPassLeftNavProps;
 
 export type DetailsViewSwitcherNavConfiguration = Readonly<{
     CommandBar: ReactFCWithDisplayName<CommandBarProps>;
-    ReportExportComponentFactory: ReportExportComponentFactory;
+    ReportExportDialogFactory: ReportExportDialogFactory;
+    shouldShowReportExportButton: ShouldShowReportExportButton;
+    SaveAssessmentFactory: SaveAssessmentFactory;
     StartOverComponentFactory: StartOverComponentFactory;
     LeftNav: ReactFCWithDisplayName<LeftNavProps>;
     getSelectedDetailsView: (props: GetSelectedDetailsViewProps) => VisualizationType;
@@ -67,7 +72,9 @@ export type DetailsViewSwitcherNavConfiguration = Readonly<{
 
 type InternalDetailsViewSwitcherNavConfiguration = Readonly<{
     CommandBar: ReactFCWithDisplayName<CommandBarProps>;
-    ReportExportComponentFactory: ReportExportComponentFactory;
+    ReportExportDialogFactory: ReportExportDialogFactory;
+    shouldShowReportExportButton: ShouldShowReportExportButton;
+    SaveAssessmentFactory: SaveAssessmentFactory;
     StartOverComponentFactory: StartOverComponentFactory;
     LeftNav: ReactFCWithDisplayName<InternalLeftNavProps>;
     getSelectedDetailsView: (props: GetSelectedDetailsViewProps) => VisualizationType;
@@ -84,8 +91,10 @@ const detailsViewSwitcherNavs: {
 } = {
     [DetailsViewPivotType.assessment]: {
         CommandBar: AssessmentCommandBar,
-        ReportExportComponentFactory: getReportExportComponentForAssessment,
-        StartOverComponentFactory: getStartOverComponentForAssessment,
+        ReportExportDialogFactory: getReportExportDialogForAssessment,
+        shouldShowReportExportButton: shouldShowReportExportButtonForAssessment,
+        SaveAssessmentFactory: getSaveButtonForAssessment,
+        StartOverComponentFactory: AssessmentStartOverFactory,
         LeftNav: AssessmentLeftNav,
         getSelectedDetailsView: getAssessmentSelectedDetailsView,
         warningConfiguration: assessmentWarningConfiguration,
@@ -93,8 +102,10 @@ const detailsViewSwitcherNavs: {
     },
     [DetailsViewPivotType.fastPass]: {
         CommandBar: AutomatedChecksCommandBar,
-        ReportExportComponentFactory: getReportExportComponentForFastPass,
-        StartOverComponentFactory: getStartOverComponentForFastPass,
+        ReportExportDialogFactory: getReportExportDialogForFastPass,
+        shouldShowReportExportButton: shouldShowReportExportButtonForFastpass,
+        SaveAssessmentFactory: getSaveButtonForFastPass,
+        StartOverComponentFactory: FastpassStartOverFactory,
         LeftNav: FastPassLeftNav,
         getSelectedDetailsView: getFastPassSelectedDetailsView,
         warningConfiguration: fastpassWarningConfiguration,

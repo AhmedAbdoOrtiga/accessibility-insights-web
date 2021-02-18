@@ -13,8 +13,8 @@ exports[`IssueFilingDialog componentDidUpdate dialog is not open & props have ch
   hidden={true}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -48,6 +48,7 @@ exports[`IssueFilingDialog componentDidUpdate dialog is not open & props have ch
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -93,8 +94,8 @@ exports[`IssueFilingDialog componentDidUpdate dialog is not open & props have no
   hidden={true}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -128,6 +129,7 @@ exports[`IssueFilingDialog componentDidUpdate dialog is not open & props have no
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -173,8 +175,8 @@ exports[`IssueFilingDialog componentDidUpdate dialog is open & props have change
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -208,6 +210,7 @@ exports[`IssueFilingDialog componentDidUpdate dialog is open & props have change
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -253,8 +256,8 @@ exports[`IssueFilingDialog componentDidUpdate dialog is open & props have not ch
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -288,6 +291,7 @@ exports[`IssueFilingDialog componentDidUpdate dialog is open & props have not ch
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -333,8 +337,8 @@ exports[`IssueFilingDialog render with isSettingsValid: false 1`] = `
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -368,6 +372,7 @@ exports[`IssueFilingDialog render with isSettingsValid: false 1`] = `
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -413,8 +418,8 @@ exports[`IssueFilingDialog render with isSettingsValid: true 1`] = `
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -448,6 +453,7 @@ exports[`IssueFilingDialog render with isSettingsValid: true 1`] = `
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -493,8 +499,8 @@ exports[`IssueFilingDialog render: validate callback (onPropertyUpdateCallback) 
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -528,6 +534,7 @@ exports[`IssueFilingDialog render: validate callback (onPropertyUpdateCallback) 
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -574,8 +581,8 @@ exports[`IssueFilingDialog render: validate callback (onPropertyUpdateCallback) 
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -609,6 +616,7 @@ exports[`IssueFilingDialog render: validate callback (onPropertyUpdateCallback) 
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },
@@ -654,8 +662,8 @@ exports[`IssueFilingDialog render: validate callback (onSelectedServiceChange) s
   hidden={false}
   modalProps={
     Object {
-      "className": "issue-filing-dialog",
-      "containerClassName": "insights-dialog-main-override",
+      "className": "issueFilingDialog",
+      "containerClassName": "insightsDialogMainOverride",
       "isBlocking": false,
     }
   }
@@ -689,6 +697,7 @@ exports[`IssueFilingDialog render: validate callback (onSelectedServiceChange) s
           "___id": "BCDF5CE5-F0DF-40B7-8BA0-69DF395033C8",
           "dispatcher": undefined,
           "saveIssueFilingSettings": [Function],
+          "saveWindowBounds": [Function],
           "setIssueFilingService": [Function],
           "setIssueFilingServiceProperty": [Function],
         },

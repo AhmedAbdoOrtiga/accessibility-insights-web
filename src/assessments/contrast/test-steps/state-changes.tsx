@@ -4,6 +4,10 @@ import {
     MacContrastCheckerAppLink,
     WindowsContrastCheckerAppLink,
 } from 'common/components/contrast-checker-app-links';
+import {
+    NoValue,
+    PropertyBagColumnRendererConfig,
+} from 'common/types/property-bag/property-bag-column-renderer-config';
 import { StateChangesPropertyBag } from 'common/types/property-bag/state-changes';
 import { VisualizationType } from 'common/types/visualization-type';
 import { link } from 'content/link';
@@ -14,10 +18,6 @@ import * as React from 'react';
 
 import { AnalyzerConfigurationFactory } from '../../common/analyzer-configuration-factory';
 import { AssistedTestRecordYourResults } from '../../common/assisted-test-record-your-results';
-import {
-    NoValue,
-    PropertyBagColumnRendererConfig,
-} from '../../common/property-bag-column-renderer';
 import { PropertyBagColumnRendererFactory } from '../../common/property-bag-column-renderer-factory';
 import * as Markup from '../../markup';
 import { ReportInstanceField } from '../../types/report-instance-field';
@@ -25,7 +25,9 @@ import { Requirement } from '../../types/requirement';
 import { ContrastTestStep } from './test-steps';
 
 const description: JSX.Element = (
-    <span>Any visual effect that indicates a component's state must have sufficient contrast.</span>
+    <span>
+        Any visual information that indicates a component's state must have sufficient contrast.
+    </span>
 );
 
 const howToTest: JSX.Element = (
@@ -34,7 +36,7 @@ const howToTest: JSX.Element = (
             <Markup.Emphasis>
                 Note: Contrast requirements for text within a UI component or graphic are covered in{' '}
                 <Markup.Term>Automated checks</Markup.Term> and{' '}
-                <Markup.Term>Text legibility.</Markup.Term>
+                <Markup.Term>Adaptable content.</Markup.Term>
             </Markup.Emphasis>
         </p>
         <p>
@@ -47,27 +49,48 @@ const howToTest: JSX.Element = (
                 supports any of the following states:
                 <ol>
                     <li>Focused</li>
-                    <li>Mouseover</li>
+                    <li>Hover (mouseover)</li>
                     <li>Selected</li>
                 </ol>
             </li>
             <li>
-                In each supported state, use <WindowsContrastCheckerAppLink /> (or the{' '}
-                <MacContrastCheckerAppLink /> if you are testing on a Mac) to verify that the
-                following visual presentations (if implemented) have a contrast ratio of at least
-                3:1 against the adjacent background:
+                In each supported state (including combinations), use{' '}
+                <WindowsContrastCheckerAppLink /> (or the <MacContrastCheckerAppLink /> if you are
+                testing on a Mac) to verify that the following visual information, if present, has a
+                contrast ratio of at least 3:1 against the adjacent background:
                 <ol>
-                    <li>Any visual boundary that indicates the component's clickable area.</li>
-                    <li>Any visual effect that indicates the component's current state.</li>
+                    <li>Any visual information that's needed to identify the component</li>
+                    <ol>
+                        <li>
+                            Visual information is almost always needed to identify text inputs,
+                            checkboxes, and radio buttons.
+                        </li>
+                        <li>
+                            Visual information might not be needed to identify other components if
+                            they are identified by their position, text style, or context.
+                        </li>
+                    </ol>
+                    <li>Any visual information that indicates the component's current state</li>
                 </ol>
-                Note: If an element has redundant state indicators (such as a unique background
-                color <Markup.Emphasis>and</Markup.Emphasis> a unique text style), only one
-                indicator is required to have sufficient contrast.
-                <br />
-                Exception: A lower contrast ratio is allowed if either of the following is true:
+                Exceptions:
                 <ol>
-                    <li>The component is inactive/disabled.</li>
-                    <li>The component's appearance is determined solely by the browser.</li>
+                    <li>
+                        No minimum contrast ratio is required if either of the following is true:
+                    </li>
+                    <ol>
+                        <li>The component is inactive/disabled.</li>
+                        <li>The component's appearance is determined solely by the browser.</li>
+                    </ol>
+                    <li>
+                        If a component has redundant state indicators (such as unique background
+                        color and unique text style), only one indicator is required to have
+                        sufficient contrast.
+                    </li>
+                    <li>
+                        Hover indicators do not need to have sufficient contrast against the
+                        background, but their presence must not cause other state indicators to lose
+                        sufficient contrast.
+                    </li>
                 </ol>
             </li>
             <AssistedTestRecordYourResults />

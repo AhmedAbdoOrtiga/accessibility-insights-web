@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import * as React from 'react';
 
 import { NewTabLink } from 'common/components/new-tab-link';
 import { CustomWidgetPropertyBag } from 'common/types/property-bag/custom-widgets-property-bag';
+import { NoValue } from 'common/types/property-bag/property-bag-column-renderer-config';
 import { VisualizationType } from 'common/types/visualization-type';
 import { link } from 'content/link';
 import { productName } from 'content/strings/application';
@@ -11,9 +11,9 @@ import { TestAutomaticallyPassedNotice } from 'content/test/common/test-automati
 import * as content from 'content/test/custom-widgets/role-state-property';
 import { AssessmentVisualizationEnabledToggle } from 'DetailsView/components/assessment-visualization-enabled-toggle';
 import { ScannerUtils } from 'injected/scanner-utils';
+import * as React from 'react';
 import { AnalyzerConfigurationFactory } from '../../common/analyzer-configuration-factory';
 import { AssistedTestRecordYourResults } from '../../common/assisted-test-record-your-results';
-import { NoValue } from '../../common/property-bag-column-renderer';
 import * as Markup from '../../markup';
 import { ReportInstanceField } from '../../types/report-instance-field';
 import { Requirement } from '../../types/requirement';
@@ -50,15 +50,15 @@ const roleStatePropertyHowToTest: JSX.Element = (
                 design pattern:
                 <ul>
                     <li>
-                        For a composite widget, use the Accessibility Tree to verify the role
-                        hierarchy. (For example, verify that a menuitem exists for each option in
-                        a menubar.)
+                        For a composite widget, use the Accessibility Tree to verify the role
+                        hierarchy. (For example, verify that a menuitem exists for each option in a
+                        menubar.)
                     </li>
                     <li>
                         View the widget's ARIA Attributes while you interact with it to verify that
                         required properties update according to spec. (For example, when a tree node
-                        in a tree view is expanded, aria-expanded is "true" and when it isn't
-                        expanded, it is "false".)
+                        in a tree view is expanded, aria-expanded is "true" and when it isn't
+                        expanded, it is "false".)
                     </li>
                 </ul>
             </li>

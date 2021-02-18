@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 import {
     SaveIssueFilingSettingsPayload,
+    SaveWindowBoundsPayload,
     SetHighContrastModePayload,
     SetIssueFilingServicePayload,
     SetIssueFilingServicePropertyPayload,
@@ -10,7 +11,9 @@ import {
 import { UserConfigurationActions } from 'background/actions/user-configuration-actions';
 import { IndexedDBDataKeys } from 'background/IndexedDBDataKeys';
 import { UserConfigurationStore } from 'background/stores/global/user-configuration-store';
+import { WindowState } from 'electron/flux/types/window-state';
 import { cloneDeep } from 'lodash';
+import { failTestOnErrorLogger } from 'tests/unit/common/fail-test-on-error-logger';
 import { IMock, It, Mock, Times } from 'typemoq';
 
 import { IndexedDBAPI } from '../../../../../../common/indexedDB/indexedDB';
@@ -36,6 +39,8 @@ describe('UserConfigurationStoreTest', () => {
             bugService: 'none',
             bugServicePropertiesMap: {},
             adbLocation: null,
+            lastWindowState: null,
+            lastWindowBounds: null,
         };
         defaultStoreData = {
             enableTelemetry: false,
@@ -45,6 +50,8 @@ describe('UserConfigurationStoreTest', () => {
             bugService: 'none',
             bugServicePropertiesMap: {},
             adbLocation: null,
+            lastWindowState: null,
+            lastWindowBounds: null,
         };
         indexDbStrictMock = Mock.ofType<IndexedDBAPI>();
     });
@@ -54,6 +61,7 @@ describe('UserConfigurationStoreTest', () => {
             initialStoreData,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         expect(testSubject.getState()).toBeUndefined();
@@ -64,6 +72,7 @@ describe('UserConfigurationStoreTest', () => {
             null,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         testSubject.initialize();
@@ -76,6 +85,7 @@ describe('UserConfigurationStoreTest', () => {
             cloneDeep(initialStoreData),
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         testSubject.initialize();
@@ -94,12 +104,15 @@ describe('UserConfigurationStoreTest', () => {
             bugService: 'none',
             bugServicePropertiesMap: {},
             lastSelectedHighContrast: false,
+            lastWindowState: null,
+            lastWindowBounds: null,
             ...persisted,
         } as UserConfigurationStoreData;
         const testSubject = new UserConfigurationStore(
             persisted as UserConfigurationStoreData,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         testSubject.initialize();
@@ -112,6 +125,7 @@ describe('UserConfigurationStoreTest', () => {
             null,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
         testSubject.initialize();
 
@@ -127,6 +141,7 @@ describe('UserConfigurationStoreTest', () => {
             cloneDeep(initialStoreData),
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         const firstCallDefaultState = testSubject.getDefaultState();
@@ -142,6 +157,7 @@ describe('UserConfigurationStoreTest', () => {
             null,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         const firstCallDefaultState = testSubject.getDefaultState();
@@ -157,6 +173,7 @@ describe('UserConfigurationStoreTest', () => {
             initialStoreData,
             new UserConfigurationActions(),
             indexDbStrictMock.object,
+            failTestOnErrorLogger,
         );
 
         expect(testSubject.getId()).toBe(StoreNames[StoreNames.UserConfigurationStore]);
@@ -187,6 +204,8 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 const expectedState: UserConfigurationStoreData = {
@@ -197,12 +216,15 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 indexDbStrictMock
                     .setup(i =>
                         i.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
                     )
+                    .returns(() => Promise.resolve(true))
                     .verifiable(Times.once());
 
                 storeTester
@@ -234,6 +256,8 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 const setHighContrastData: SetHighContrastModePayload = {
@@ -248,12 +272,15 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 indexDbStrictMock
                     .setup(i =>
                         i.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
                     )
+                    .returns(() => Promise.resolve(true))
                     .verifiable(Times.once());
 
                 storeTester
@@ -285,6 +312,8 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 const setNativeHighContrastData: SetNativeHighContrastModePayload = {
@@ -299,12 +328,15 @@ describe('UserConfigurationStoreTest', () => {
                     bugService: 'none',
                     bugServicePropertiesMap: {},
                     adbLocation: null,
+                    lastWindowState: null,
+                    lastWindowBounds: null,
                 };
 
                 indexDbStrictMock
                     .setup(i =>
                         i.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
                     )
+                    .returns(() => Promise.resolve(true))
                     .verifiable(Times.once());
 
                 storeTester
@@ -327,6 +359,8 @@ describe('UserConfigurationStoreTest', () => {
                 bugService: 'none',
                 bugServicePropertiesMap: {},
                 adbLocation: null,
+                lastWindowState: null,
+                lastWindowBounds: null,
             };
 
             const setIssueFilingServiceData: SetIssueFilingServicePayload = {
@@ -342,6 +376,7 @@ describe('UserConfigurationStoreTest', () => {
                 .setup(i =>
                     i.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
                 )
+                .returns(() => Promise.resolve(true))
                 .verifiable(Times.once());
 
             storeTester
@@ -369,6 +404,8 @@ describe('UserConfigurationStoreTest', () => {
                 bugService: 'none',
                 bugServicePropertiesMap: initialMapState,
                 adbLocation: null,
+                lastWindowState: null,
+                lastWindowBounds: null,
             };
 
             const setIssueFilingServicePropertyData: SetIssueFilingServicePropertyPayload = {
@@ -386,6 +423,7 @@ describe('UserConfigurationStoreTest', () => {
                 .setup(indexDb =>
                     indexDb.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
                 )
+                .returns(() => Promise.resolve(true))
                 .verifiable(Times.once());
 
             storeTester
@@ -415,6 +453,7 @@ describe('UserConfigurationStoreTest', () => {
             .setup(indexDb =>
                 indexDb.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
             )
+            .returns(() => Promise.resolve(true))
             .verifiable(Times.once());
 
         storeTester
@@ -435,6 +474,7 @@ describe('UserConfigurationStoreTest', () => {
             .setup(indexDb =>
                 indexDb.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
             )
+            .returns(() => Promise.resolve(true))
             .verifiable(Times.once());
 
         storeTester
@@ -443,11 +483,58 @@ describe('UserConfigurationStoreTest', () => {
             .testListenerToBeCalledOnce(cloneDeep(initialStoreData), expectedState);
     });
 
+    test.each(['normal', 'maximized', 'full-screen'])(
+        'saveLastWindowBounds windowState:$windowState',
+        windowState => {
+            const expectBoundsSet: boolean = windowState === 'normal';
+            const payload: SaveWindowBoundsPayload = {
+                windowState: windowState as WindowState,
+                windowBounds: { x: 5, y: 15, height: 30, width: 50 },
+            };
+
+            const storeTester = createStoreToTestAction('saveWindowBounds');
+            initialStoreData = {
+                isFirstTime: false,
+                enableTelemetry: false,
+                enableHighContrast: false,
+                lastSelectedHighContrast: false,
+                bugService: 'none',
+                bugServicePropertiesMap: {},
+                adbLocation: null,
+                lastWindowState: null,
+                lastWindowBounds: null,
+            };
+
+            const expectedState: UserConfigurationStoreData = {
+                ...initialStoreData,
+                lastWindowState: payload.windowState,
+                lastWindowBounds: expectBoundsSet ? payload.windowBounds : null,
+            };
+
+            indexDbStrictMock
+                .setup(i =>
+                    i.setItem(IndexedDBDataKeys.userConfiguration, It.isValue(expectedState)),
+                )
+                .returns(() => Promise.resolve(true))
+                .verifiable(Times.once());
+
+            storeTester
+                .withActionParam(payload)
+                .withPostListenerMock(indexDbStrictMock)
+                .testListenerToBeCalledOnce(cloneDeep(initialStoreData), expectedState);
+        },
+    );
+
     function createStoreToTestAction(
         actionName: keyof UserConfigurationActions,
     ): StoreTester<UserConfigurationStoreData, UserConfigurationActions> {
         const factory = (actions: UserConfigurationActions) =>
-            new UserConfigurationStore(initialStoreData, actions, indexDbStrictMock.object);
+            new UserConfigurationStore(
+                initialStoreData,
+                actions,
+                indexDbStrictMock.object,
+                failTestOnErrorLogger,
+            );
 
         return new StoreTester(UserConfigurationActions, actionName, factory);
     }

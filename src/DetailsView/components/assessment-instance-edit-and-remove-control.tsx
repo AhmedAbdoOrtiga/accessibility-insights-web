@@ -1,15 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { Icon } from 'office-ui-fabric-react';
-import { Link } from 'office-ui-fabric-react';
-import * as React from 'react';
-
 import { AssessmentsProvider } from 'assessments/types/assessments-provider';
-import { FeatureFlagStoreData } from '../../common/types/store-data/feature-flag-store-data';
-import { VisualizationType } from '../../common/types/visualization-type';
+import { FailureInstanceData } from 'common/types/failure-instance-data';
+import { FeatureFlagStoreData } from 'common/types/store-data/feature-flag-store-data';
+import { VisualizationType } from 'common/types/visualization-type';
+import { Icon, Link } from 'office-ui-fabric-react';
+import * as React from 'react';
+import * as styles from './assessment-instance-edit-and-remove-control.scss';
 import {
     CapturedInstanceActionType,
-    FailureInstanceData,
     FailureInstancePanelControl,
 } from './failure-instance-panel-control';
 
@@ -26,9 +25,7 @@ export interface AssessmentInstanceEditAndRemoveControlProps {
     featureFlagStoreData: FeatureFlagStoreData;
 }
 
-export class AssessmentInstanceEditAndRemoveControl extends React.Component<
-    AssessmentInstanceEditAndRemoveControlProps
-> {
+export class AssessmentInstanceEditAndRemoveControl extends React.Component<AssessmentInstanceEditAndRemoveControlProps> {
     public render(): JSX.Element {
         return (
             <div>
@@ -44,7 +41,7 @@ export class AssessmentInstanceEditAndRemoveControl extends React.Component<
                     assessmentsProvider={this.props.assessmentsProvider}
                     featureFlagStoreData={this.props.featureFlagStoreData}
                 />
-                <Link className="remove-button" onClick={this.onRemoveButtonClicked}>
+                <Link className={styles.removeButton} onClick={this.onRemoveButtonClicked}>
                     <Icon iconName="delete" ariaLabel={'delete instance'} />
                 </Link>
             </div>

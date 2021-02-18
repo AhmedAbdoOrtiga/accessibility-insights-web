@@ -19,19 +19,28 @@ exports[`PromptGrantPermissionsStep renders with device 1`] = `
   rightFooterButtonProps={
     Object {
       "disabled": true,
-      "onClick": null,
+      "onClick": undefined,
       "text": "Next",
     }
   }
 >
   <p>
-    Be sure the Accessibility Insights for Android Service on your device is turned on and has permission to access your device and capture screenshots.
+    Be sure the Accessibility Insights for Android Service on your device is turned on and has permission to access your device and capture screenshots. Then select
+     
+    <i>
+      Try again
+    </i>
+     to connect.
   </p>
   <DeviceDescription
     className="deviceDescription"
-    friendlyName="Super-Duper Gadget"
-    id="1"
-    isEmulator={false}
+    deviceInfo={
+      Object {
+        "friendlyName": "Super-Duper Gadget",
+        "id": "1",
+        "isEmulator": false,
+      }
+    }
   />
   <CustomizedPrimaryButton
     data-automation-id="try-again"
@@ -60,19 +69,28 @@ exports[`PromptGrantPermissionsStep renders with emulator 1`] = `
   rightFooterButtonProps={
     Object {
       "disabled": true,
-      "onClick": null,
+      "onClick": undefined,
       "text": "Next",
     }
   }
 >
   <p>
-    Be sure the Accessibility Insights for Android Service on your device is turned on and has permission to access your device and capture screenshots.
+    Be sure the Accessibility Insights for Android Service on your device is turned on and has permission to access your device and capture screenshots. Then select
+     
+    <i>
+      Try again
+    </i>
+     to connect.
   </p>
   <DeviceDescription
     className="deviceDescription"
-    friendlyName="Emulator Extraordinaire"
-    id="1"
-    isEmulator={true}
+    deviceInfo={
+      Object {
+        "friendlyName": "Emulator Extraordinaire",
+        "id": "1",
+        "isEmulator": true,
+      }
+    }
   />
   <CustomizedPrimaryButton
     data-automation-id="try-again"

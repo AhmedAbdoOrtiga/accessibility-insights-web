@@ -25,7 +25,7 @@ export class CenterPositionCalculator {
         this.clientUtils = clientUtils;
     }
 
-    public getElementCenterPosition(targetElement: Element): Point {
+    public getElementCenterPosition(targetElement: Element): Point | null {
         if (targetElement.tagName.toLowerCase() === 'area') {
             return this.getAreaElementCenterPosition(targetElement as HTMLAreaElement);
         }
@@ -74,10 +74,14 @@ export class CenterPositionCalculator {
         return { x, y };
     }
 
-    private getAreaElementCenterPosition(element: HTMLAreaElement): Point {
+    private getAreaElementCenterPosition(element: HTMLAreaElement): Point | null {
         const mapImageElement = this.tabbableElementsHelper.getMappedImage(
             this.tabbableElementsHelper.getAncestorMap(element),
         );
+
+        if (mapImageElement == null) {
+            return null;
+        }
 
         const myDocument = this.drawerUtils.getDocumentElement();
         const body = myDocument.body;
@@ -122,16 +126,14 @@ export class CenterPositionCalculator {
         let x = left;
         let y = top;
         const shape = element.shape;
-        const coords = element.getAttribute('coords')
-            ? element.getAttribute('coords').split(',')
-            : [];
+        const coords = element.getAttribute('coords')?.split(',') ?? [];
 
         if (coords.length > 0) {
             let deltaX: number;
             let deltaY: number;
 
             switch (shape) {
-                case 'default':
+                case 'default': {
                     const minHeight = this.drawerUtils.getContainerHeight(
                         offset,
                         dom,
@@ -149,9 +151,10 @@ export class CenterPositionCalculator {
                     deltaX = minWidth / 2;
                     deltaY = minHeight / 2;
                     break;
+                }
 
                 case 'rect':
-                case 'poly':
+                case 'poly': {
                     let sumX = 0;
                     let sumY = 0;
 
@@ -166,6 +169,7 @@ export class CenterPositionCalculator {
                     deltaX = sumX / (coords.length / 2);
                     deltaY = sumY / (coords.length / 2);
                     break;
+                }
 
                 case 'circle':
                     deltaX = parseInt(coords[0], 10);

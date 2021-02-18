@@ -8,7 +8,7 @@ jobs:
     - job: 'build_and_publish_package'
 
       pool:
-          vmImage: 'macOS-10.15'
+          vmImage: 'ubuntu-18.04'
 
       steps:
           - template: install-node-prerequisites.yaml
@@ -60,4 +60,4 @@ jobs:
             inputs:
                 command: 'publish'
                 publishEndpoint: 'npmjs.com (accessibility-insights-team)'
-                workingDir: '$(System.DefaultWorkingDirectory)/package/${{ parameters.suffix }}/drop'
+                workingDir: '$(System.DefaultWorkingDirectory)/packages/${{ parameters.suffix }}'

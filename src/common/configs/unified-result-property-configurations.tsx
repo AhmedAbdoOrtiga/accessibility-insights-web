@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 import { ClassNameCardRow } from 'common/components/cards/class-name-card-row';
 import { ContentDescriptionCardRow } from 'common/components/cards/content-description-card-row';
-
+import { RichResolutionCardRow } from 'common/components/cards/rich-resolution-card-row';
 import { TextCardRow } from 'common/components/cards/text-card-row';
-import { HowToFixAndroidCardRow } from '../components/cards/how-to-fix-android-card-row';
+import { UrlsCardRow } from 'common/components/cards/urls-card-row';
+import { LinkComponentType } from 'common/types/link-component-type';
 import { HowToFixWebCardRow } from '../components/cards/how-to-fix-card-row';
 import { PathCardRow } from '../components/cards/path-card-row';
 import { SnippetCardRow } from '../components/cards/snippet-card-row';
@@ -14,23 +15,24 @@ import { ReactFCWithDisplayName } from '../react/named-fc';
 export type PropertyType =
     | 'css-selector'
     | 'how-to-fix-web'
+    | 'richResolution'
     | 'snippet'
     | 'className'
     | 'contentDescription'
-    | 'text'
-    | 'howToFixFormat';
+    | 'text';
 export const AllPropertyTypes: PropertyType[] = [
     'css-selector',
     'how-to-fix-web',
+    'richResolution',
     'snippet',
     'className',
     'contentDescription',
     'text',
-    'howToFixFormat',
 ];
 
 export interface CardRowDeps {
     fixInstructionProcessor: FixInstructionProcessor;
+    LinkComponent: LinkComponentType;
 }
 
 export interface CardRowProps {
@@ -43,12 +45,12 @@ export interface PropertyConfiguration {
     cardRow: ReactFCWithDisplayName<CardRowProps>;
 }
 
-export const howToFixConfiguration: PropertyConfiguration = {
+export const howToFixWebConfiguration: PropertyConfiguration = {
     cardRow: HowToFixWebCardRow,
 };
 
-export const howToFixAndroidConfiguration: PropertyConfiguration = {
-    cardRow: HowToFixAndroidCardRow,
+export const richResolutionConfiguration: PropertyConfiguration = {
+    cardRow: RichResolutionCardRow,
 };
 
 export const cssSelectorConfiguration: PropertyConfiguration = {
@@ -71,17 +73,22 @@ export const textConfiguration: PropertyConfiguration = {
     cardRow: TextCardRow,
 };
 
+export const urlsConfiguration: PropertyConfiguration = {
+    cardRow: UrlsCardRow,
+};
+
 export type PropertyIdToConfigurationMap = {
     [key in PropertyType]: PropertyConfiguration;
 };
 const propertyIdToConfigurationMap: PropertyIdToConfigurationMap = {
     'css-selector': cssSelectorConfiguration,
-    'how-to-fix-web': howToFixConfiguration,
-    howToFixFormat: howToFixAndroidConfiguration,
+    'how-to-fix-web': howToFixWebConfiguration,
+    richResolution: richResolutionConfiguration,
     snippet: snippetConfiguration,
     className: classNameConfiguration,
     contentDescription: contentDescriptionConfiguration,
     text: textConfiguration,
+    urls: urlsConfiguration,
 };
 
 export function getPropertyConfiguration(id: string): Readonly<PropertyConfiguration> {

@@ -40,6 +40,7 @@ export function initializeFabricIcons(): void {
             edit: '\uE70F',
             export: '\uEDE1',
             FabricFolder: '\uF0A9',
+            FabricOpenFolderHorizontal: '\uF0A8',
             feedback: '\uED15',
             fileHTML: '\uF2ED',
             gear: '\uE713',
@@ -58,6 +59,7 @@ export function initializeFabricIcons(): void {
             play: '\uE768',
             refresh: '\uE72C',
             rocket: '\uF3B3',
+            save: '\uE74E',
             scopeTemplate: '\uF2B0',
             search: '\uE721',
             send: '\uE724',
@@ -71,6 +73,7 @@ export function initializeFabricIcons(): void {
             textDocument: '\uF029',
             undo: '\uE7A7',
             unknown: '\uE9CE',
+            upArrow: '\uE74A',
             view: '\uE890',
         },
     });

@@ -19,14 +19,10 @@ describe('Popup -> Ad-hoc tools', () => {
         });
         targetPage = await browser.newTargetPage();
         popupPage = await browser.newPopupPage(targetPage);
-        await popupPage.bringToFront();
     });
 
     afterEach(async () => {
-        if (browser) {
-            await browser.close();
-            browser = undefined;
-        }
+        await browser?.close();
     });
 
     it('should have launchpad link that takes us to adhoc panel & is sticky', async () => {
@@ -69,7 +65,6 @@ describe('Popup -> Ad-hoc tools', () => {
             await popupPage.gotoAdhocPanel();
             await popupPage.enableToggleByAriaLabel(toggleAriaLabel);
 
-            await targetPage.bringToFront();
             expect(await targetPage.waitForShadowRootHtmlSnapshot()).toMatchSnapshot();
         },
     );

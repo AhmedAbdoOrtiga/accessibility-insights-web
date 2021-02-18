@@ -4,57 +4,16 @@
 @import '../../../common/styles/colors.scss';
 @import '../../../common/styles/common.scss';
 
-:global(.reflow-ui) {
-    .left-nav {
-        li {
-            :global {
-                .is-selected {
-                    background-color: $communication-tint-20;
-                    a,
-                    button {
-                        background-color: $communication-tint-20 !important;
-                    }
-                }
-                .is-expanded,
-                .is-expanded + ul {
-                    background-color: $communication-tint-40;
-                    .index-circle {
-                        color: $neutral-0;
-                        background: $index-circle-background;
-                        border-color: $neutral-0;
-                    }
-                }
-            }
-
-            > div:hover {
-                a,
-                button {
-                    background-color: $nav-link-hover !important;
-                }
-            }
-        }
-    }
-}
-
-:global(.details-view-body-nav-content-layout) {
-    .left-nav {
-        max-height: calc(100vh - (#{$detailsViewTotalHeaderHeight}));
-        height: calc(100vh - (#{$detailsViewTotalHeaderHeight}));
-    }
-
-    &:global(.reflow-ui) .left-nav {
-        max-height: calc(100vh - (#{$detailsViewHeaderBarHeight}));
-        height: calc(100vh - (#{$detailsViewHeaderBarHeight}));
-    }
-}
-
 .left-nav {
     overflow-y: auto;
     border-right: 1px solid $neutral-8;
     z-index: 100;
     background-color: $neutral-0;
+    max-height: calc(100vh - (#{$detailsViewHeaderBarHeight}));
+    height: calc(100vh - (#{$detailsViewHeaderBarHeight}));
+
     :global {
-        .dark-gray {
+        .left-nav-icon {
             color: $neutral-60;
         }
         .ms-Nav-groupContent {
@@ -79,20 +38,6 @@
             line-height: 16px;
             font-size: 12px;
         }
-        .index-circle {
-            border: 1px solid;
-            display: inline-block;
-            border-radius: 50%;
-            border: 1px solid;
-            width: 1.5em;
-            line-height: 1.5em;
-            padding: 0.07em;
-            margin-top: 0.23em;
-        }
-        .test-name {
-            padding-left: 10%;
-            display: inline-block;
-        }
         .ms-Nav-navItems {
             margin-top: 0px !important;
         }
@@ -102,15 +47,9 @@
                 border-left: $pivotItemLeftBorderWidth $pivotItemBorderStyle $neutral-0;
                 border-top: 0px;
                 border-bottom: 0px;
-                text-align: center;
             }
             .ms-Button-label {
                 color: $neutral-100;
-            }
-            .index-circle {
-                color: $secondary-text;
-                background: $neutral-0;
-                border-color: $neutral-20;
             }
             &.is-selected {
                 a,
@@ -118,12 +57,12 @@
                     background-color: $communication-tint-40;
                     border-left: $pivotItemLeftBorderWidth $pivotItemBorderStyle
                         $communication-primary;
-                    .ms-Button-label {
+                    .ms-Button-label,
+                    .overview-percent {
                         color: $highlighted-text;
                     }
-                    .overview-percent,
-                    .dark-gray {
-                        color: $overview-percent-selected;
+                    .left-nav-icon {
+                        color: $left-nav-icon;
                     }
                 }
                 a::after,
@@ -132,11 +71,6 @@
                 }
                 .ms-Button-label {
                     color: $always-black;
-                }
-                .index-circle {
-                    color: $neutral-0;
-                    background: $index-circle-background;
-                    border-color: $neutral-0;
                 }
             }
         }

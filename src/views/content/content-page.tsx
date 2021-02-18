@@ -1,33 +1,23 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { NamedFC } from 'common/react/named-fc';
+import { HyperlinkDefinition } from 'common/types/hyperlink-definition';
 import { flatten, forEach, toPairs } from 'lodash';
 import * as React from 'react';
 
-import { GuidanceTag } from 'content/guidance-tags';
-import { NamedFC } from '../../common/react/named-fc';
-import { GuidanceLink } from '../../scanner/rule-to-links-mappings';
-import { createMarkup, Markup, MarkupDeps } from './markup';
+import { MarkupBasedComponentProps, createMarkup, Markup, MarkupDeps } from './markup';
 
-export type HyperlinkDefinition = { href: string; text: string };
 type HyperlinkDefinitionMap = { [KEY in string]: { href: string; text: string } };
 type HyperlinkComponentMap<M extends HyperlinkDefinitionMap> = { [KEY in keyof M]: React.FC };
-export function linkTo(text: string, href: string): HyperlinkDefinition {
-    return { text, href };
-}
-
-export function guidanceLinkTo(text: string, href: string, tags?: GuidanceTag[]): GuidanceLink {
-    return { text, href, tags };
-}
 
 export type ContentPageDeps = MarkupDeps;
-export interface ContentPageOptions {
-    setPageTitle?: boolean;
-}
-export type ContentPageProps = { deps: ContentPageDeps; options?: ContentPageOptions };
+export type ContentPageProps = MarkupBasedComponentProps;
+
 export type ContentPageComponent = React.FC<ContentPageProps> & {
     displayName: 'ContentPageComponent';
     pageTitle?: string;
 };
+
 export type ContentReference = string | ContentPageComponent;
 type CreateProps<M extends HyperlinkDefinitionMap> = {
     Markup: Markup;
@@ -64,9 +54,9 @@ export function ContentCreator<M extends HyperlinkDefinitionMap>(
 export interface ContentProvider {
     getPage(path: string): ContentPageComponent;
     allPaths(): string[];
-    pathTo(component: ContentPageComponent): string;
+    pathTo(component: ContentPageComponent): string | null;
     contentFromReference(content: ContentReference): ContentPageComponent;
-    pathFromReference(content: ContentReference): string;
+    pathFromReference(content: ContentReference): string | null;
 }
 type ContentTree = { [K in string]: ContentTree | ContentPageComponent };
 export function ContentProvider(root: ContentTree): ContentProvider {
@@ -99,7 +89,7 @@ export function ContentProvider(root: ContentTree): ContentProvider {
     };
     const rootEntries = flattenTree(root);
 
-    function findPage(tree: ContentTree, [head, ...tail]: string[]): ContentPageComponent {
+    function findPage(tree: ContentTree, [head, ...tail]: string[]): ContentPageComponent | null {
         if (!tree) {
             return null;
         }

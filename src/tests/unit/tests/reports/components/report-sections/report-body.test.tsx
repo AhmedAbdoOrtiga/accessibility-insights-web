@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { FailedInstancesSectionDeps } from 'common/components/cards/failed-instances-section';
+import { CommonInstancesSectionDeps } from 'common/components/cards/common-instances-section-props';
 import { FixInstructionProcessor } from 'common/components/fix-instruction-processor';
 import { NamedFC } from 'common/react/named-fc';
 import { shallow } from 'enzyme';
 import * as React from 'react';
 import { ReportBody, ReportBodyProps } from 'reports/components/report-sections/report-body';
-import { SectionProps } from 'reports/components/report-sections/report-section-factory';
+import {
+    SectionProps,
+    ReportSectionFactory,
+} from 'reports/components/report-sections/report-section-factory';
 import { Mock } from 'typemoq';
 
 import { exampleUnifiedStatusResults } from '../../../common/components/cards/sample-view-model-data';
@@ -15,6 +18,7 @@ describe('ReportBody', () => {
     it('renders', () => {
         const pageTitle = 'page-title';
         const pageUrl = 'url:target-page';
+        const scanDate = new Date(Date.UTC(0, 1, 2, 3));
         const getScriptStub = () => '';
         const getGuidanceTagsStub = () => [];
         const fixInstructionProcessorMock = Mock.ofType(FixInstructionProcessor);
@@ -32,12 +36,11 @@ describe('ReportBody', () => {
         const targetAppInfo = { name: 'app' };
 
         const detailsProps: SectionProps = {
-            deps: {} as FailedInstancesSectionDeps,
+            deps: {} as CommonInstancesSectionDeps,
             fixInstructionProcessor: fixInstructionProcessorMock.object,
             pageTitle,
             pageUrl,
             description: 'test description',
-            scanDate: new Date('2019-05-29T19:12:16.804Z'),
             toolData,
             scanResult: {
                 passes: [],
@@ -62,7 +65,9 @@ describe('ReportBody', () => {
             scanMetadata: {
                 toolData,
                 targetAppInfo,
-                timestamp: 'today',
+                timespan: {
+                    scanComplete: scanDate,
+                },
             },
         };
 
@@ -109,7 +114,8 @@ describe('ReportBody', () => {
             NotApplicableChecksSection: NotApplicableChecks,
             FooterSection: Footer,
             FooterText,
-        };
+            resultSectionsOrder: ['failed', 'passed', 'notApplicable'],
+        } as ReportSectionFactory;
 
         return sectionFactoryStub;
     };

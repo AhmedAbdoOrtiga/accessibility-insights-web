@@ -1,23 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import { InstanceTableRow } from 'assessments/types/instance-table-data';
+import { ColumnValueBag } from 'common/types/property-bag/column-value-bag';
+import { PropertyBagColumnRendererConfig } from 'common/types/property-bag/property-bag-column-renderer-config';
 import { isEmpty } from 'lodash';
 import * as React from 'react';
 
-import { ColumnValue, ColumnValueBag } from 'common/types/property-bag/column-value-bag';
-import { AssessmentInstanceRowData } from 'DetailsView/components/assessment-instance-table';
 import { DictionaryStringTo } from 'types/common-types';
 
-export const NoValue = '(no value)';
-
-export interface PropertyBagColumnRendererConfig<TPropertyBag extends ColumnValueBag> {
-    propertyName: keyof TPropertyBag & string;
-    displayName: string;
-    defaultValue?: ColumnValue;
-    expand?: boolean;
-}
-
 export function propertyBagColumnRenderer<TPropertyBag extends ColumnValueBag>(
-    item: AssessmentInstanceRowData<TPropertyBag>,
+    item: InstanceTableRow<TPropertyBag>,
     configs: PropertyBagColumnRendererConfig<TPropertyBag>[],
 ): JSX.Element {
     const mapper = (config: PropertyBagColumnRendererConfig<TPropertyBag>, index: number) => {

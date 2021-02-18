@@ -13,13 +13,16 @@ import { TabContext } from 'background/tab-context';
 import { TabContextFactory } from 'background/tab-context-factory';
 import { TargetTabController } from 'background/target-tab-controller';
 import { TelemetryEventHandler } from 'background/telemetry/telemetry-event-handler';
+import { VisualizationConfigurationFactory } from 'common/configs/visualization-configuration-factory';
+import { WebVisualizationConfigurationFactory } from 'common/configs/web-visualization-configuration-factory';
 import { Logger } from 'common/logging/logger';
+import { NotificationCreator } from 'common/notification-creator';
+import { WindowUtils } from 'common/window-utils';
 import { IMock, It, Mock, MockBehavior, Times } from 'typemoq';
 import { UnifiedScanResultStore } from '../../../../background/stores/unified-scan-result-store';
 import { UsageLogger } from '../../../../background/usage-logger';
 import { BrowserAdapter } from '../../../../common/browser-adapters/browser-adapter';
 import { VisualizationConfiguration } from '../../../../common/configs/visualization-configuration';
-import { VisualizationConfigurationFactory } from '../../../../common/configs/visualization-configuration-factory';
 import { getStoreStateMessage } from '../../../../common/messages';
 import { PromiseFactory } from '../../../../common/promises/promise-factory';
 import { StoreNames } from '../../../../common/stores/store-names';
@@ -27,7 +30,7 @@ import { StoreUpdateMessage } from '../../../../common/types/store-update-messag
 import { VisualizationType } from '../../../../common/types/visualization-type';
 
 function getConfigs(visualizationType: VisualizationType): VisualizationConfiguration {
-    return new VisualizationConfigurationFactory().getConfiguration(visualizationType);
+    return new WebVisualizationConfigurationFactory().getConfiguration(visualizationType);
 }
 
 describe('TabContextFactoryTest', () => {
@@ -35,12 +38,16 @@ describe('TabContextFactoryTest', () => {
     let mockBrowserAdapter: IMock<BrowserAdapter>;
     let mockLogger: IMock<Logger>;
     let mockUsageLogger: IMock<UsageLogger>;
+    let mockNotificationCreator: IMock<NotificationCreator>;
+    let mockWindowUtils: IMock<WindowUtils>;
 
     beforeEach(() => {
         mockBrowserAdapter = Mock.ofType<BrowserAdapter>();
         mockLogger = Mock.ofType<Logger>();
         mockUsageLogger = Mock.ofType<UsageLogger>();
         mockDetailsViewController = Mock.ofType<ExtensionDetailsViewController>();
+        mockNotificationCreator = Mock.ofType<NotificationCreator>();
+        mockWindowUtils = Mock.ofType<WindowUtils>();
     });
 
     it('createInterpreter', () => {
@@ -67,9 +74,9 @@ describe('TabContextFactoryTest', () => {
             broadcastMock
                 .setup(bm =>
                     bm(
-                        It.isObjectWith({ storeId: StoreNames[storeName] } as StoreUpdateMessage<
-                            any
-                        >),
+                        It.isObjectWith({
+                            storeId: StoreNames[storeName],
+                        } as StoreUpdateMessage<any>),
                     ),
                 )
                 .returns(() => Promise.resolve())
@@ -79,9 +86,7 @@ describe('TabContextFactoryTest', () => {
         mockBrowserAdapter.setup(ba => ba.addListenerToTabsOnRemoved(It.isAny())).verifiable();
         mockBrowserAdapter.setup(ba => ba.addListenerToTabsOnUpdated(It.isAny())).verifiable();
 
-        const visualizationConfigurationFactoryMock = Mock.ofType(
-            VisualizationConfigurationFactory,
-        );
+        const visualizationConfigurationFactoryMock = Mock.ofType<VisualizationConfigurationFactory>();
         visualizationConfigurationFactoryMock
             .setup(vcfm => vcfm.getConfiguration(It.isAny()))
             .returns(theType => getConfigs(theType));
@@ -91,9 +96,11 @@ describe('TabContextFactoryTest', () => {
             visualizationConfigurationFactoryMock.object,
             telemetryEventHandlerMock.object,
             targetTabControllerMock.object,
+            mockNotificationCreator.object,
             promiseFactoryMock.object,
             mockLogger.object,
             mockUsageLogger.object,
+            mockWindowUtils.object,
         );
 
         const tabContext = testObject.createTabContext(

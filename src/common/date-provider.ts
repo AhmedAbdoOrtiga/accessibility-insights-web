@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-import { utc } from 'moment';
+import { DateTime, Duration } from 'luxon';
 
 export class DateProvider {
     public static getDateFromTimestamp(timestamp: string): Date {
@@ -16,7 +16,13 @@ export class DateProvider {
     }
 
     public static getUTCStringFromDate(date: Date): string {
-        return utc(date.toISOString()).format('YYYY-MM-DD h:mm A z');
+        const utcDateTime = DateTime.fromJSDate(date, { zone: 'utc' });
+        return utcDateTime.toFormat('yyyy-MM-dd h:mm a z');
+    }
+
+    public static getTimeStringFromSeconds(seconds: number): string {
+        const duration = Duration.fromObject({ seconds });
+        return duration.toFormat('hh:mm:ss');
     }
 
     private static getDateFromDateString(timestamp: string): Date {
